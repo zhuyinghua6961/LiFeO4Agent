@@ -1,0 +1,41 @@
+import { createRouter, createWebHistory } from 'vue-router'
+import Login from '../views/Login.vue'
+import AdminDashboard from '../views/AdminDashboard.vue'
+import Home from '../views/Home.vue'
+import UserProfile from '../views/UserProfile.vue'
+
+const routes = [
+  { path: '/', component: Home, meta: { requiresAuth: true } },
+  { path: '/login', component: Login },
+  { path: '/admin', component: AdminDashboard, meta: { requiresAuth: true, requiresAdmin: true } },
+  { path: '/profile', component: UserProfile, meta: { requiresAuth: true } }
+]
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes
+})
+
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('token')
+  const user = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null
+  
+  if (to.meta.requiresAuth && !token) {
+    next('/login')
+    return
+  }
+  
+  if (to.meta.requiresAdmin && user?.role !== 'admin') {
+    next('/')
+    return
+  }
+  
+  if (to.path === '/login' && token) {
+    next(user?.role === 'admin' ? '/admin' : '/')
+    return
+  }
+  
+  next()
+})
+
+export default router

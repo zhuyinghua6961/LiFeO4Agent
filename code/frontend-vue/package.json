@@ -11,7 +11,8 @@
     "marked": "^12.0.0",
     "pdfjs-dist": "^3.11.174",
     "pinia": "^2.1.0",
-    "vue": "^3.4.0"
+    "vue": "^3.4.0",
+    "vue-router": "^4.6.4"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.0",

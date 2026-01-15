@@ -25,6 +25,8 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 from backend.config.settings import settings
 from backend.api.routes import api
+from backend.api.auth_routes import auth_bp  # 认证蓝图
+from backend.api.admin_routes import admin_bp  # 管理员蓝图
 from backend.services import get_llm_service, get_neo4j_service, get_vector_service
 
 
@@ -40,8 +42,14 @@ def create_app() -> Flask:
     # 启用 CORS（允许所有跨域请求）
     CORS(app, origins="*", supports_credentials=False)
     
-    # 注册蓝图
+    # 注册现有蓝图
     app.register_blueprint(api)
+    
+    # 注册认证蓝图
+    app.register_blueprint(auth_bp)
+    
+    # 注册管理员蓝图
+    app.register_blueprint(admin_bp)
     
     # 根路由
     @app.route('/')

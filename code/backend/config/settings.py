@@ -94,6 +94,17 @@ class Settings:
         self.api_port: int = int(os.getenv("API_PORT", "8000"))
         self.debug: bool = os.getenv("DEBUG", "False").lower() == "true"
         
+        # MySQL配置
+        self.mysql_host: str = os.getenv("MYSQL_HOST", "localhost")
+        self.mysql_port: int = int(os.getenv("MYSQL_PORT", "3306"))
+        self.mysql_user: str = os.getenv("MYSQL_USER", "root")
+        self.mysql_password: str = os.getenv("MYSQL_PASSWORD", "")
+        self.mysql_database: str = os.getenv("MYSQL_DATABASE", "material_kb")
+        
+        # JWT配置
+        self.jwt_secret: str = os.getenv("JWT_SECRET", "your-secret-key-change-in-production")
+        self.jwt_expire: int = int(os.getenv("JWT_EXPIRE", "86400"))  # 24小时
+        
     @property
     def llm_api_key(self) -> Optional[str]:
         """获取LLM API密钥（优先使用阿里百炼）"""
