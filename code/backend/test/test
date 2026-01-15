@@ -1,0 +1,72 @@
+"""
+配置测试
+"""
+import os
+import pytest
+from pathlib import Path
+
+
+class TestSettings:
+    """配置测试类"""
+    
+    def test_settings_class_exists(self):
+        """测试配置类是否存在"""
+        from backend.config.settings import Settings
+        assert Settings is not None
+    
+    def test_settings_has_required_attributes(self):
+        """测试配置类有所需属性"""
+        from backend.config.settings import settings
+        
+        # 检查必要属性是否存在
+        assert hasattr(settings, 'NEO4J_URL')
+        assert hasattr(settings, 'NEO4J_USER')
+        assert hasattr(settings, 'NEO4J_PASSWORD')
+        assert hasattr(settings, 'DASHSCOPE_API_KEY')
+        assert hasattr(settings, 'LLM_MODEL')
+        assert hasattr(settings, 'VECTOR_DB_PATH')
+    
+    def test_settings_default_values(self):
+        """测试默认配置值"""
+        from backend.config.settings import settings
+        
+        # 检查默认值
+        assert isinstance(settings.API_PORT, int)
+        assert settings.API_PORT > 0 and settings.API_PORT <= 65535
+    
+    def test_env_file_loading(self):
+        """测试环境文件加载"""
+        # 检查是否存在示例配置文件
+        config_example = Path(__file__).parent.parent.parent / 'config.env.example'
+        assert config_example.exists(), f"示例配置文件不存在: {config_example}"
+
+
+class TestPrompts:
+    """提示词测试类"""
+    
+    def test_prompt_loader_exists(self):
+        """测试提示词加载器是否存在"""
+        try:
+            from backend.config.prompts.prompt_loader import PromptLoader
+            assert PromptLoader is not None
+        except ImportError:
+            # 如果模块不存在，跳过测试
+            pytest.skip("PromptLoader模块不存在")
+    
+    def test_system_prompt_exists(self):
+        """测试系统提示词文件是否存在"""
+        prompt_path = Path(__file__).parent.parent / 'txt' / 'system_prompt.txt'
+        assert prompt_path.exists(), f"系统提示词文件不存在: {prompt_path}"
+    
+    def test_synthesis_prompt_exists(self):
+        """测试综合提示词文件是否存在"""
+        prompt_path = Path(__file__).parent.parent / 'txt' / 'synthesis_prompt.txt'
+        assert prompt_path.exists(), f"综合提示词文件不存在: {prompt_path}"
+    
+    def test_prompt_files_not_empty(self):
+        """测试提示词文件不为空"""
+        prompt_dir = Path(__file__).parent.parent / 'txt'
+        if prompt_dir.exists():
+            txt_files = list(prompt_dir.glob('*.txt'))
+            for txt_file in txt_files:
+                assert txt_file.stat().st_size > 0, f"文件为空: {txt_file}"

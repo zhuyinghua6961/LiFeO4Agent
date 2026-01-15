@@ -1,0 +1,83 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+
+# 虚拟环境
+agent/
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# 数据文件
+papers/
+*.pdf
+
+# 数据库文件
+vector_database/
+vector_database_backup/
+vector_db/
+
+# JSON 数据文件
+json/
+json_backup/
+lfp_hc_json/
+
+# 日志文件
+logs/
+*.log
+nohup.out
+
+# 翻译缓存
+translation_cache/
+
+# 静态文件
+static/
+
+# 临时文件
+*.txt
+!requirements.txt
+!完整流程.txt
+
+# 映射文件
+doi_to_pdf_mapping.json
+doi_to_pdf_mapping_backup.json
+
+# 其他临时文件
+otherFiles/
+
+# 环境变量
+.env
+config.env
+*.env.local
+
+# 前端
+code/frontend/node_modules/
+code/frontend/dist/
+code/frontend/.next/
+code/frontend-vue/node_modules/
+code/frontend-vue/dist/
+
+# 构建产物
+*.sqlite3
+*.db

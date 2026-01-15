@@ -1,0 +1,3508 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>磷酸铁锂知识图谱 AI 助手</title>
+    <!-- SVG Favicon - 简单的电池图标 -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='20' y='25' width='60' height='50' rx='5' fill='none' stroke='%23667eea' stroke-width='4'/><rect x='30' y='35' width='15' height='30' fill='%23667eea'/><rect x='55' y='35' width='15' height='30' fill='%23764ba2'/></svg>">
+    <!-- 引入marked.js - 专业的Markdown渲染库 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Microsoft YaHei", sans-serif;
+            background: #f5f7fa;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* 左侧历史记录 */
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .sidebar-title-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .clear-all-btn {
+            background: transparent;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .clear-all-btn:hover {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        .new-chat-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .new-chat-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* PDF上传区域 */
+        .pdf-upload-section {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e5e7eb;
+            background: #f9fafb;
+        }
+
+        .pdf-section-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #6b7280;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .pdf-upload-box {
+            position: relative;
+            border: 2px dashed #d1d5db;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .pdf-upload-box:hover {
+            border-color: #667eea;
+            background: #f5f3ff;
+        }
+
+        .pdf-upload-box.has-file {
+            border-color: #10b981;
+            background: #ecfdf5;
+        }
+
+        .pdf-upload-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .pdf-upload-text {
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 5px;
+        }
+
+        .pdf-upload-hint {
+            font-size: 11px;
+            color: #9ca3af;
+        }
+
+        .pdf-file-info {
+            display: none;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .pdf-file-info.active {
+            display: block;
+        }
+
+        .pdf-file-name {
+            font-size: 12px;
+            color: #374151;
+            margin-bottom: 8px;
+            word-break: break-all;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .pdf-remove-btn {
+            width: 100%;
+            padding: 6px;
+            background: #fee2e2;
+            color: #ef4444;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .pdf-remove-btn:hover {
+            background: #fecaca;
+        }
+
+        .pdf-mode-toggle {
+            margin-top: 10px;
+            display: none;
+        }
+
+        .pdf-mode-toggle.active {
+            display: block;
+        }
+
+        .pdf-mode-label {
+            font-size: 12px;
+            color: #4b5563;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 6px;
+            background: white;
+            transition: all 0.2s;
+        }
+
+        .pdf-mode-label:hover {
+            background: #f3f4f6;
+        }
+
+        .pdf-mode-label input[type="checkbox"] {
+            cursor: pointer;
+        }
+
+        .chat-history {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .history-item {
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #f9fafb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .history-item:hover {
+            background: #f3f4f6;
+        }
+
+        .history-item.active {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-left: 3px solid #667eea;
+        }
+
+        .history-title {
+            font-size: 14px;
+            color: #374151;
+            font-weight: 500;
+            margin-bottom: 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .history-time {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .history-delete {
+            opacity: 0;
+            transition: opacity 0.2s;
+            margin-left: 8px;
+            padding: 4px 8px;
+            background: transparent;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .history-item:hover .history-delete {
+            opacity: 1;
+        }
+
+        .history-delete:hover {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        /* 右侧主聊天区 */
+        .main-chat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(180deg, #f5f7fa 0%, #e8eef5 100%);
+        }
+
+        .chat-header {
+            padding: 20px 30px;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .ai-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            margin-right: 15px;
+        }
+
+        .header-title {
+            flex: 1;
+        }
+
+        .header-title h1 {
+            font-size: 20px;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+
+        .kb-info {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        /* 消息区域 */
+        .messages-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+        }
+
+        .message {
+            margin-bottom: 25px;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message-user {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .message-bot {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 16px 20px;
+            border-radius: 18px;
+            position: relative;
+        }
+
+        .message-user .message-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-bot .message-content {
+            background: white;
+            color: #1f2937;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        /* 摘录小圆点悬停提示样式 */
+        .snippet-dot {
+            display: inline-block;
+            cursor: help;
+            color: #667eea;
+            font-size: 10px;
+            vertical-align: middle;
+            margin-left: 2px;
+            position: relative;
+        }
+        .snippet-dot:hover::after {
+            content: attr(data-snippet);
+            position: absolute;
+            left: 50%;
+            bottom: 120%;
+            transform: translateX(-50%);
+            width: 320px;
+            max-height: 200px;
+            overflow-y: auto;
+            background: #1f2937;
+            color: #f3f4f6;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            z-index: 1000;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+            pointer-events: none;
+        }
+
+        /* Markdown表格样式 */
+        .message-content .md-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: #f9fafb;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .message-content .md-table thead {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        }
+
+        .message-content .md-table th {
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+            font-size: 14px;
+        }
+
+        .message-content .md-table td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #374151;
+            font-size: 14px;
+        }
+
+        .message-content .md-table tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .message-content .md-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Markdown标题样式 */
+        .message-content h1 {
+            font-size: 20px;
+            color: #667eea;
+            margin: 20px 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .message-content h2 {
+            font-size: 18px;
+            color: #667eea;
+            margin: 18px 0 12px 0;
+            padding-bottom: 6px;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.3);
+        }
+
+        .message-content h3 {
+            font-size: 16px;
+            color: #764ba2;
+            margin: 15px 0 10px 0;
+        }
+
+        /* Markdown列表样式 */
+        .message-content ol,
+        .message-content ul {
+            margin: 10px 0;
+            padding-left: 25px;
+        }
+
+        .message-content li {
+            margin: 6px 0;
+            line-height: 1.6;
+        }
+
+        .message-content strong {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        /* 流式输出光标动画 */
+        .streaming-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.2em;
+            background-color: #667eea;
+            margin-left: 2px;
+            animation: blink 1s infinite;
+            vertical-align: text-bottom;
+        }
+
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        /* 🎨 加载动画样式 */
+        .loading-animation {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            color: #667eea;
+            font-size: 14px;
+        }
+
+        .loading-spinner {
+            display: flex;
+            gap: 5px;
+        }
+
+        .loading-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            animation: loading-bounce 1.4s infinite ease-in-out both;
+        }
+
+        .loading-dot:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+
+        .loading-dot:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+
+        @keyframes loading-bounce {
+            0%, 80%, 100% { 
+                transform: scale(0);
+                opacity: 0.5;
+            }
+            40% { 
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .loading-text {
+            font-weight: 500;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: loading-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes loading-pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        .message-content blockquote {
+            margin: 15px 0;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-left: 4px solid #667eea;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+            color: #4b5563;
+        }
+
+        .message-content p {
+            margin: 10px 0;
+            line-height: 1.7;
+        }
+
+        /* Markdown代码块样式 */
+        .message-content code {
+            background: #f3f4f6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            color: #e83e8c;
+        }
+
+        .message-content pre {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 15px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        .message-content pre code {
+            background: transparent;
+            padding: 0;
+            color: #374151;
+        }
+
+        /* Markdown链接样式 */
+        .message-content a {
+            color: #667eea;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.3);
+            transition: all 0.2s;
+        }
+
+        .message-content a:hover {
+            color: #764ba2;
+            border-bottom-color: #764ba2;
+        }
+
+        /* Markdown水平线 */
+        .message-content hr {
+            border: none;
+            border-top: 2px solid #e5e7eb;
+            margin: 20px 0;
+        }
+
+        /* Markdown图片 */
+        .message-content img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        /* Markdown斜体 */
+        .message-content em {
+            font-style: italic;
+            color: #6b7280;
+        }
+
+        .message-bot .bot-avatar {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .query-mode-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+            color: #667eea;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .references {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .references-title {
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .reference-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            margin: 4px 4px 4px 0;
+            background: #f3f4f6;
+            border-radius: 8px;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .reference-doi {
+            color: #667eea;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .reference-doi:hover {
+            text-decoration: underline;
+        }
+
+        .view-pdf-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .view-pdf-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+        }
+
+        .reference-item:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            transform: translateY(-2px);
+        }
+
+        /* 快速建议 */
+        .suggestions-container {
+            padding: 20px 30px;
+            background: white;
+            border-radius: 20px;
+            margin: 20px 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .suggestions-title {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 12px;
+        }
+
+        .suggestion-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .suggestion-chip {
+            padding: 10px 18px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 20px;
+            color: #667eea;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .suggestion-chip:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        /* 输入区域 */
+        .input-area {
+            padding: 20px 30px;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .input-wrapper {
+            display: flex;
+            align-items: flex-end;
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 12px 16px;
+            transition: all 0.3s;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            flex: 1;
+            border: none;
+            background: transparent;
+            resize: none;
+            font-size: 15px;
+            color: #1f2937;
+            font-family: inherit;
+            outline: none;
+            min-height: 24px;
+            max-height: 120px;
+        }
+
+        textarea::placeholder {
+            color: #9ca3af;
+        }
+
+        .send-btn {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-left: 12px;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .send-btn:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+
+        /* 加载动画 - 思考过程 */
+        .loading-message {
+            display: flex;
+            flex-direction: column;
+            padding: 16px 20px;
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            max-width: 300px;
+        }
+
+        .thinking-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .thinking-text {
+            font-weight: 500;
+            color: #667eea;
+        }
+
+        .loading-dots {
+            display: flex;
+            gap: 6px;
+            margin-left: 12px;
+        }
+
+        .loading-dot {
+            width: 8px;
+            height: 8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out;
+        }
+
+        .loading-dot:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        .thinking-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .thinking-step {
+            display: flex;
+            align-items: center;
+            font-size: 13px;
+            color: #6b7280;
+            opacity: 0.4;
+            transition: all 0.3s;
+        }
+
+        .thinking-step.active {
+            opacity: 1;
+            color: #667eea;
+            font-weight: 500;
+        }
+
+        .thinking-step.completed {
+            opacity: 0.7;
+            color: #10b981;
+        }
+
+        .step-icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .step-icon::before {
+            content: '○';
+            font-size: 12px;
+        }
+
+        .thinking-step.active .step-icon::before {
+            content: '◉';
+            animation: pulse 1.5s infinite;
+        }
+
+        .thinking-step.completed .step-icon::before {
+            content: '✓';
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.1); }
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #9ca3af;
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-title {
+            font-size: 20px;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+
+        .empty-desc {
+            font-size: 14px;
+        }
+
+        /* 响应式 */
+        /* 📱 响应式设计 - 完整版 */
+        
+        /* 超大屏幕 (>1920px) - 4K显示器 */
+        @media (min-width: 1920px) {
+            .main-chat {
+                max-width: 1400px;
+                margin: 0 auto;
+            }
+            
+            .message-content {
+                font-size: 16px;
+                line-height: 1.8;
+            }
+        }
+        
+        /* 大屏幕 (1200px - 1920px) - 常规台式机 */
+        @media (min-width: 1200px) and (max-width: 1919px) {
+            .messages-area {
+                padding: 30px;
+            }
+        }
+        
+        /* 中等屏幕 (768px - 1199px) - 笔记本/平板横屏 */
+        @media (max-width: 1199px) {
+            .sidebar {
+                width: 240px;
+            }
+            
+            .main-chat {
+                margin-left: 240px;
+            }
+            
+            .message-content {
+                font-size: 14px;
+            }
+            
+            .suggestions-container {
+                padding: 15px;
+            }
+            
+            .suggestion-chip {
+                font-size: 12px;
+                padding: 8px 14px;
+            }
+        }
+        
+        /* 小屏幕 (481px - 767px) - 平板竖屏/大手机 */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                z-index: 1000;
+                width: 280px;
+                transition: left 0.3s ease;
+                box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+            
+            .main-chat {
+                margin-left: 0;
+                width: 100%;
+            }
+            
+            .chat-header {
+                padding: 15px;
+            }
+            
+            .header-title h1 {
+                font-size: 18px;
+            }
+            
+            .messages-area {
+                padding: 15px;
+            }
+            
+            .message {
+                font-size: 14px;
+            }
+            
+            .input-container {
+                padding: 12px;
+            }
+            
+            .message-input {
+                font-size: 14px;
+                padding: 10px;
+            }
+            
+            /* 表格在小屏幕上横向滚动 */
+            .message-content table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            
+            .suggestion-chips {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .suggestion-chip {
+                width: 100%;
+                text-align: center;
+            }
+            
+            /* 添加汉堡菜单按钮 */
+            .chat-header::before {
+                content: '☰';
+                font-size: 24px;
+                cursor: pointer;
+                margin-right: 10px;
+                padding: 5px 10px;
+                background: rgba(102, 126, 234, 0.1);
+                border-radius: 8px;
+            }
+        }
+        
+        /* 极小屏幕 (<480px) - 手机竖屏 */
+        @media (max-width: 480px) {
+            .header-title h1 {
+                font-size: 16px;
+            }
+            
+            .kb-info {
+                font-size: 11px;
+            }
+            
+            .message-content {
+                font-size: 13px;
+            }
+            
+            .query-mode-badge {
+                font-size: 10px;
+                padding: 3px 8px;
+            }
+            
+            .reference-item {
+                font-size: 12px;
+                padding: 8px;
+            }
+            
+            .send-btn {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+            
+            .empty-title {
+                font-size: 18px;
+            }
+            
+            .empty-desc {
+                font-size: 13px;
+            }
+        }
+        
+        /* 横屏优化 */
+        @media (orientation: landscape) and (max-height: 600px) {
+            .chat-header {
+                padding: 10px 20px;
+            }
+            
+            .messages-area {
+                padding: 15px 20px;
+            }
+            
+            .input-container {
+                padding: 10px 15px;
+            }
+        }
+        
+        /* 高DPI屏幕优化 (Retina等) */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .message-content {
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+        }
+        
+        /* 🎨 PDF阅读器样式（新版 - PDF.js + 侧边翻译） */
+        #pdfReaderModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .pdf-reader-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(6px);
+            animation: fadeIn 0.3s;
+        }
+        
+        .pdf-reader-container-new {
+            position: relative;
+            width: 95%;
+            max-width: 1600px;
+            height: 90vh;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            overflow: hidden;
+        }
+        
+        .pdf-reader-header-new {
+            padding: 20px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 10;
+        }
+        
+        .pdf-reader-header-new h2 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .pdf-action-btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        
+        .pdf-action-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .pdf-close-btn {
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .pdf-close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .pdf-viewer-layout {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            background: #f5f7fa;
+        }
+        
+        /* 左侧PDF显示区 */
+        .pdf-viewer-left {
+            width: 70%;
+            display: flex;
+            flex-direction: column;
+            background: #e5e7eb;
+            transition: width 0.3s ease;
+        }
+        
+        /* iframe PDF容器 */
+        .pdf-iframe-container {
+            flex: 1;
+            overflow: hidden;
+            background: #525659;
+            position: relative;
+        }
+        
+        #pdfIframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        /* PDF工具栏 */
+        .pdf-toolbar {
+            padding: 12px 20px;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .pdf-summary-box {
+            margin: 10px 20px 0 20px;
+            padding: 12px;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            color: #166534;
+            font-size: 14px;
+            line-height: 1.5;
+            max-height: 200px;
+            overflow: auto;
+        }
+        .pdf-summary-title {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 6px;
+            color: #15803d;
+        }
+        .pdf-summary-loading {
+            color: #0f172a;
+            font-size: 13px;
+            margin-top: 6px;
+        }
+        
+        .toolbar-tip {
+            font-size: 13px;
+            color: #6b7280;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .text-layer ::selection {
+            background: rgba(102, 126, 234, 0.3);
+        }
+        
+        /* PDF控制栏 */
+        .pdf-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            padding: 15px 20px;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .pdf-nav-btn, .pdf-zoom-btn {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .pdf-nav-btn:hover, .pdf-zoom-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        #pageInfo, #zoomLevel {
+            font-size: 14px;
+            color: #374151;
+            font-weight: 500;
+        }
+        
+        /* 右侧翻译面板 */
+        .translation-panel {
+            width: 30%;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            border-left: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+        
+        .translation-panel.hidden {
+            width: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        
+        .translation-panel-header {
+            padding: 20px;
+            background: #f9fafb;
+            border-bottom: 2px solid #667eea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .translation-panel-header h3 {
+            margin: 0;
+            color: #1f2937;
+            font-size: 18px;
+        }
+        
+        .panel-close-btn {
+            background: transparent;
+            border: none;
+            font-size: 20px;
+            color: #9ca3af;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        
+        .panel-close-btn:hover {
+            background: #e5e7eb;
+            color: #374151;
+        }
+        
+        .translation-panel-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        /* 翻译欢迎页 */
+        .translation-welcome {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6b7280;
+        }
+        
+        .translation-welcome-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .translation-welcome h4 {
+            color: #374151;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        
+        .translation-welcome p {
+            margin: 8px 0;
+            font-size: 14px;
+        }
+        
+        .translation-tips {
+            margin-top: 30px;
+            text-align: left;
+        }
+        
+        .tip-item {
+            padding: 10px 15px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            border-left: 3px solid #667eea;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #4b5563;
+        }
+        
+        /* 翻译项 */
+        .translation-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f9fafb;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            animation: slideInRight 0.4s ease-out;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .translation-item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 12px;
+            color: #9ca3af;
+        }
+        
+        .translation-item-content {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .translation-source, .translation-target {
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+        }
+        
+        .lang-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+        
+        .translation-target .lang-label {
+            color: #10b981;
+        }
+        
+        .text-content {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #374151;
+        }
+        
+        .text-content.loading {
+            color: #9ca3af;
+            font-style: italic;
+        }
+        
+        /* 翻译操作栏（新版 - 支持输入框） */
+        .translation-action-bar {
+            padding: 15px 20px;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .translation-input-container {
+            margin-bottom: 10px;
+        }
+        
+        .translation-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 14px;
+            line-height: 1.6;
+            font-family: inherit;
+            resize: vertical;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        .translation-input.highlighted {
+            border: 2px dashed #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+        }
+        
+        .translation-input:focus {
+            outline: none;
+            border-color: #667eea;
+            border-style: solid;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: white;
+        }
+        
+        .translation-input::placeholder {
+            color: #9ca3af;
+            font-size: 13px;
+        }
+        
+        .quick-tip {
+            margin-top: 10px;
+            padding: 8px 12px;
+            background: rgba(102, 126, 234, 0.08);
+            border-radius: 6px;
+            font-size: 12px;
+            color: #667eea;
+            text-align: center;
+        }
+        
+        .translation-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .translate-btn {
+            flex: 1;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        
+        .translate-btn.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .translate-btn.secondary {
+            background: #f3f4f6;
+            color: #6b7280;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .translate-btn.primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+        }
+        
+        .translate-btn.secondary:hover:not(:disabled) {
+            background: #e5e7eb;
+            color: #374151;
+        }
+        
+        .translate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .translate-btn.secondary.active {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+            color: #667eea;
+            border-color: #667eea;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7); }
+            50% { box-shadow: 0 0 0 10px rgba(102, 126, 234, 0); }
+        }
+        
+        .btn-icon {
+            font-size: 16px;
+        }
+        
+        .btn-text {
+            font-size: 13px;
+        }
+        
+        /* 大按钮样式 */
+        .translate-btn.large {
+            width: 100%;
+            padding: 18px 24px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .translate-btn.large:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+        
+        .translate-btn.large .btn-icon {
+            font-size: 24px;
+        }
+        
+        .translate-btn.large .btn-text {
+            font-size: 17px;
+            font-weight: 700;
+        }
+        
+        /* 脉动效果 */
+        .translate-btn.pulse {
+            animation: gentle-pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes gentle-pulse {
+            0%, 100% {
+                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            }
+            50% {
+                box-shadow: 0 4px 20px rgba(102, 126, 234, 0.5), 0 0 0 4px rgba(102, 126, 234, 0.1);
+            }
+        }
+        
+        .btn-shortcut {
+            position: absolute;
+            right: 20px;
+            font-size: 11px;
+            opacity: 0.8;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+        
+        /* 分隔线 */
+        .or-divider {
+            text-align: center;
+            margin: 15px 0;
+            position: relative;
+        }
+        
+        .or-divider::before,
+        .or-divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 35%;
+            height: 1px;
+            background: #e5e7eb;
+        }
+        
+        .or-divider::before {
+            left: 0;
+        }
+        
+        .or-divider::after {
+            right: 0;
+        }
+        
+        .or-divider span {
+            color: #9ca3af;
+            font-size: 12px;
+            background: white;
+            padding: 0 10px;
+        }
+        
+        .pdf-loading-full {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #667eea;
+        }
+        
+        .pdf-loading-full p {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        
+        /* 浮动翻译按钮 */
+        .floating-translate-btn {
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: auto;
+        }
+        
+        .floating-translate-btn button {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .floating-translate-btn button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        .floating-translate-btn button:active {
+            transform: scale(0.95);
+        }
+        
+        /* 段落提示样式 */
+        .paragraph-hint {
+            animation: fadeIn 0.5s;
+        }
+        
+        /* 首次提示样式 */
+        .first-time-hint {
+            position: absolute;
+            z-index: 1000;
+        }
+        
+        /* 移动端适配 - 新版PDF阅读器 */
+        @media (max-width: 768px) {
+            .pdf-reader-container-new {
+                width: 100%;
+                height: 100vh;
+                border-radius: 0;
+            }
+            
+            .pdf-reader-header-new {
+                padding: 15px;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            
+            .pdf-reader-header-new h2 {
+                font-size: 16px;
+            }
+            
+            .pdf-viewer-layout {
+                flex-direction: column;
+            }
+            
+            .pdf-viewer-left {
+                width: 100% !important;
+                height: 60%;
+            }
+            
+            .translation-panel {
+                width: 100%;
+                height: 40%;
+                border-left: none;
+                border-top: 1px solid #e5e7eb;
+            }
+            
+            .translation-panel.hidden {
+                height: 0;
+            }
+            
+            .pdf-controls {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            
+            .pdf-nav-btn, .pdf-zoom-btn {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- 左侧历史记录 -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title-bar">
+                    <div class="sidebar-title">💬 对话历史</div>
+                    <button class="clear-all-btn" onclick="clearAllChats()" title="清空所有对话">
+                        🗑️ 清空
+                    </button>
+                </div>
+                <button class="new-chat-btn" onclick="createNewChat()">
+                    ✨ 新建对话
+                </button>
+            </div>
+            
+            <!-- PDF上传区域 -->
+            <div class="pdf-upload-section">
+                <div class="pdf-section-title">
+                    📄 上传文献
+                </div>
+                <div class="pdf-upload-box" id="pdfUploadBox" onclick="document.getElementById('pdfFileInput').click()">
+                    <div class="pdf-upload-icon">📎</div>
+                    <div class="pdf-upload-text">点击上传PDF文献</div>
+                    <div class="pdf-upload-hint">支持对文献内容提问</div>
+                    <input type="file" id="pdfFileInput" accept=".pdf" style="display: none;" onchange="handlePdfUpload(event)">
+                </div>
+                <div class="pdf-file-info" id="pdfFileInfo">
+                    <div class="pdf-file-name" id="pdfFileName">
+                        <span>📄</span>
+                        <span id="fileName"></span>
+                    </div>
+                    <div class="pdf-mode-toggle active">
+                        <label class="pdf-mode-label">
+                            <input type="checkbox" id="usePdfMode" checked>
+                            <span>结合文献回答问题</span>
+                        </label>
+                    </div>
+                    <button class="pdf-remove-btn" onclick="removePdf()">
+                        🗑️ 移除文献
+                    </button>
+                </div>
+            </div>
+            
+            <div class="chat-history" id="chatHistory">
+                <!-- 历史记录将在这里动态添加 -->
+            </div>
+        </div>
+
+        <!-- 右侧主聊天区 -->
+        <div class="main-chat">
+            <!-- 头部 -->
+            <div class="chat-header">
+                <div style="display: flex; align-items: center;">
+                    <div class="ai-icon">✨</div>
+                    <div class="header-title">
+                        <h1>磷酸铁锂知识图谱 AI</h1>
+                        <div class="kb-info" id="kbInfo">正在连接知识库...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 消息区域 -->
+            <div class="messages-area" id="messagesArea">
+                <div class="empty-state">
+                    <div class="empty-icon">🔋</div>
+                    <div class="empty-title">你好！我是磷酸铁锂材料专家</div>
+                    <div class="empty-desc">请提出您的问题，我将基于专业知识库为您解答</div>
+                </div>
+            </div>
+
+            <!-- 输入区域 -->
+            <div class="input-area">
+                <div class="input-wrapper">
+                    <textarea 
+                        id="messageInput" 
+                        placeholder="问我任何关于磷酸铁锂的问题..."
+                        rows="1"
+                        onkeydown="if(event.keyCode==13 && !event.shiftKey) { event.preventDefault(); sendMessage(); }"
+                        oninput="autoResize(this)"
+                    ></textarea>
+                    <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                        ➤
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentChatId = null;
+        let chats = [];
+        let currentPdfFile = null;  // 当前上传的PDF文件信息
+
+        // 页面加载
+        window.onload = function() {
+            // 检查marked.js是否加载成功
+            if (typeof marked === 'undefined') {
+                console.warn('marked.js未加载，Markdown渲染可能受限');
+            } else {
+                console.log('✅ marked.js加载成功，Markdown渲染已启用');
+            }
+            
+            fetchKbInfo();
+            loadChats();
+            createNewChat();
+            
+            // 📱 移动端侧边栏切换
+            initMobileSidebar();
+        };
+        
+        // 📱 移动端侧边栏功能
+        function initMobileSidebar() {
+            const chatHeader = document.querySelector('.chat-header');
+            const sidebar = document.querySelector('.sidebar');
+            const mainChat = document.querySelector('.main-chat');
+            
+            // 点击头部的汉堡菜单
+            chatHeader.addEventListener('click', function(e) {
+                if (window.innerWidth <= 768 && e.target === chatHeader) {
+                    sidebar.classList.toggle('open');
+                }
+            });
+            
+            // 点击主聊天区域关闭侧边栏
+            mainChat.addEventListener('click', function(e) {
+                if (window.innerWidth <= 768 && sidebar.classList.contains('open')) {
+                    if (!sidebar.contains(e.target)) {
+                        sidebar.classList.remove('open');
+                    }
+                }
+            });
+            
+            // 窗口大小改变时自动关闭侧边栏
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768) {
+                    sidebar.classList.remove('open');
+                }
+            });
+        }
+
+        // PDF上传处理
+        async function handlePdfUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (file.type !== 'application/pdf') {
+                alert('请上传PDF文件！');
+                return;
+            }
+
+            // 显示上传中状态
+            const uploadBox = document.getElementById('pdfUploadBox');
+            uploadBox.innerHTML = '<div class="pdf-upload-icon">⏳</div><div class="pdf-upload-text">上传中...</div>';
+
+            // 创建FormData
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const response = await fetch('/upload_pdf', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    alert('上传失败：' + data.error);
+                    resetPdfUploadBox();
+                    return;
+                }
+
+                // 保存PDF信息
+                currentPdfFile = {
+                    name: file.name,
+                    path: data.filepath,
+                    uploadTime: new Date().toLocaleString()
+                };
+
+                // 更新UI
+                document.getElementById('fileName').textContent = file.name;
+                document.getElementById('pdfFileInfo').classList.add('active');
+                uploadBox.classList.add('has-file');
+                uploadBox.innerHTML = '<div class="pdf-upload-icon">✅</div><div class="pdf-upload-text">文献已上传</div><div class="pdf-upload-hint">' + file.name + '</div>';
+
+                // 在当前对话中添加系统消息
+                if (currentChatId) {
+                    const chat = chats.find(c => c.id === currentChatId);
+                    if (chat) {
+                        chat.messages.push({
+                            type: 'system',
+                            content: `📄 已上传文献：${file.name}`
+                        });
+                        saveChats();
+                        renderMessages();
+                    }
+                }
+
+            } catch (error) {
+                console.error('上传失败:', error);
+                alert('上传失败，请重试');
+                resetPdfUploadBox();
+            }
+        }
+
+        // 移除PDF
+        async function removePdf() {
+            if (!confirm('确定要移除当前文献吗？')) {
+                return;
+            }
+
+            // 调用后端接口清除PDF
+            try {
+                await fetch('/clear_pdf', {
+                    method: 'POST'
+                });
+            } catch (error) {
+                console.error('清除PDF失败:', error);
+            }
+
+            currentPdfFile = null;
+            resetPdfUploadBox();
+            document.getElementById('pdfFileInfo').classList.remove('active');
+            document.getElementById('pdfFileInput').value = '';
+
+            // 在当前对话中添加系统消息
+            if (currentChatId) {
+                const chat = chats.find(c => c.id === currentChatId);
+                if (chat) {
+                    chat.messages.push({
+                        type: 'system',
+                        content: '📄 已移除文献'
+                    });
+                    saveChats();
+                    renderMessages();
+                }
+            }
+        }
+
+        // 重置上传框
+        function resetPdfUploadBox() {
+            const uploadBox = document.getElementById('pdfUploadBox');
+            uploadBox.classList.remove('has-file');
+            uploadBox.innerHTML = '<div class="pdf-upload-icon">📎</div><div class="pdf-upload-text">点击上传PDF文献</div><div class="pdf-upload-hint">支持对文献内容提问</div><input type="file" id="pdfFileInput" accept=".pdf" style="display: none;" onchange="handlePdfUpload(event)">';
+        }
+
+        // 获取知识库信息
+        function fetchKbInfo() {
+            fetch('http://localhost:8000/api/kb_info')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('kbInfo').textContent = 
+                            `知识库：${data.kb_size} 条 | Neo4j: ${data.source_stats.neo4j} | ChromaDB: ${data.source_stats.chromadb}`;
+                    }
+                })
+                .catch(() => {
+                    document.getElementById('kbInfo').textContent = '知识库连接失败';
+                });
+        }
+
+        // 自动调整textarea高度
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+        }
+
+        // 创建新对话
+        async function createNewChat() {
+            // 清除PDF文件（前端和后端）
+            if (currentPdfFile) {
+                try {
+                    await fetch('/clear_pdf', {
+                        method: 'POST'
+                    });
+                } catch (error) {
+                    console.error('清除PDF失败:', error);
+                }
+                currentPdfFile = null;
+                resetPdfUploadBox();
+                document.getElementById('pdfFileInfo').classList.remove('active');
+                document.getElementById('pdfFileInput').value = '';
+            }
+
+            const chat = {
+                id: Date.now().toString(),
+                title: '新对话',
+                messages: [],
+                createdAt: new Date()
+            };
+            chats.unshift(chat);
+            currentChatId = chat.id;
+            saveChats();
+            renderChats();
+            renderMessages();
+        }
+
+        // 使用建议
+        function useSuggestion(text) {
+            document.getElementById('messageInput').value = text;
+            document.getElementById('messageInput').focus();
+        }
+
+        // 发送消息
+        function sendMessage() {
+            // ⭐ 如果已有流式输出在进行，先中断
+            if (isStreaming && currentStreamReader) {
+                stopStreaming();
+                // 等待一小段时间，确保中断完成
+                setTimeout(() => {
+                    sendMessage();
+                }, 100);
+                return;
+            }
+            
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (!message) {
+                console.log('❌ 消息为空');
+                return;
+            }
+
+            const chat = chats.find(c => c.id === currentChatId);
+            if (!chat) {
+                console.error('❌ 没有激活的对话，currentChatId:', currentChatId);
+                alert('请先创建新对话！');
+                createNewChat();
+                return;
+            }
+            
+            console.log('✅ 准备发送消息:', message);
+
+            // 添加用户消息
+            chat.messages.push({
+                role: 'user',
+                content: message,
+                timestamp: new Date()
+            });
+
+            // 更新标题
+            if (chat.messages.length === 1) {
+                chat.title = message.substring(0, 30) + (message.length > 30 ? '...' : '');
+            }
+
+            input.value = '';
+            input.style.height = 'auto';
+            saveChats();
+            renderChats();
+            renderMessages();
+
+            // 禁用发送按钮（稍后会在流式输出时改为停止按钮）
+            const sendBtn = document.getElementById('sendBtn');
+            sendBtn.disabled = true;
+
+            // 🔄 获取对话历史（最近5轮对话）
+            const chatHistory = chat.messages.slice(-10).map(msg => ({
+                role: msg.role,
+                content: msg.content
+            }));
+            
+            const usePdf = document.getElementById('usePdfMode').checked && currentPdfFile;
+            
+            // ⭐ 默认使用流式输出模式（更好的用户体验）
+            console.log('💬 使用流式输出模式');
+            sendMessageStream(message, chatHistory, usePdf, chat, sendBtn);
+        }
+
+        // 全局变量：保存当前的流式读取器，用于中断
+        let currentStreamReader = null;
+        let isStreaming = false;
+
+        // 中断当前流式输出
+        function stopStreaming() {
+            if (currentStreamReader && isStreaming) {
+                console.log('🛑 用户中断对话');
+                currentStreamReader.cancel();
+                currentStreamReader = null;
+                isStreaming = false;
+                
+                // 恢复发送按钮
+                const sendBtn = document.getElementById('sendBtn');
+                sendBtn.disabled = false;
+                sendBtn.innerHTML = '➤';
+                sendBtn.onclick = sendMessage;
+                
+                // 标记当前流式消息为已中断
+                const chat = chats.find(c => c.id === currentChatId);
+                if (chat && chat.messages.length > 0) {
+                    const lastMessage = chat.messages[chat.messages.length - 1];
+                    if (lastMessage.streaming) {
+                        lastMessage.streaming = false;
+                        if (lastMessage.content) {
+                            lastMessage.content += '\n\n[对话已中断]';
+                        } else {
+                            lastMessage.content = '[对话已中断]';
+                        }
+                        saveChats();
+                        renderMessages();
+                    }
+                }
+            }
+        }
+
+        // 流式模式发送消息
+        function sendMessageStream(message, chatHistory, usePdf, chat, sendBtn) {
+            console.log('💬 启动流式输出...');
+            
+            // ⭐ 如果已有流式输出在进行，先中断
+            if (isStreaming && currentStreamReader) {
+                stopStreaming();
+            }
+            
+            // 标记为流式输出中
+            isStreaming = true;
+            
+            // 更新发送按钮为"停止"按钮
+            sendBtn.disabled = false;
+            sendBtn.innerHTML = '⏹';
+            sendBtn.onclick = stopStreaming;
+            sendBtn.title = '停止生成';
+            
+            // 创建一个空的bot消息，用于逐步填充
+            const botMessage = {
+                role: 'bot',
+                content: '',
+                references: [],
+                queryMode: '',
+                timestamp: new Date(),
+                streaming: true,  // 标记为流式消息
+                messageId: 'streaming-' + Date.now()  // 添加唯一ID
+            };
+            chat.messages.push(botMessage);
+            
+            // 渲染消息（显示空的bot消息框）
+            saveChats();
+            renderMessages();
+            
+            // 获取刚创建的消息元素的内容区域
+            const messageArea = document.getElementById('messagesArea');
+            const streamingElement = messageArea.querySelector('.message-bot:last-child .message-content');
+            
+            // 🎨 显示加载动画
+            if (streamingElement) {
+                streamingElement.innerHTML = `
+                    <div class="loading-animation">
+                        <div class="loading-spinner">
+                            <div class="loading-dot"></div>
+                            <div class="loading-dot"></div>
+                            <div class="loading-dot"></div>
+                        </div>
+                        <span class="loading-text">正在思考中...</span>
+                    </div>
+                `;
+            }
+            
+            // 构建请求体
+            const requestBody = {
+                question: message,
+                use_pdf: usePdf,
+                pdf_path: usePdf ? currentPdfFile.path : null,
+                chat_history: chatHistory
+            };
+            
+            // 使用fetch发送POST请求到流式API
+            fetch('http://localhost:8000/api/ask_stream', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(requestBody)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('网络响应错误');
+                }
+                
+                const reader = response.body.getReader();
+                currentStreamReader = reader;  // ⭐ 保存reader引用，用于中断
+                const decoder = new TextDecoder();
+                let buffer = '';
+                
+                function readStream() {
+                    // ⭐ 检查是否已被中断
+                    if (!isStreaming) {
+                        console.log('🛑 流式输出已中断');
+                        return;
+                    }
+                    
+                    reader.read().then(({ done, value }) => {
+                        // ⭐ 再次检查是否已被中断
+                        if (!isStreaming) {
+                            console.log('🛑 流式输出已中断（读取中）');
+                            return;
+                        }
+                        
+                        if (done) {
+                            console.log('✅ 流式输出完成');
+                            botMessage.streaming = false;
+                            isStreaming = false;
+                            currentStreamReader = null;
+                            
+                            // 恢复发送按钮
+                            sendBtn.disabled = false;
+                            sendBtn.innerHTML = '➤';
+                            sendBtn.onclick = sendMessage;
+                            sendBtn.title = '发送';
+                            
+                            saveChats();
+                            // ⭐ 流结束时渲染一次，确保格式正确
+                            renderMessages();
+                            return;
+                        }
+                        
+                        // 解码数据
+                        buffer += decoder.decode(value, { stream: true });
+                        
+                        // 处理SSE格式的数据（以\n\n分隔）
+                        const lines = buffer.split('\n\n');
+                        buffer = lines.pop() || '';  // 保留不完整的行
+                        
+                        lines.forEach(line => {
+                            if (line.startsWith('data: ')) {
+                                const jsonData = line.substring(6);
+                                try {
+                                    const data = JSON.parse(jsonData);
+                                    
+                                    if (data.type === 'start') {
+                                        console.log('🚀 开始生成答案');
+                                        // 🎨 更新加载动画文本
+                                        if (streamingElement) {
+                                            streamingElement.innerHTML = `
+                                                <div class="loading-animation">
+                                                    <div class="loading-spinner">
+                                                        <div class="loading-dot"></div>
+                                                        <div class="loading-dot"></div>
+                                                        <div class="loading-dot"></div>
+                                                    </div>
+                                                    <span class="loading-text">🔍 正在检索知识库...</span>
+                                                </div>
+                                            `;
+                                        }
+                                    } else if (data.type === 'thinking') {
+                                        // 显示思考过程（可选）
+                                        console.log('💭', data.content);
+                                    } else if (data.type === 'metadata') {
+                                        botMessage.queryMode = data.query_mode;
+                                        console.log('📊 查询模式:', data.query_mode);
+                                        
+                                        // 🎨 更新加载动画文本 - 已找到数据，准备生成
+                                        if (streamingElement) {
+                                            streamingElement.innerHTML = `
+                                                <div class="loading-animation">
+                                                    <div class="loading-spinner">
+                                                        <div class="loading-dot"></div>
+                                                        <div class="loading-dot"></div>
+                                                        <div class="loading-dot"></div>
+                                                    </div>
+                                                    <span class="loading-text">✨ 正在生成答案...</span>
+                                                </div>
+                                            `;
+                                        }
+                                    } else if (data.type === 'content') {
+                                        // ⭐ 只更新内容，不重新渲染整个页面
+                                        botMessage.content += data.content;
+                                        
+                                        // 直接更新DOM，避免闪烁
+                                        if (streamingElement) {
+                                            const modeBadge = botMessage.queryMode ? 
+                                                `<div class="query-mode-badge">${botMessage.queryMode}</div>` : '';
+                                            streamingElement.innerHTML = modeBadge + 
+                                                formatAnswer(botMessage.content);
+                                            
+                                            // 🎯 智能滚动：只有用户在底部时才自动滚动
+                                            const isNearBottom = messageArea.scrollHeight - messageArea.scrollTop - messageArea.clientHeight < 100;
+                                            if (isNearBottom) {
+                                                messageArea.scrollTop = messageArea.scrollHeight;
+                                            }
+                                        }
+                                    } else if (data.type === 'done') {
+                                        console.log('✅ 接收完成');
+                                        botMessage.references = data.references || [];
+                                        botMessage.referenceSnippets = data.reference_snippets || [];
+                                        // ⭐ 如果后端返回了带DOI的完整答案，用它替换流式内容
+                                        if (data.final_answer) {
+                                            botMessage.content = data.final_answer;
+                                            console.log('✅ 使用程序化插入DOI后的答案');
+                                        }
+                                        botMessage.streaming = false;
+                                        isStreaming = false;
+                                        currentStreamReader = null;
+                                        
+                                        // 恢复发送按钮
+                                        sendBtn.disabled = false;
+                                        sendBtn.innerHTML = '➤';
+                                        sendBtn.onclick = sendMessage;
+                                        sendBtn.title = '发送';
+                                        
+                                        saveChats();
+                                        // ⭐ 只在最后完成时渲染一次，显示完整内容和引用
+                                        renderMessages();
+                                    } else if (data.type === 'error') {
+                                        console.error('❌ 错误:', data.error);
+                                        botMessage.content = '抱歉，出现错误：' + data.error;
+                                        botMessage.streaming = false;
+                                        isStreaming = false;
+                                        currentStreamReader = null;
+                                        
+                                        // 恢复发送按钮
+                                        sendBtn.disabled = false;
+                                        sendBtn.innerHTML = '➤';
+                                        sendBtn.onclick = sendMessage;
+                                        sendBtn.title = '发送';
+                                        
+                                        saveChats();
+                                        renderMessages();
+                                    }
+                                } catch (e) {
+                                    console.error('解析JSON失败:', e, jsonData);
+                                }
+                            }
+                        });
+                        
+                        // 继续读取（如果未被中断）
+                        if (isStreaming) {
+                            readStream();
+                        }
+                    }).catch(error => {
+                        // ⭐ 如果是中断导致的错误，不显示错误信息
+                        if (error.name === 'AbortError' || !isStreaming) {
+                            console.log('🛑 流式输出已中断');
+                            return;
+                        }
+                        
+                        console.error('❌ 流式读取错误:', error);
+                        botMessage.content = '抱歉，连接中断：' + error.message;
+                        botMessage.streaming = false;
+                        isStreaming = false;
+                        currentStreamReader = null;
+                        
+                        // 恢复发送按钮
+                        sendBtn.disabled = false;
+                        sendBtn.innerHTML = '➤';
+                        sendBtn.onclick = sendMessage;
+                        sendBtn.title = '发送';
+                        
+                        saveChats();
+                        renderMessages();
+                    });
+                }
+                
+                readStream();
+            })
+            .catch(error => {
+                console.error('❌ 请求失败:', error);
+                botMessage.content = '抱歉，请求失败：' + error.message;
+                botMessage.streaming = false;
+                isStreaming = false;
+                currentStreamReader = null;
+                
+                // 恢复发送按钮
+                sendBtn.disabled = false;
+                sendBtn.innerHTML = '➤';
+                sendBtn.onclick = sendMessage;
+                sendBtn.title = '发送';
+                
+                saveChats();
+                renderMessages();
+            });
+        }
+
+        // 渲染消息
+        function renderMessages() {
+            const chat = chats.find(c => c.id === currentChatId);
+            const area = document.getElementById('messagesArea');
+            
+            if (!chat || chat.messages.length === 0) {
+                area.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🔋</div>
+                        <div class="empty-title">你好！我是磷酸铁锂材料专家</div>
+                        <div class="empty-desc">请提出您的问题，我将基于专业知识库为您解答</div>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            chat.messages.forEach(msg => {
+                if (msg.type === 'system') {
+                    // 系统消息（如PDF上传通知）
+                    html += `
+                        <div class="message message-system" style="text-align: center; color: #6b7280; font-size: 13px; margin: 15px 0;">
+                            ${escapeHtml(msg.content)}
+                        </div>
+                    `;
+                } else if (msg.role === 'user') {
+                    html += `
+                        <div class="message message-user">
+                            <div class="message-content">${escapeHtml(msg.content)}</div>
+                        </div>
+                    `;
+                } else {
+                    // 添加数据统计信息
+                    let dataStats = '';
+                    if (msg.metadata && msg.metadata.result_count > 0) {
+                        dataStats = `<div style="background: #f0f9ff; border-left: 3px solid #3b82f6; padding: 8px 12px; margin: 10px 0; border-radius: 6px; font-size: 13px; color: #1e40af;">
+                            📊 查询统计：共找到 <strong>${msg.metadata.result_count}</strong> 条数据
+                            ${msg.metadata.phase1_count > 0 ? `（第一阶段筛选：${msg.metadata.phase1_count}条）` : ''}
+                        </div>`;
+                    }
+
+                    html += `
+                        <div class="message message-bot">
+                            <div class="bot-avatar">✨</div>
+                            <div class="message-content">
+                                ${msg.queryMode ? `<div class="query-mode-badge">${msg.queryMode}</div>` : ''}
+                                ${dataStats}
+                                ${formatAnswer(msg.content, msg.referenceSnippets)}
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            area.innerHTML = html;
+            area.scrollTop = area.scrollHeight;
+        }
+
+        // 格式化答案 - 使用marked.js专业渲染Markdown (带完整降级方案)
+        // referenceSnippets 可选，用于在 DOI 旁显示摘录小圆点
+        function formatAnswer(text, referenceSnippets) {
+            // 预处理：清理LaTeX格式并将DOI转为可点击链接
+            text = cleanLaTeXFormulas(text);
+            text = linkifyDOI(text, referenceSnippets);
+            
+            // 方案1: 尝试使用marked.js (如果可用)
+            if (typeof marked !== 'undefined') {
+                try {
+                    // 配置marked.js选项
+                    marked.setOptions({
+                        breaks: true,        // 支持GitHub风格的换行
+                        gfm: true,          // 启用GitHub Flavored Markdown
+                        tables: true,       // 支持表格
+                        smartLists: true,   // 智能列表
+                        smartypants: true,  // 智能标点
+                    });
+                    
+                    // 使用marked渲染Markdown
+                    let html = marked.parse(text);
+                    
+                    // 后处理：确保标题格式正确
+                    html = fixMarkdownRendering(html);
+                    
+                    // 为表格添加自定义class（保持原有样式）
+                    html = html.replace(/<table>/g, '<table class="md-table">');
+                    
+                    return html;
+                } catch (error) {
+                    console.error('marked.js渲染失败，使用备用方案:', error);
+                }
+            } else {
+                console.warn('⚠️ marked.js未加载，使用内置Markdown解析器');
+            }
+            
+            // 方案2: 使用内置的简易Markdown解析器（降级方案）
+            return parseMarkdownFallback(text);
+        }
+        
+        // 将(doi=...)转为可点击链接，保持原有括号位置
+        // 如果有 referenceSnippets 会在旁边加一个小圆点，悬停显示摘录
+        function linkifyDOI(text, referenceSnippets) {
+            if (!text) return text;
+            const doiRegex = /\(doi=([^\s\)]+)\)/gi;
+            return text.replace(doiRegex, (match, doi) => {
+                const safeDoi = doi.replace(/"/g, '');
+                const openFn = `openPdfReader('${safeDoi}'); return false;`;
+                // 查找该 DOI 对应的摘录
+                let snippetDot = '';
+                if (referenceSnippets && referenceSnippets.length > 0) {
+                    const found = referenceSnippets.find(s => s.doi === safeDoi);
+                    if (found && found.snippet) {
+                        // 截取前300字符，转义HTML
+                        const shortSnippet = found.snippet.length > 300 ? found.snippet.substring(0, 300) + '...' : found.snippet;
+                        const escaped = shortSnippet.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/\n/g, ' ');
+                        snippetDot = ` <span class="snippet-dot" data-snippet="${escaped}">●</span>`;
+                    }
+                }
+                return `(<a href="#" onclick="${openFn}">doi=${safeDoi}</a> · <a href="#" onclick="${openFn}">查看原文</a>${snippetDot})`;
+            });
+        }
+        
+        // 清理LaTeX公式，转换为纯文本格式
+        function cleanLaTeXFormulas(text) {
+            // 移除块级LaTeX公式 \[...\] 和 $$...$$
+            text = text.replace(/\\\[[\s\S]*?\\\]/g, function(match) {
+                // 提取公式内容，清理LaTeX命令
+                let formula = match.replace(/\\\[|\]/g, '').trim();
+                formula = cleanLaTeXCommands(formula);
+                return formula;
+            });
+            text = text.replace(/\$\$[\s\S]*?\$\$/g, function(match) {
+                let formula = match.replace(/\$\$/g, '').trim();
+                formula = cleanLaTeXCommands(formula);
+                return formula;
+            });
+            
+            // 移除行内LaTeX公式 \(...\) 和 $...$
+            text = text.replace(/\\\([\s\S]*?\\\)/g, function(match) {
+                let formula = match.replace(/\\\(|\\\)/g, '').trim();
+                formula = cleanLaTeXCommands(formula);
+                return formula;
+            });
+            text = text.replace(/\$[^$]+\$/g, function(match) {
+                let formula = match.replace(/\$/g, '').trim();
+                formula = cleanLaTeXCommands(formula);
+                return formula;
+            });
+            
+            return text;
+        }
+        
+        // 清理LaTeX命令，转换为纯文本
+        function cleanLaTeXCommands(text) {
+            // 处理 \text{...} -> 提取文本内容
+            text = text.replace(/\\text\{([^}]+)\}/g, '$1');
+            
+            // 处理下标 _ -> Unicode下标或普通文本
+            text = text.replace(/_(\d+)/g, function(match, num) {
+                const subscripts = {'0': '₀', '1': '₁', '2': '₂', '3': '₃', '4': '₄', '5': '₅', '6': '₆', '7': '₇', '8': '₈', '9': '₉'};
+                return num.split('').map(d => subscripts[d] || d).join('');
+            });
+            
+            // 处理上标 ^ -> Unicode上标或普通文本
+            text = text.replace(/\^(\d+)/g, function(match, num) {
+                const superscripts = {'0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹'};
+                return num.split('').map(d => superscripts[d] || d).join('');
+            });
+            
+            // 处理箭头命令
+            text = text.replace(/\\rightarrow/g, '→');
+            text = text.replace(/\\leftarrow/g, '←');
+            text = text.replace(/\\leftrightarrow/g, '↔');
+            text = text.replace(/\\Rightarrow/g, '⇒');
+            text = text.replace(/\\Leftarrow/g, '⇐');
+            text = text.replace(/\\Leftrightarrow/g, '⇔');
+            
+            // 移除其他LaTeX命令（保留内容）
+            text = text.replace(/\\[a-zA-Z]+\{([^}]+)\}/g, '$1');
+            text = text.replace(/\\[a-zA-Z]+/g, '');
+            
+            // 清理多余的空格
+            text = text.replace(/\s+/g, ' ').trim();
+            
+            return text;
+        }
+        
+        // 修复Markdown渲染问题（标题、段落等）
+        function fixMarkdownRendering(html) {
+            // 确保标题前后有适当的间距
+            html = html.replace(/<\/h([1-6])>/g, '</h$1>\n');
+            html = html.replace(/<h([1-6])[^>]*>/g, '\n<h$1>');
+            
+            // 确保列表前后有适当的间距
+            html = html.replace(/<\/ul>/g, '</ul>\n');
+            html = html.replace(/<\/ol>/g, '</ol>\n');
+            html = html.replace(/<ul>/g, '\n<ul>');
+            html = html.replace(/<ol>/g, '\n<ol>');
+            
+            // 确保表格前后有适当的间距
+            html = html.replace(/<\/table>/g, '</table>\n');
+            html = html.replace(/<table[^>]*>/g, '\n<table>');
+            
+            // 清理多余的空行（最多保留两个连续空行）
+            html = html.replace(/\n{3,}/g, '\n\n');
+            
+            return html.trim();
+        }
+        
+        // 备用Markdown解析器 - 支持基本语法
+        function parseMarkdownFallback(text) {
+            let html = text;
+            
+            // 1. 转义HTML特殊字符（除了已有的标签）
+            html = html.replace(/&/g, '&amp;')
+                       .replace(/</g, '&lt;')
+                       .replace(/>/g, '&gt;');
+            
+            // 2. 处理代码块 (```)
+            html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>');
+            
+            // 3. 处理内联代码 (`)
+            html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+            
+            // 4. 处理标题
+            html = html.replace(/^### (.*$)/gm, '<h3>$1</h3>');
+            html = html.replace(/^## (.*$)/gm, '<h2>$1</h2>');
+            html = html.replace(/^# (.*$)/gm, '<h1>$1</h1>');
+            
+            // 5. 处理加粗 (**)
+            html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            
+            // 6. 处理斜体 (*)
+            html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+            
+            // 7. 处理链接 [text](url)
+            html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+            
+            // 8. 处理表格
+            html = parseMarkdownTable(html);
+            
+            // 9. 处理无序列表
+            html = html.replace(/^\s*[-*+]\s+(.*)$/gm, function(match, content) {
+                return '<li>' + content + '</li>';
+            });
+            html = html.replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>');
+            
+            // 10. 处理有序列表
+            html = html.replace(/^\s*\d+\.\s+(.*)$/gm, function(match, content) {
+                return '<li>' + content + '</li>';
+            });
+            html = html.replace(/(<li>.*<\/li>\n?)+/g, function(match) {
+                // 只替换还没被ul包裹的li
+                if (!match.includes('<ul>')) {
+                    return '<ol>' + match + '</ol>';
+                }
+                return match;
+            });
+            
+            // 11. 处理水平线
+            html = html.replace(/^---+$/gm, '<hr>');
+            html = html.replace(/^\*\*\*+$/gm, '<hr>');
+            
+            // 12. 处理引用
+            html = html.replace(/^&gt;\s*(.*)$/gm, '<blockquote>$1</blockquote>');
+            
+            // 13. 处理段落和换行
+            html = html.replace(/\n\n/g, '</p><p>');
+            html = html.replace(/\n/g, '<br>');
+            html = '<p>' + html + '</p>';
+            
+            // 14. 清理多余的空段落
+            html = html.replace(/<p><\/p>/g, '');
+            html = html.replace(/<p>\s*<br>\s*<\/p>/g, '');
+            
+            return html;
+        }
+        
+        // 解析Markdown表格
+        function parseMarkdownTable(text) {
+            const lines = text.split('\n');
+            let html = '';
+            let inTable = false;
+            let tableHtml = '';
+            let isHeader = true;
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                
+                // 检测表格行（包含 | 分隔符）
+                if (line.includes('|')) {
+                    const nextLine = lines[i + 1] ? lines[i + 1].trim() : '';
+                    
+                    // 跳过分隔行（如 |---|---|）
+                    if (line.match(/^\|?\s*[-:]+\s*\|/)) {
+                        continue;
+                    }
+                    
+                    if (!inTable) {
+                        inTable = true;
+                        tableHtml = '<table class="md-table">';
+                        isHeader = true;
+                    }
+                    
+                    // 解析表格行
+                    const cells = line.split('|').map(cell => cell.trim()).filter(cell => cell);
+                    
+                    if (isHeader) {
+                        tableHtml += '<thead><tr>';
+                        cells.forEach(cell => {
+                            tableHtml += '<th>' + cell + '</th>';
+                        });
+                        tableHtml += '</tr></thead><tbody>';
+                        isHeader = false;
+                    } else {
+                        tableHtml += '<tr>';
+                        cells.forEach(cell => {
+                            tableHtml += '<td>' + cell + '</td>';
+                        });
+                        tableHtml += '</tr>';
+                    }
+                } else if (inTable) {
+                    // 表格结束
+                    tableHtml += '</tbody></table>';
+                    html += tableHtml;
+                    tableHtml = '';
+                    inTable = false;
+                    html += line + '\n';
+                } else {
+                    html += line + '\n';
+                }
+            }
+            
+            // 如果最后还在表格中，关闭表格
+            if (inTable) {
+                tableHtml += '</tbody></table>';
+                html += tableHtml;
+            }
+            
+            return html;
+        }
+
+        // HTML转义
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // 显示加载消息 - 带思考步骤
+        function showLoadingMessage() {
+            const area = document.getElementById('messagesArea');
+            const loading = document.createElement('div');
+            loading.className = 'message message-bot';
+            loading.id = 'loadingMessage';
+            loading.innerHTML = `
+                <div class="bot-avatar">✨</div>
+                <div class="loading-message">
+                    <div class="thinking-header">
+                        <span class="thinking-text">思考中</span>
+                        <div class="loading-dots">
+                            <div class="loading-dot"></div>
+                            <div class="loading-dot"></div>
+                            <div class="loading-dot"></div>
+                        </div>
+                    </div>
+                    <div class="thinking-steps">
+                        <div class="thinking-step" data-step="0">
+                            <span class="step-icon"></span>
+                            <span>分析问题类型</span>
+                        </div>
+                        <div class="thinking-step" data-step="1">
+                            <span class="step-icon"></span>
+                            <span>查询知识库</span>
+                        </div>
+                        <div class="thinking-step" data-step="2">
+                            <span class="step-icon"></span>
+                            <span>检索相关文献</span>
+                        </div>
+                        <div class="thinking-step" data-step="3">
+                            <span class="step-icon"></span>
+                            <span>整合分析数据</span>
+                        </div>
+                        <div class="thinking-step" data-step="4">
+                            <span class="step-icon"></span>
+                            <span>生成专业答案</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            area.appendChild(loading);
+            area.scrollTop = area.scrollHeight;
+            
+            // 启动思考步骤动画
+            startThinkingAnimation();
+        }
+        
+        // 思考步骤动画 - 智能渐进式
+        let thinkingTimers = [];
+        function startThinkingAnimation() {
+            const steps = document.querySelectorAll('.thinking-step');
+            
+            // 定义每个步骤的延迟时间（累计秒数）
+            const stepTimings = [
+                { delay: 0, duration: 1500 },      // 步骤1: 立即开始，1.5秒后完成
+                { delay: 1500, duration: 2000 },   // 步骤2: 1.5秒后开始，2秒完成
+                { delay: 3500, duration: 2500 },   // 步骤3: 3.5秒后开始，2.5秒完成
+                { delay: 6000, duration: 3000 },   // 步骤4: 6秒后开始，3秒完成
+                { delay: 9000, duration: 0 }       // 步骤5: 9秒后开始，持续到结束
+            ];
+            
+            steps.forEach((step, index) => {
+                const timing = stepTimings[index];
+                
+                // 延迟后激活步骤
+                const activateTimer = setTimeout(() => {
+                    step.classList.add('active');
+                    
+                    // 如果有持续时间，设置完成定时器
+                    if (timing.duration > 0) {
+                        const completeTimer = setTimeout(() => {
+                            step.classList.remove('active');
+                            step.classList.add('completed');
+                        }, timing.duration);
+                        thinkingTimers.push(completeTimer);
+                    }
+                    // 否则保持活动状态直到答案返回
+                }, timing.delay);
+                
+                thinkingTimers.push(activateTimer);
+            });
+        }
+
+        // 移除加载消息
+        function removeLoadingMessage() {
+            // 清除所有思考动画定时器
+            thinkingTimers.forEach(timer => clearTimeout(timer));
+            thinkingTimers = [];
+            
+            const loading = document.getElementById('loadingMessage');
+            if (loading) loading.remove();
+        }
+
+        // 渲染历史记录
+        function renderChats() {
+            const container = document.getElementById('chatHistory');
+            
+            if (chats.length === 0) {
+                container.innerHTML = `
+                    <div style="padding: 20px; text-align: center; color: #9ca3af;">
+                        <div style="font-size: 32px; margin-bottom: 10px;">💬</div>
+                        <div>暂无对话记录</div>
+                        <div style="font-size: 12px; margin-top: 5px;">点击"新建对话"开始</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = chats.map(chat => `
+                <div class="history-item ${chat.id === currentChatId ? 'active' : ''}" 
+                     onclick="switchChat('${chat.id}')">
+                    <div style="flex: 1;">
+                        <div class="history-title">${chat.title}</div>
+                        <div class="history-time">${formatTime(chat.createdAt)}</div>
+                    </div>
+                    <button class="history-delete" onclick="deleteChat(event, '${chat.id}')" title="删除对话">
+                        🗑️
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // 切换对话
+        function switchChat(chatId) {
+            currentChatId = chatId;
+            renderChats();
+            renderMessages();
+        }
+
+        // 删除对话
+        function deleteChat(event, chatId) {
+            // 阻止事件冒泡，避免触发切换对话
+            event.stopPropagation();
+            
+            // 确认删除
+            if (!confirm('确定要删除这个对话吗？删除后无法恢复。')) {
+                return;
+            }
+            
+            // 查找要删除的对话索引
+            const chatIndex = chats.findIndex(c => c.id === chatId);
+            if (chatIndex === -1) {
+                return;
+            }
+            
+            // 如果删除的是当前对话
+            if (chatId === currentChatId) {
+                // 删除对话
+                chats.splice(chatIndex, 1);
+                
+                // 如果还有其他对话，切换到第一个
+                if (chats.length > 0) {
+                    currentChatId = chats[0].id;
+                } else {
+                    // 没有对话了，清空当前ID
+                    currentChatId = null;
+                }
+            } else {
+                // 删除非当前对话
+                chats.splice(chatIndex, 1);
+            }
+            
+            // 保存并更新UI
+            saveChats();
+            renderChats();
+            renderMessages();
+        }
+
+        // 清空所有对话
+        function clearAllChats() {
+            if (chats.length === 0) {
+                return;
+            }
+            
+            // 确认清空
+            if (!confirm(`确定要清空所有 ${chats.length} 个对话吗？此操作无法恢复！`)) {
+                return;
+            }
+            
+            // 清空数组
+            chats = [];
+            currentChatId = null;
+            
+            // 保存并更新UI
+            saveChats();
+            renderChats();
+            renderMessages();
+        }
+
+        // 格式化时间
+        function formatTime(date) {
+            const d = new Date(date);
+            const now = new Date();
+            const diff = now - d;
+            
+            if (diff < 60000) return '刚刚';
+            if (diff < 3600000) return Math.floor(diff / 60000) + '分钟前';
+            if (diff < 86400000) return Math.floor(diff / 3600000) + '小时前';
+            return d.toLocaleDateString();
+        }
+
+        // 保存到localStorage
+        function saveChats() {
+            localStorage.setItem('lfp_chats', JSON.stringify(chats));
+        }
+
+        // 加载localStorage
+        function loadChats() {
+            const saved = localStorage.getItem('lfp_chats');
+            if (saved) {
+                chats = JSON.parse(saved);
+            }
+        }
+
+        // 异步检查并添加"查看原文"链接
+        async function addViewPdfLinks(references) {
+            if (!references || references.length === 0) return;
+            
+            for (const doi of references) {
+                try {
+                    // 检查PDF是否存在
+                    const response = await fetch(`/api/check_pdf/${encodeURIComponent(doi)}`);
+                    const data = await response.json();
+                    
+                    // 查找对应的reference-item元素
+                    const refItems = document.querySelectorAll(`.reference-item[data-doi="${doi}"]`);
+                    
+                    refItems.forEach(refItem => {
+                        const loadingSpan = refItem.querySelector('.view-pdf-loading');
+                        
+                        if (data.exists) {
+                            // PDF存在，添加"查看原文"按钮（带翻译功能）
+                            if (!refItem.querySelector('.view-pdf-btn')) {
+                                const viewBtn = document.createElement('button');
+                                viewBtn.className = 'view-pdf-btn';
+                                viewBtn.onclick = (e) => {
+                                    e.preventDefault();
+                                    openPdfReader(doi);
+                                };
+                                viewBtn.title = '在线阅读并翻译';
+                                viewBtn.innerHTML = '📄 查看原文';
+                                
+                                // 移除loading，添加按钮
+                                if (loadingSpan) loadingSpan.remove();
+                                refItem.appendChild(viewBtn);
+                            }
+                        } else {
+                            // PDF不存在，移除loading
+                            if (loadingSpan) loadingSpan.remove();
+                        }
+                    });
+                } catch (error) {
+                    console.error(`检查PDF失败 (${doi}):`, error);
+                }
+            }
+        }
+
+        // 查看PDF原文（备用函数）
+        function viewPdf(doi) {
+            const url = `/api/view_pdf/${encodeURIComponent(doi)}`;
+            window.open(url, '_blank');
+        }
+        
+        // 🎨 打开PDF阅读器（新功能 - PDF.js + 侧边翻译）
+        async function openPdfReader(doi) {
+            try {
+                // 创建阅读器模态窗口
+                showPdfReaderModal(doi);
+                
+                // 加载PDF.js并渲染PDF
+                loadPdfWithViewer(doi);
+                
+            } catch (error) {
+                console.error('打开PDF阅读器失败:', error);
+                alert('加载失败：' + error.message);
+                closePdfReader();
+            }
+        }
+        
+        // 显示PDF阅读器模态窗口（新版 - PDF.js + 侧边翻译）
+        function showPdfReaderModal(doi) {
+            const modal = document.createElement('div');
+            modal.id = 'pdfReaderModal';
+            modal.innerHTML = `
+                <div class="pdf-reader-overlay" onclick="closePdfReader()"></div>
+                <div class="pdf-reader-container-new">
+                    <div class="pdf-reader-header-new">
+                        <div>
+                            <h2>📄 原文阅读器（增强版）</h2>
+                            <p style="font-size: 13px; color: white; opacity: 0.9; margin-top: 5px;">DOI: ${doi}</p>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <button class="pdf-action-btn" onclick="downloadOriginalPdf('${doi}')" title="下载原始PDF">
+                                📥 下载PDF
+                            </button>
+                            <button class="pdf-action-btn" onclick="summarizeCurrentPdf()" title="生成全文总结（排除参考文献）">
+                                🧾 文献总结
+                            </button>
+                            <button class="pdf-action-btn" onclick="toggleTranslationPanel()" title="显示/隐藏翻译面板">
+                                🌐 翻译面板
+                            </button>
+                            <button class="pdf-close-btn" onclick="closePdfReader()">✕</button>
+                        </div>
+                    </div>
+                    <div class="pdf-viewer-layout">
+                        <!-- 左侧：PDF显示区（iframe原生方式） -->
+                        <div class="pdf-viewer-left" id="pdfViewerLeft">
+                            <div class="pdf-iframe-container">
+                                <iframe id="pdfIframe" frameborder="0"></iframe>
+                            </div>
+                            <div class="pdf-toolbar">
+                                <div class="toolbar-tip">
+                                    💡 提示：在PDF中选中文本后，点击右侧的"📋 粘贴并翻译"按钮
+                                </div>
+                            </div>
+                            <div id="pdfSummaryBox" class="pdf-summary-box" style="display:none;"></div>
+                        </div>
+                        
+                        <!-- 右侧：翻译面板 -->
+                        <div class="translation-panel" id="translationPanel">
+                            <div class="translation-panel-header">
+                                <h3>🌐 智能翻译</h3>
+                                <button class="panel-close-btn" onclick="toggleTranslationPanel()">→</button>
+                            </div>
+                            <div class="translation-panel-content" id="translationPanelContent">
+                                <div class="translation-welcome">
+                                    <div class="translation-welcome-icon">🚀</div>
+                                    <h4>超简单的翻译方式</h4>
+                                    <div style="text-align: left; margin: 20px 0; background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%); padding: 15px; border-radius: 10px; border-left: 4px solid #667eea;">
+                                        <p style="margin: 8px 0; font-size: 15px;"><strong>⭐ 推荐方式（最快）：</strong></p>
+                                        <p style="margin: 8px 0 8px 15px;">1. 在左侧PDF中选中文本</p>
+                                        <p style="margin: 8px 0 8px 15px;">2. 复制（Ctrl/Cmd + C）</p>
+                                        <p style="margin: 8px 0 8px 15px;">3. 点击下方"📋 一键粘贴并翻译"</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="translation-action-bar">
+                                <button id="pasteAndTranslateBtn" class="translate-btn primary large pulse" onclick="pasteAndTranslate()">
+                                    <span class="btn-icon">📋</span>
+                                    <span class="btn-text">一键粘贴并翻译</span>
+                                    <span class="btn-shortcut">Ctrl+Shift+V</span>
+                                </button>
+                                <div class="or-divider">
+                                    <span>或手动输入</span>
+                                </div>
+                                <div class="translation-input-container">
+                                    <textarea 
+                                        id="translationInput" 
+                                        class="translation-input" 
+                                        placeholder="也可以在这里粘贴文本..."
+                                        rows="3"
+                                    ></textarea>
+                                </div>
+                                <button id="translateInputBtn" class="translate-btn secondary" onclick="translateInputText()">
+                                    <span class="btn-icon">🌐</span>
+                                    <span class="btn-text">翻译</span>
+                                </button>
+                                <div class="quick-tip">
+                                    💡 推荐：选中PDF文本 → 复制 → 点击上方大按钮
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            // 禁止背景滚动
+            document.body.style.overflow = 'hidden';
+            
+            // 保存当前DOI
+            window.currentViewingDoi = doi;
+        }
+        
+        // === 旧版函数（已弃用，保留以防万一） ===
+        // renderPdfContent, translateParagraph, translateAllParagraphs 等函数
+        // 已被新的 PDF.js + 侧边翻译方案替代
+        
+        // 下载原始PDF
+        function downloadOriginalPdf(doi) {
+            const url = `/api/view_pdf/${encodeURIComponent(doi)}`;
+            window.open(url, '_blank');
+        }
+
+        // 生成并展示PDF总结（排除参考文献，可折叠）
+        async function summarizeCurrentPdf() {
+            const doi = window.currentViewingDoi;
+            if (!doi) {
+                alert('请先打开要阅读的PDF');
+                return;
+            }
+            const box = document.getElementById('pdfSummaryBox');
+            if (!box) return;
+            // 如果已有内容且当前可见，点击按钮即折叠
+            if (box.style.display !== 'none' && box.innerHTML.trim()) {
+                box.style.display = 'none';
+                return;
+            }
+            box.style.display = 'block';
+            box.innerHTML = `
+                <div class="pdf-summary-title" style="display:flex;align-items:center;justify-content:space-between;">
+                    <span>🧾 文献总结</span>
+                    <button class="panel-close-btn" onclick="hideSummaryBox()" title="收起">↓</button>
+                </div>
+                <div class="pdf-summary-loading">正在生成总结，请稍候...</div>`;
+            try {
+                const resp = await fetch(`/api/summarize_pdf/${encodeURIComponent(doi)}`, { method: 'POST' });
+                const data = await resp.json();
+                if (!resp.ok || data.error) {
+                    throw new Error(data.error || '生成总结失败');
+                }
+                const summary = escapeHtml(data.summary || '暂无摘要');
+                box.innerHTML = `
+                    <div class="pdf-summary-title" style="display:flex;align-items:center;justify-content:space-between;">
+                        <span>🧾 文献总结</span>
+                        <button class="panel-close-btn" onclick="hideSummaryBox()" title="收起">↓</button>
+                    </div>
+                    <div>${summary}</div>`;
+            } catch (err) {
+                console.error('生成摘要失败:', err);
+                box.innerHTML = `
+                    <div class="pdf-summary-title" style="display:flex;align-items:center;justify-content:space-between;">
+                        <span>🧾 文献总结</span>
+                        <button class="panel-close-btn" onclick="hideSummaryBox()" title="收起">↓</button>
+                    </div>
+                    <div class="pdf-summary-loading" style="color:#b91c1c;">生成失败：${escapeHtml(err.message)}</div>`;
+            }
+        }
+
+        function hideSummaryBox() {
+            const box = document.getElementById('pdfSummaryBox');
+            if (box) box.style.display = 'none';
+        }
+        
+        // 加载PDF（iframe方式）
+        async function loadPdfWithViewer(doi) {
+            try {
+                // 使用iframe加载PDF，浏览器原生渲染
+                const iframe = document.getElementById('pdfIframe');
+                const url = `/api/view_pdf/${encodeURIComponent(doi)}`;
+                iframe.src = url;
+                
+                // 显示首次使用提示
+                showFirstTimeHint();
+                
+            } catch (error) {
+                console.error('加载PDF失败:', error);
+                alert('加载PDF失败：' + error.message);
+            }
+        }
+        
+        // 显示首次使用提示（仅首次）
+        function showFirstTimeHint() {
+            // 检查是否已显示过
+            if (localStorage.getItem('pdf_hint_shown_v2')) {
+                return;
+            }
+            
+            const container = document.querySelector('.pdf-iframe-container');
+            const hint = document.createElement('div');
+            hint.className = 'first-time-hint';
+            hint.innerHTML = `
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                            color: white; padding: 25px 35px; border-radius: 12px;
+                            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); z-index: 10000;
+                            text-align: center; animation: fadeIn 0.5s; max-width: 450px;">
+                    <div style="font-size: 42px; margin-bottom: 15px;">🚀✨</div>
+                    <div style="font-size: 20px; font-weight: 700; margin-bottom: 15px;">三步搞定翻译</div>
+                    <div style="font-size: 15px; opacity: 0.95; margin-bottom: 20px; line-height: 1.8; text-align: left;">
+                        <div style="margin-bottom: 12px;"><strong>步骤 1：</strong> 在PDF中选中文本</div>
+                        <div style="margin-bottom: 12px;"><strong>步骤 2：</strong> 复制（Ctrl/Cmd + C）</div>
+                        <div style="margin-bottom: 12px;"><strong>步骤 3：</strong> 点击右侧 <span style="background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 4px;">"📋 一键粘贴并翻译"</span></div>
+                        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.3); font-size: 13px; opacity: 0.9;">
+                        ✅ 100%精准 &nbsp;|&nbsp; ⚡ 超快速 &nbsp;|&nbsp; 🎯 快捷键 Ctrl+Shift+V
+                        </div>
+                    </div>
+                    <button onclick="this.parentElement.remove(); localStorage.setItem('pdf_hint_shown_v2', 'true');"
+                            style="background: white; color: #667eea; border: none; padding: 10px 24px;
+                                   border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 15px;
+                                   box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
+                        知道了，开始使用 🚀
+                    </button>
+                </div>
+            `;
+            
+            container.appendChild(hint);
+            
+            // 8秒后自动消失
+            setTimeout(() => {
+                if (hint.parentElement) {
+                    hint.style.opacity = '0';
+                    hint.style.transition = 'opacity 0.5s';
+                    setTimeout(() => {
+                        hint.remove();
+                        localStorage.setItem('pdf_hint_shown_v2', 'true');
+                    }, 500);
+                }
+            }, 8000);
+        }
+        
+        // 粘贴并翻译功能
+        async function pasteAndTranslate() {
+            const pasteBtn = document.getElementById('pasteAndTranslateBtn');
+            
+            try {
+                // 检查剪贴板API是否可用
+                if (!navigator.clipboard || !navigator.clipboard.readText) {
+                    throw new Error('浏览器不支持剪贴板API');
+                }
+                
+                // 显示加载状态
+                const originalHTML = pasteBtn.innerHTML;
+                pasteBtn.disabled = true;
+                pasteBtn.innerHTML = '<span class="btn-icon">⏳</span><span class="btn-text">读取剪贴板...</span>';
+                
+                // 尝试从剪贴板读取文本
+                const text = await navigator.clipboard.readText();
+                
+                console.log('✅ 剪贴板内容长度:', text ? text.length : 0);
+                
+                if (!text || text.trim().length === 0) {
+                    pasteBtn.innerHTML = originalHTML;
+                    pasteBtn.disabled = false;
+                    alert('剪贴板为空！\n\n请先在PDF中选中文本并复制（Ctrl/Cmd + C）');
+                    return;
+                }
+                
+                // 恢复按钮
+                pasteBtn.innerHTML = originalHTML;
+                pasteBtn.disabled = false;
+                
+                // 翻译
+                await performTranslation(text.trim());
+                
+            } catch (error) {
+                console.error('❌ 读取剪贴板失败:', error);
+                
+                // 恢复按钮
+                pasteBtn.disabled = false;
+                
+                // 友好的错误提示
+                const errorMsg = error.name === 'NotAllowedError' 
+                    ? '浏览器拒绝访问剪贴板\n\n请使用下方输入框手动粘贴'
+                    : '无法读取剪贴板\n\n请使用下方输入框手动粘贴';
+                
+                alert(errorMsg);
+                
+                // 自动聚焦到输入框
+                document.getElementById('translationInput').focus();
+            }
+        }
+        
+        // 监听快捷键 Ctrl/Cmd + Shift + V
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'V') {
+                e.preventDefault();
+                pasteAndTranslate();
+            }
+        });
+        
+        // 翻译输入框中的文本
+        async function translateInputText() {
+            const inputElement = document.getElementById('translationInput');
+            const text = inputElement.value.trim();
+            
+            if (!text) {
+                alert('请先输入或粘贴要翻译的文本');
+                return;
+            }
+            
+            await performTranslation(text);
+            
+            // 清空输入框
+            inputElement.value = '';
+        }
+        
+        // 执行翻译（通用函数）
+        async function performTranslation(selectedText) {
+            if (!selectedText) return;
+
+            const panelContent = document.getElementById('translationPanelContent');
+            const pasteBtn = document.getElementById('pasteAndTranslateBtn');
+            const translateInBtn = document.getElementById('translateInputBtn');
+            
+            // 显示加载状态
+            if (pasteBtn) {
+                pasteBtn.disabled = true;
+                pasteBtn.innerHTML = '<span class="btn-icon">⏳</span><span class="btn-text">翻译中...</span>';
+            }
+            if (translateInBtn) {
+                translateInBtn.disabled = true;
+                translateInBtn.innerHTML = '<span class="btn-icon">⏳</span><span class="btn-text">翻译中...</span>';
+            }
+            
+            // 添加翻译项到面板
+            const translationItem = document.createElement('div');
+            translationItem.className = 'translation-item';
+            translationItem.innerHTML = `
+                <div class="translation-item-header">
+                    <span class="translation-time">${new Date().toLocaleTimeString()}</span>
+                </div>
+                <div class="translation-item-content">
+                    <div class="translation-source">
+                        <div class="lang-label">🇬🇧 英文</div>
+                        <div class="text-content">${escapeHtml(selectedText)}</div>
+                    </div>
+                    <div class="translation-target">
+                        <div class="lang-label">🇨🇳 中文</div>
+                        <div class="text-content loading">翻译中...</div>
+                    </div>
+                </div>
+            `;
+            
+            // 移除欢迎页面
+            const welcome = panelContent.querySelector('.translation-welcome');
+            if (welcome) welcome.remove();
+            
+            panelContent.insertBefore(translationItem, panelContent.firstChild);
+            
+            try {
+                // 调用翻译API
+                const response = await fetch('http://localhost:8000/api/translate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ texts: [selectedText] })
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                const translation = data.translations[0];
+                
+                // 更新翻译结果
+                const targetDiv = translationItem.querySelector('.translation-target .text-content');
+                targetDiv.classList.remove('loading');
+                targetDiv.textContent = translation;
+                
+                // 添加动画
+                translationItem.classList.add('fade-in');
+                
+            } catch (error) {
+                console.error('翻译失败:', error);
+                const targetDiv = translationItem.querySelector('.translation-target .text-content');
+                targetDiv.classList.remove('loading');
+                targetDiv.innerHTML = '<span style="color: #ef4444;">❌ 翻译失败: ' + error.message + '</span>';
+            } finally {
+                // 恢复按钮状态
+                if (pasteBtn) {
+                    pasteBtn.disabled = false;
+                    pasteBtn.innerHTML = '<span class="btn-icon">📋</span><span class="btn-text">粘贴并翻译</span><span class="btn-shortcut">Ctrl+Shift+V</span>';
+                }
+                if (translateInBtn) {
+                    translateInBtn.disabled = false;
+                    translateInBtn.innerHTML = '<span class="btn-icon">🌐</span><span class="btn-text">翻译</span>';
+                }
+            }
+        }
+        
+        // 切换翻译面板显示/隐藏
+        function toggleTranslationPanel() {
+            const panel = document.getElementById('translationPanel');
+            const leftPanel = document.getElementById('pdfViewerLeft');
+            
+            if (panel.classList.contains('hidden')) {
+                panel.classList.remove('hidden');
+                leftPanel.style.width = '70%';
+            } else {
+                panel.classList.add('hidden');
+                leftPanel.style.width = '100%';
+            }
+        }
+        
+        // 关闭PDF阅读器
+        function closePdfReader() {
+            const modal = document.getElementById('pdfReaderModal');
+            if (modal) {
+                modal.remove();
+            }
+            // 恢复背景滚动
+            document.body.style.overflow = 'auto';
+            
+            // 清理全局变量
+            window.currentViewingDoi = null;
+        }
+    </script>
+</body>
+</html>
