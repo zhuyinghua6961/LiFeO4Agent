@@ -148,27 +148,77 @@ def ask_stream():
 
 @api.route('/pdf/<path:filename>', methods=['GET'])
 def serve_pdf(filename):
-    """提供 PDF 文件访问"""
+    """提供 PDF 文件访问 - 通过DOI映射查找实际PDF文件"""
     from flask import send_from_directory
     import os
+    import json
     
-    # PDF 文件目录
-    pdf_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'papers')
+    logger.info(f"📄 收到PDF请求: {filename}")
     
-    pdf_path = os.path.join(pdf_dir, filename)
-    if os.path.exists(pdf_path):
-        return send_from_directory(pdf_dir, filename)
+    # PDF 文件目录 - 定位到项目根目录 main/
+    # settings.base_dir 指向 .../main/code/backend
+    # 需要往上两层到 main/
+    from backend.config.settings import settings
+    backend_dir = settings.base_dir
+    code_dir = os.path.dirname(backend_dir)  # main/code
+    project_root = os.path.dirname(code_dir)  # main/
+    
+    pdf_dir = os.path.join(project_root, 'papers')
+    mapping_file = os.path.join(project_root, 'doi_to_pdf_mapping.json')
+    
+    logger.debug(f"   Backend目录: {backend_dir}")
+    logger.debug(f"   Code目录: {code_dir}")
+    logger.debug(f"   项目根目录: {project_root}")
+    logger.debug(f"   PDF目录: {pdf_dir}")
+    logger.debug(f"   映射文件: {mapping_file}")
+    
+    # 从filename提取DOI
+    doi = filename.replace('.pdf', '').replace('_', '/')
+    logger.info(f"   提取DOI: {doi}")
+    
+    # 尝试通过DOI映射查找实际文件名
+    real_filename = None
+    if os.path.exists(mapping_file):
+        try:
+            with open(mapping_file, 'r', encoding='utf-8') as f:
+                doi_mapping = json.load(f)
+                logger.debug(f"   映射文件包含 {len(doi_mapping)} 个DOI")
+                if doi in doi_mapping:
+                    real_filename = doi_mapping[doi]
+                    logger.info(f"   ✅ 通过映射找到: {doi} -> {real_filename}")
+                else:
+                    logger.warning(f"   ⚠️ 映射中未找到DOI: {doi}")
+        except Exception as e:
+            logger.error(f"   ❌ 读取映射文件失败: {e}")
     else:
-        # 提取DOI
-        doi = filename.replace('.pdf', '').replace('_', '/')
-        logger.warning(f"⚠️ PDF文件不存在: {filename}, DOI: {doi}")
-        return jsonify({
-            'error': 'PDF_NOT_FOUND',
-            'message': '本地PDF文件不存在',
-            'doi': doi,
-            'filename': filename,
-            'suggestion': '您可以尝试在线查看该文献'
-        }), 404
+        logger.warning(f"   ⚠️ 映射文件不存在: {mapping_file}")
+    
+    # 如果找到映射，使用真实文件名
+    if real_filename:
+        pdf_path = os.path.join(pdf_dir, real_filename)
+        logger.debug(f"   检查映射文件路径: {pdf_path}")
+        if os.path.exists(pdf_path):
+            logger.info(f"   ✅ 返回PDF文件: {real_filename}")
+            return send_from_directory(pdf_dir, real_filename)
+        else:
+            logger.warning(f"   ⚠️ 映射的PDF文件不存在: {real_filename}")
+    
+    # 如果没有映射或文件不存在，尝试直接用filename查找
+    pdf_path = os.path.join(pdf_dir, filename)
+    logger.debug(f"   尝试直接访问: {pdf_path}")
+    if os.path.exists(pdf_path):
+        logger.info(f"   ✅ 直接找到PDF: {filename}")
+        return send_from_directory(pdf_dir, filename)
+    
+    # 都找不到，返回404
+    logger.error(f"   ❌ PDF文件未找到: DOI={doi}, filename={filename}")
+    return jsonify({
+        'error': 'PDF_NOT_FOUND',
+        'message': '本地PDF文件不存在',
+        'doi': doi,
+        'filename': filename,
+        'suggestion': '您可以尝试在线查看该文献'
+    }), 404
 
 
 # ============== 知识库信息 ==============

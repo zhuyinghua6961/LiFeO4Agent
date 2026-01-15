@@ -12,6 +12,7 @@ import requests
 from backend.services.llm_service import LLMService
 from backend.repositories.vector_repository import VectorRepository
 from backend.utils.pdf_loader import PDFManager
+from backend.utils.doi_inserter import ProgrammaticDOIInserter
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +37,7 @@ class SemanticExpert:
         
         # 加载prompt模板
         self._search_prompt = self._build_search_prompt()
-        self._semantic_synthesis_prompt = self._load_prompt("semantic_synthesis_prompt_v2.txt")
+        self._semantic_synthesis_prompt = self._load_prompt("semantic_synthesis_prompt_clean.txt")
         self._broad_question_prompt = self._load_prompt("broad_question_synthesis_prompt.txt")
         
         # 初始化PDF管理器
@@ -45,6 +46,14 @@ class SemanticExpert:
             papers_dir=settings.papers_dir,
             mapping_file=settings.doi_to_pdf_mapping
         ) if hasattr(settings, 'papers_dir') else None
+        
+        # 初始化DOI插入器
+        self._doi_inserter = ProgrammaticDOIInserter(
+            similarity_threshold=0.22,  # 基于实际测试优化的阈值
+            seq_weight=0.4,  # 向量相似度权重更高,因为LLM会重组表达
+            vector_weight=0.6,
+            max_compare_chars=1000
+        )
         
         # 相似度阈值配置
         self._broad_threshold = getattr(settings, 'broad_similarity_threshold', 0.65)
@@ -221,10 +230,9 @@ class SemanticExpert:
         try:
             # 生成搜索查询
             logger.info("\n" + "="*80)
-            logger.info("📝 [步骤2] 生成搜索关键词")
-            logger.info(f"原始问题: {question}")
+            logger.info("📝 [步骤2] 提取关键词")
             search_query = self.generate_search_query(question)
-            logger.info(f"生成的搜索关键词: {search_query}")
+            logger.info(f"关键词: {search_query}")
             logger.info("="*80)
             
             # 生成查询的embedding向量（使用BGE API）
@@ -249,15 +257,15 @@ class SemanticExpert:
                 return {
                     "success": False,
                     "error": f"生成查询向量失败: {str(e)}",
+                    "error_step": "generate_embedding",
                     "expert": "semantic",
                     "documents": []
                 }
             
             # 执行搜索
             logger.info("\n" + "="*80)
-            logger.info("🔍 [步骤4] 查询向量数据库(ChromaDB)")
-            logger.info(f"请求返回数量: top_k={top_k}")
-            logger.info(f"过滤条件: {filter_metadata}")
+            logger.info("🔍 [步骤4] 查询向量数据库")
+            logger.info(f"检索数量: top_k={top_k}")
             results = self._vector_repo.search(
                 query_embedding=query_embedding,
                 n_results=top_k,
@@ -269,6 +277,7 @@ class SemanticExpert:
                 return {
                     "success": False,
                     "error": results.get('error', '搜索失败'),
+                    "error_step": "vector_search",
                     "expert": "semantic"
                 }
             
@@ -287,8 +296,12 @@ class SemanticExpert:
                 if i < len(metadatas) and metadatas[i]:
                     doc_data["metadata"] = metadatas[i]
                 if with_scores and i < len(distances):
-                    # ChromaDB 返回的是距离，需要转换为相似度分数
-                    doc_data["score"] = 1 - distances[i] if distances[i] <= 1 else 0
+                    # ChromaDB 使用 cosine 距离 (范围 0-2)
+                    # 余弦相似度 = 1 - (cosine_distance / 2)
+                    # 距离越小,相似度越高
+                    distance = distances[i]
+                    similarity = 1 - (distance / 2.0)  # 转换为 0-1 范围的相似度
+                    doc_data["score"] = max(0.0, min(1.0, similarity))  # 确保在 0-1 范围内
                 documents.append(doc_data)
             
             # 应用相似度过滤
@@ -325,6 +338,7 @@ class SemanticExpert:
             return {
                 "success": False,
                 "error": str(e),
+                "error_step": "search",
                 "expert": "semantic"
             }
     
@@ -556,6 +570,79 @@ class SemanticExpert:
         
         return pdf_contents
     
+    def query_with_details(
+        self,
+        question: str,
+        top_k: int = 20,
+        load_pdf: bool = True
+    ) -> Dict[str, Any]:
+        """执行查询并返回详细信息（包括PDF加载情况）"""
+        search_result = self.search(question, top_k=top_k, with_scores=True)
+        
+        if not search_result.get('success'):
+            return {
+                'answer': '检索失败',
+                'pdf_info': {'error': search_result.get('error')}
+            }
+        
+        documents = search_result.get('documents', [])
+        if not documents:
+            return {
+                'answer': '未找到相关文献。',
+                'pdf_info': {'documents_found': 0}
+            }
+        
+        # 判断问题类型
+        is_broad = self._is_broad_question(question)
+        
+        # 初始化PDF信息
+        pdf_info = {
+            'documents_found': len(documents),
+            'is_broad_question': is_broad,
+            'dois_found': 0,
+            'pdf_loaded': 0,
+            'pdf_failed': 0
+        }
+        
+        # 宽泛问题：不加载PDF
+        if is_broad:
+            logger.info("检测到宽泛问题，使用宽泛问题合成模板（不加载PDF）")
+            answer = self._synthesize_broad_answer(question, documents)
+            return {
+                'answer': answer,
+                'pdf_info': pdf_info
+            }
+        
+        # 精确问题：加载PDF
+        pdf_contents = {}
+        if load_pdf and self._pdf_manager:
+            logger.info("\n" + "="*80)
+            logger.info("📄 [步骤5] 加载PDF原文")
+            dois = self._extract_dois(documents)
+            pdf_info['dois_found'] = len(dois)
+            logger.info(f"提取到 {len(dois)} 个DOI")
+            
+            if dois:
+                pdf_contents = self._load_pdf_contents(dois)
+                pdf_info['pdf_loaded'] = len(pdf_contents)
+                pdf_info['pdf_failed'] = len(dois) - len(pdf_contents)
+                logger.info(f"\n正在加载PDF原文 (最多3篇):")
+                for idx, (doi, content) in enumerate(pdf_contents.items(), 1):
+                    progress = f"[{idx}/{len(pdf_contents)}]"
+                    size_kb = len(content) / 1024
+                    logger.info(f"  {progress} ✅ {doi} ({size_kb:.1f}KB)")
+                if pdf_info['pdf_failed'] > 0:
+                    logger.info(f"  ⚠️  {pdf_info['pdf_failed']} 篇PDF加载失败")
+            else:
+                logger.info("⚠️  未提取到DOI")
+            logger.info("="*80)
+        
+        answer = self._synthesize_semantic_answer(question, documents, pdf_contents)
+        return {
+            'answer': answer,
+            'pdf_info': pdf_info
+        }
+    
     def _synthesize_semantic_answer(
         self,
         user_question: str,
@@ -592,31 +679,35 @@ class SemanticExpert:
             prompt = prompt.replace("{pdf_contents}", pdf_section if pdf_section else "无PDF原文")
             
             logger.info("\n" + "="*80)
-            logger.info("📋 [步骤6] 构建完整Prompt")
-            logger.info(f"用户问题: {user_question}")
-            logger.info(f"文献数量: {len(literature_list)} 篇")
-            logger.info(f"PDF原文: {len(pdf_contents)} 篇")
-            logger.info(f"\nPrompt总长度: {len(prompt)} 字符")
-            logger.info("\n完整Prompt内容:")
-            logger.info("-"*80)
-            logger.info(prompt)
-            logger.info("-"*80)
+            logger.info("📋 [步骤6] 构建Prompt")
+            logger.info(f"文献摘要: {len(literature_list)} 篇")
+            logger.info(f"PDF原文: {len(pdf_contents) if pdf_contents else 0} 篇")
+            logger.info(f"Prompt长度: {len(prompt):,} 字符 (~{len(prompt)//4:,} tokens)")
+            logger.info(f"\nPrompt预览 (前200字):")
+            logger.info(prompt[:200] + "...")
             logger.info("="*80)
             
             from langchain_core.messages import HumanMessage
             
             logger.info("\n" + "="*80)
-            logger.info("🤖 [步骤7] 调用LLM生成答案")
-            logger.info("正在等待LLM响应...")
+            logger.info("🤖 [步骤7] 生成回答")
             response = self._llm.invoke([HumanMessage(content=prompt)])
-            logger.info("✅ LLM响应成功")
-            logger.info(f"\n生成的答案长度: {len(response.content)} 字符")
-            logger.info("\nLLM生成的完整答案:")
-            logger.info("-"*80)
-            logger.info(response.content)
-            logger.info("-"*80)
+            pure_answer = response.content.strip()
+            logger.info(f"✅ LLM生成纯净答案完成 ({len(pure_answer)} 字符)")
             logger.info("="*80)
-            return response.content.strip()
+            
+            # 程序化插入DOI
+            logger.info("\n" + "="*80)
+            logger.info("📌 [步骤8] 程序化插入DOI")
+            search_result_for_insert = {
+                'documents': [doc.get('content', '') for doc in documents],
+                'metadatas': [doc.get('metadata', {}) for doc in documents],
+                'distances': [1.0 - doc.get('score', 0.5) for doc in documents]  # 转换回距离
+            }
+            answer_with_doi = self._doi_inserter.insert_dois(pure_answer, search_result_for_insert)
+            logger.info("="*80)
+            
+            return answer_with_doi
             
         except Exception as e:
             logger.error(f"语义答案合成失败: {e}")

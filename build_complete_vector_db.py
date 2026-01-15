@@ -28,7 +28,7 @@ JSON_DIR = Path("/Users/zhuyinghua/Desktop/agent/main/json")
 VECTOR_DB_PATH = "/Users/zhuyinghua/Desktop/agent/main/vector_database"
 
 # BGE Embedding API
-BGE_API_URL = "http://hf2d8696.natapp1.cc/v1/embeddings"
+BGE_API_URL = "http://172.18.8.31:8001/v1/embeddings"
 
 # LLM API (阿里百炼)
 DASHSCOPE_API_KEY = os.getenv("DASHSCOPE_API_KEY", "")

@@ -68,7 +68,7 @@ class Settings:
         )
         self.bge_api_url: str = os.getenv(
             "BGE_API_URL",
-            "http://hf2d8696.natapp1.cc/v1/embeddings"
+            "http://172.18.8.31:8001/v1/embeddings"
         )
         
         # PDF存储路径
@@ -86,8 +86,8 @@ class Settings:
         # 其他配置
         self.llm_temperature: float = float(os.getenv("LLM_TEMPERATURE", "0.5"))
         self.llm_max_tokens: int = int(os.getenv("LLM_MAX_TOKENS", "4096"))
-        self.similarity_threshold_broad: float = float(os.getenv("SIMILARITY_THRESHOLD_BROAD", "0.65"))
-        self.similarity_threshold_precise: float = float(os.getenv("SIMILARITY_THRESHOLD_PRECISE", "0.5"))
+        self.similarity_threshold_broad: float = float(os.getenv("SIMILARITY_THRESHOLD_BROAD", "0.3"))
+        self.similarity_threshold_precise: float = float(os.getenv("SIMILARITY_THRESHOLD_PRECISE", "0.3"))
         
         # API 服务配置
         self.api_host: str = os.getenv("API_HOST", "0.0.0.0")

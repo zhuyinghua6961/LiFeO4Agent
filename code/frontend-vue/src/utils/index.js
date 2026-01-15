@@ -18,16 +18,84 @@ export function formatTime(date) {
 export function formatAnswer(text, referenceSnippets = []) {
   if (!text) return ''
   
-  // 预处理 LaTeX 和 DOI
+  // 预处理：确保表格格式正确
+  // 检查是否有不完整的表格（缺少分隔行）
+  text = fixTableFormat(text)
+  
+  // 预处理 LaTeX
   text = cleanLaTeX(text)
-  text = linkifyDOI(text, referenceSnippets)
+  
+  // 配置marked选项
+  marked.setOptions({
+    breaks: true,
+    gfm: true,
+    tables: true,
+    mangle: false,
+    headerIds: false
+  })
   
   // 使用 marked 渲染 Markdown
+  let html = ''
   try {
-    return marked.parse(text, { breaks: true, gfm: true, tables: true })
+    html = marked.parse(text)
   } catch (e) {
-    return text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    console.error('Markdown解析失败:', e)
+    html = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
   }
+  
+  // 在渲染后的HTML中处理DOI链接 - 只显示DOI号作为蓝色链接
+  html = html.replace(/\(doi=([^\s\)]+)\)/gi, (match, doi) => {
+    // 清理DOI中可能包含的HTML标签或多余字符
+    const cleanDoi = doi.replace(/<[^>]*>/g, '').trim()
+    return `(<a href="#" class="doi-link" data-doi="${cleanDoi}">${cleanDoi}</a>)`
+  })
+  
+  return html
+}
+
+// 修复表格格式
+function fixTableFormat(text) {
+  // 查找可能的表格（多行都包含|的段落）
+  const lines = text.split('\n')
+  const result = []
+  let i = 0
+  
+  while (i < lines.length) {
+    const line = lines[i]
+    
+    // 检查是否是表格行（包含|且不是代码块）
+    if (line.includes('|') && !line.trim().startsWith('```')) {
+      // 查找连续的表格行
+      const tableLines = []
+      let j = i
+      while (j < lines.length && lines[j].includes('|')) {
+        tableLines.push(lines[j])
+        j++
+      }
+      
+      // 如果有至少2行，可能是表格
+      if (tableLines.length >= 2) {
+        // 检查第二行是否是分隔行
+        const hasSeparator = tableLines[1].match(/^\s*\|[\s\-:|]+\|\s*$/)
+        
+        if (!hasSeparator) {
+          // 缺少分隔行，自动插入
+          const headerCols = (tableLines[0].match(/\|/g) || []).length - 1
+          const separator = '|' + Array(headerCols).fill('------').join('|') + '|'
+          tableLines.splice(1, 0, separator)
+        }
+        
+        result.push(...tableLines)
+        i = j
+        continue
+      }
+    }
+    
+    result.push(line)
+    i++
+  }
+  
+  return result.join('\n')
 }
 
 // 清理 LaTeX 公式
@@ -51,40 +119,6 @@ function cleanLaTeXCommands(text) {
   text = text.replace(/\\[a-zA-Z]+\{([^}]+)\}/g, '$1')
   text = text.replace(/\\[a-zA-Z]+/g, '')
   return text.trim()
-}
-
-// DOI 转为可点击链接
-function linkifyDOI(text, referenceLinks = []) {
-  // 处理新格式: （doi:10.xxx）· 查看原文
-  text = text.replace(/（doi:([^\s）]+)）\s*·\s*查看原文/g, (match, doi) => {
-    const safeDoi = doi.replace(/"/g, '')
-    return `(<a href="#" class="doi-link" data-doi="${safeDoi}" onclick="window.openPdfFromDoi('${safeDoi}'); return false;">doi=${safeDoi}</a> · <a href="#" class="view-original-link" data-doi="${safeDoi}" onclick="window.openPdfFromDoi('${safeDoi}'); return false;">查看原文</a>)`
-  })
-  
-  // 处理旧格式: (doi=10.xxx)
-  text = text.replace(/\(doi=([^\s\)]+)\)/gi, (match, doi) => {
-    const safeDoi = doi.replace(/"/g, '')
-    return `(<a href="#" class="doi-link" data-doi="${safeDoi}" onclick="window.openPdfFromDoi('${safeDoi}'); return false;">doi=${safeDoi}</a>)`
-  })
-  
-  // 新增: 识别表格和文本中的纯DOI文本 (10.xxxx/xxxxx)
-  // 避免在HTML标签和已经处理过的链接中重复处理
-  text = text.replace(/(?<!href="|data-doi="|doi=)\b(10\.\d{4,}[\w\.\/-]+[\w\/-])(?!")/g, (match, doi) => {
-    // 检查是否在HTML标签中
-    const beforeMatch = text.substring(0, text.indexOf(match))
-    const lastTagStart = beforeMatch.lastIndexOf('<')
-    const lastTagEnd = beforeMatch.lastIndexOf('>')
-    
-    // 如果在HTML标签内部,不处理
-    if (lastTagStart > lastTagEnd) {
-      return match
-    }
-    
-    const safeDoi = doi.replace(/"/g, '')
-    return `<a href="#" class="doi-link" data-doi="${safeDoi}" onclick="window.openPdfFromDoi('${safeDoi}'); return false;">${doi}</a>`
-  })
-  
-  return text
 }
 
 // HTML 转义

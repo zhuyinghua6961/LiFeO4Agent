@@ -34,6 +34,18 @@ onMounted(async () => {
   } else {
     store.switchChat(store.chats[0].id)
   }
+  
+  // 使用事件委托处理DOI链接点击
+  document.addEventListener('click', (e) => {
+    const target = e.target
+    if (target.classList && target.classList.contains('doi-link')) {
+      e.preventDefault()
+      const doi = target.getAttribute('data-doi')
+      if (doi && pdfReader.value) {
+        pdfReader.value.openReader(doi)
+      }
+    }
+  })
 })
 
 // Methods
@@ -96,7 +108,8 @@ async function sendMessage() {
     confidence: 0,
     reasoning: '',
     references: [],
-    referenceLinks: []
+    referenceLinks: [],
+    steps: []  // 添加步骤数组
   })
   scrollToBottom()
 
@@ -111,6 +124,35 @@ async function sendMessage() {
       if (data.type === 'start') {
         // 开始查询
         console.log('🚀 开始生成答案')
+      } else if (data.type === 'step') {
+        // 处理步骤信息
+        const currentMsg = store.currentMessages[store.currentMessages.length - 1]
+        const existingSteps = currentMsg.steps || []
+        
+        // 查找是否已有相同步骤
+        const stepIndex = existingSteps.findIndex(s => s.step === data.step)
+        
+        if (stepIndex >= 0) {
+          // 更新已有步骤
+          existingSteps[stepIndex] = {
+            step: data.step,
+            message: data.message,
+            status: data.status,
+            error: data.error,
+            data: data.data
+          }
+        } else {
+          // 添加新步骤
+          existingSteps.push({
+            step: data.step,
+            message: data.message,
+            status: data.status,
+            error: data.error,
+            data: data.data
+          })
+        }
+        
+        store.updateLastBotMessage({ steps: [...existingSteps] })
       } else if (data.type === 'thinking') {
         // 思考过程 - 可以在加载动画中显示
         console.log('💭', data.content)
@@ -203,6 +245,17 @@ window.openPdfFromDoi = (doi) => {
     alert('DOI 不存在')
   }
 }
+
+// 全局处理DOI链接点击事件
+window.handleDoiClick = (event, doi) => {
+  event.preventDefault()
+  if (doi && pdfReader.value) {
+    pdfReader.value.openReader(doi)
+  } else {
+    alert('DOI 不存在')
+  }
+  return false
+}
 </script>
 
 <template>
@@ -284,14 +337,65 @@ window.openPdfFromDoi = (doi) => {
               <div class="bot-avatar">✨</div>
               <div class="message-content">
                 <div v-if="msg.queryMode" class="query-mode-badge">{{ msg.queryMode }}</div>
+                
+                <!-- 步骤展示 -->
+                <div v-if="msg.steps && msg.steps.length > 0" class="processing-steps">
+                  <div 
+                    v-for="(step, idx) in msg.steps" 
+                    :key="idx"
+                    class="step-item"
+                    :class="'step-' + step.status"
+                  >
+                    <span class="step-icon">
+                      <span v-if="step.status === 'processing'">⏳</span>
+                      <span v-else-if="step.status === 'success'">✅</span>
+                      <span v-else-if="step.status === 'error'">❌</span>
+                      <span v-else-if="step.status === 'warning'">⚠️</span>
+                    </span>
+                    <span class="step-message">{{ step.message }}</span>
+                    <!-- 显示文档数量 -->
+                    <span v-if="step.data && step.data.count" class="step-badge">{{ step.data.count }}</span>
+                    <!-- 显示PDF加载详情（不显示失败数量）-->
+                    <span v-if="step.step === 'load_pdf' && step.data && step.data.pdf_loaded" class="step-details">
+                      <span class="pdf-count">✓ {{ step.data.pdf_loaded }}篇PDF</span>
+                    </span>
+                  </div>
+                </div>
+                
                 <div v-if="msg.content" v-html="formatAnswer(msg.content, msg.referenceLinks)"></div>
-                <div v-else class="loading-animation">
+                <div v-else-if="!msg.steps || msg.steps.length === 0" class="loading-animation">
                   <div class="loading-spinner">
                     <div class="loading-dot"></div>
                     <div class="loading-dot"></div>
                     <div class="loading-dot"></div>
                   </div>
                   <span>思考中...</span>
+                </div>
+                
+                <!-- 参考文献列表 -->
+                <div v-if="msg.references && msg.references.length > 0" class="references-section">
+                  <div class="references-title">📚 参考文献</div>
+                  <div class="references-list">
+                    <div 
+                      v-for="(ref, idx) in msg.references" 
+                      :key="idx" 
+                      class="reference-item"
+                      @click="ref.doi && pdfReader.openReader(ref.doi)"
+                    >
+                      <div class="reference-index">[{{ idx + 1 }}]</div>
+                      <div class="reference-content">
+                        <div class="reference-title">{{ ref.title || '未提供标题' }}</div>
+                        <div class="reference-meta">
+                          <span class="reference-doi" v-if="ref.doi">
+                            DOI: <span class="doi-link">{{ ref.doi }}</span>
+                          </span>
+                          <span class="reference-similarity" v-if="ref.similarity !== undefined && ref.similarity !== null">
+                            相似度: <span class="similarity-value">{{ (ref.similarity * 100).toFixed(1) }}%</span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </template>
