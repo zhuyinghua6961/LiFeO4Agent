@@ -157,9 +157,10 @@ def serve_pdf(filename):
     
     # PDF 文件目录 - 定位到项目根目录 main/
     # settings.base_dir 指向 .../main/code/backend
-    # 需要往上两层到 main/
+    # 需要往上三层到 main/
+    # settings.base_dir = main/code/backend
     from backend.config.settings import settings
-    backend_dir = settings.base_dir
+    backend_dir = settings.base_dir  # main/code/backend
     code_dir = os.path.dirname(backend_dir)  # main/code
     project_root = os.path.dirname(code_dir)  # main/
     

@@ -20,7 +20,7 @@
       <div class="pdf-viewer-layout">
         <!-- 左侧PDF -->
         <div class="pdf-viewer-left">
-          <div class="pdf-canvas-wrapper" @mouseup="handleTextSelection">
+          <div class="pdf-canvas-wrapper"
             <!-- PDF错误提示 -->
             <div v-if="pdfError" class="pdf-error-container">
               <div class="pdf-error-content">
@@ -40,18 +40,19 @@
               </div>
             </div>
             
-            <!-- PDF iframe -->
+            <!-- PDF iframe (主要方案) -->
             <iframe 
-              v-else-if="pdfUrl"
+              v-if="!pdfError"
               :src="pdfUrl" 
               class="pdf-iframe"
               frameborder="0"
+              @load="handleIframeLoad"
             ></iframe>
             
             <!-- 加载中 -->
             <div v-else class="pdf-loading">
               <div class="loading-spinner"></div>
-              <p>加载PDF中...</p>
+              <p>加载PDF中... {{ loadingProgress }}%</p>
             </div>
           </div>
         </div>
@@ -68,7 +69,7 @@
             <div v-if="translations.length === 0" class="translation-welcome">
               <div class="welcome-icon">📖</div>
               <p class="welcome-title">欢迎使用翻译助手</p>
-              <p class="welcome-desc">在PDF中选中文本，然后点击"翻译选中文本"按钮</p>
+              <p class="welcome-desc">在下方输入框粘贴英文文本，点击翻译按钮即可</p>
             </div>
 
             <!-- 翻译历史 -->
@@ -93,12 +94,19 @@
 
           <!-- 翻译按钮 -->
           <div class="translation-actions">
+            <!-- 手动输入框 (备用方案) -->
+            <textarea 
+              v-model="manualText"
+              class="manual-input"
+              placeholder="在此粘贴要翻译的英文文本..."
+              rows="3"
+            ></textarea>
             <button 
               class="translate-btn" 
-              :disabled="!selectedText || isTranslating"
+              :disabled="!manualText || isTranslating"
               @click="translateSelected"
             >
-              {{ isTranslating ? '⏳ 翻译中...' : '🌐 翻译选中文本' }}
+              {{ isTranslating ? '⏳ 翻译中...' : '🌐 翻译文本' }}
             </button>
           </div>
         </div>
@@ -108,7 +116,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, nextTick } from 'vue'
 import { api } from '../services/api'
 
 // Props & Emits
@@ -120,20 +128,20 @@ const currentDoi = ref('')
 const pdfUrl = ref('')
 const pdfError = ref(null)
 const showTranslationPanel = ref(true)
-const selectedText = ref('')
+const manualText = ref('')
 const translations = ref([])
 const isTranslating = ref(false)
 
 // Methods
-function openReader(doi) {
+async function openReader(doi) {
   currentDoi.value = doi
   pdfUrl.value = `/api/pdf/${doi.replace(/\//g, '_')}.pdf`
   pdfError.value = null
   isOpen.value = true
   translations.value = []
-  selectedText.value = ''
+  manualText.value = ''
   
-  // 检测PDF是否存在
+  // 检查PDF是否存在
   fetch(pdfUrl.value, { method: 'HEAD' })
     .then(response => {
       if (!response.ok) {
@@ -141,7 +149,6 @@ function openReader(doi) {
           message: '本地PDF文件不存在',
           doi: currentDoi.value
         }
-        pdfUrl.value = ''
       }
     })
     .catch(() => {
@@ -149,7 +156,6 @@ function openReader(doi) {
         message: '本地PDF文件不存在',
         doi: currentDoi.value
       }
-      pdfUrl.value = ''
     })
 }
 
@@ -165,32 +171,26 @@ function toggleTranslationPanel() {
   showTranslationPanel.value = !showTranslationPanel.value
 }
 
-function handleTextSelection() {
-  setTimeout(() => {
-    const selection = window.getSelection()
-    const text = selection?.toString().trim()
-    if (text && text.length > 0) {
-      selectedText.value = text
-    }
-  }, 100)
+function handleIframeLoad() {
+  console.log('PDF iframe 加载完成')
 }
 
 async function translateSelected() {
-  if (!selectedText.value || isTranslating.value) return
+  if (!manualText.value || isTranslating.value) return
 
   isTranslating.value = true
 
   // 添加翻译项
   const item = {
     time: new Date().toLocaleTimeString(),
-    source: selectedText.value,
+    source: manualText.value,
     translation: '',
     loading: true
   }
   translations.value.unshift(item)
 
   try {
-    const result = await api.translate([selectedText.value])
+    const result = await api.translate([manualText.value])
     if (result.success && result.translations.length > 0) {
       item.translation = result.translations[0]
     } else {
@@ -202,6 +202,7 @@ async function translateSelected() {
   } finally {
     item.loading = false
     isTranslating.value = false
+    manualText.value = '' // 清空输入框
   }
 }
 
@@ -334,6 +335,7 @@ defineExpose({
   flex: 1;
   position: relative;
   overflow: auto;
+  background: #f3f4f6;
 }
 
 .pdf-iframe {
@@ -571,6 +573,26 @@ defineExpose({
   padding: 20px;
   border-top: 1px solid #e5e7eb;
   background: #f9fafb;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.manual-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.manual-input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .translate-btn {
