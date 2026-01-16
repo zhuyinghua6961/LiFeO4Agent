@@ -46,5 +46,14 @@ export const adminApi = {
       headers: { 'Authorization': `Bearer ${token}` }
     })
     return response.json()
+  },
+
+  async getUserPassword(userId) {
+    const token = localStorage.getItem('token')
+    const response = await fetch(`${API_BASE}/users/${userId}/password`, {
+      method: 'GET',
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+    return response.json()
   }
 }

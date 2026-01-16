@@ -194,11 +194,11 @@ def change_user_password(user_id: int):
             }), 400
         
         # 加密新密码
-        hashed_password = auth_service.hash_password(new_password)
+        encrypted_password = auth_service.encrypt_password(new_password)
         
         # 更新密码
         sql = "UPDATE users SET password = %s WHERE id = %s"
-        execute_update(sql, (hashed_password, user_id))
+        execute_update(sql, (encrypted_password, user_id))
         
         return jsonify({
             "success": True,
@@ -211,6 +211,60 @@ def change_user_password(user_id: int):
             "success": False,
             "error": "修改密码失败",
             "code": "PASSWORD_CHANGE_ERROR"
+        }), 500
+
+
+@admin_bp.route('/users/<int:user_id>/password', methods=['GET'])
+@require_admin
+def get_user_password(user_id: int):
+    """
+    获取用户密码（管理员）- AES解密后可查看明文
+    
+    响应:
+    {
+        "success": true,
+        "data": {
+            "password": "明文密码"
+        }
+    }
+    """
+    try:
+        # 检查用户是否存在
+        user = auth_service.get_user_by_id(user_id)
+        if not user:
+            return jsonify({
+                "success": False,
+                "error": "用户不存在",
+                "code": "USER_NOT_FOUND"
+            }), 404
+        
+        # 获取加密的密码
+        sql = "SELECT password FROM users WHERE id = %s"
+        results = execute_query(sql, (user_id,))
+        if not results:
+            return jsonify({
+                "success": False,
+                "error": "用户密码不存在",
+                "code": "PASSWORD_NOT_FOUND"
+            }), 404
+        
+        encrypted_password = results[0]['password']
+        decrypted_password = auth_service.decrypt_password(encrypted_password)
+        
+        return jsonify({
+            "success": True,
+            "data": {
+                "username": user['username'],
+                "password": decrypted_password
+            }
+        }), 200
+        
+    except Exception as e:
+        logger.error(f"获取用户密码失败: {e}")
+        return jsonify({
+            "success": False,
+            "error": "获取密码失败",
+            "code": "PASSWORD_FETCH_ERROR"
         }), 500
 
 
@@ -352,13 +406,13 @@ def create_user():
                 "code": "USERNAME_EXISTS"
             }), 400
         
-        # 创建用户
-        hashed_password = auth_service.hash_password(password)
+        # 加密密码
+        encrypted_password = auth_service.encrypt_password(password)
         sql = """
             INSERT INTO users (username, password, role, status, created_at)
             VALUES (%s, %s, 'user', 'active', NOW())
         """
-        user_id = execute_update(sql, (username, hashed_password))
+        user_id = execute_update(sql, (username, encrypted_password))
         
         return jsonify({
             "success": True,

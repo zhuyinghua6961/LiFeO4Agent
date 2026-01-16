@@ -2,13 +2,13 @@
 认证服务
 处理用户登录、注册、密码验证、JWT Token生成
 """
-import bcrypt
 import jwt
 import time
 from datetime import datetime
 from typing import Optional, Dict, Any
 from backend.config.settings import settings
 from backend.database.connection import execute_query, execute_update
+from backend.utils.crypto_utils import encrypt_password, decrypt_password
 
 
 class AuthService:
@@ -18,9 +18,9 @@ class AuthService:
         self.jwt_secret = settings.jwt_secret
         self.jwt_expire = settings.jwt_expire
     
-    def hash_password(self, password: str) -> str:
+    def encrypt_password(self, password: str) -> str:
         """
-        加密密码
+        加密密码（AES双向加密）
         
         Args:
             password: 原始密码
@@ -28,21 +28,33 @@ class AuthService:
         Returns:
             加密后的密码
         """
-        salt = bcrypt.gensalt()
-        return bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
+        return encrypt_password(password)
     
-    def verify_password(self, password: str, hashed: str) -> bool:
+    def decrypt_password(self, encrypted_password: str) -> str:
+        """
+        解密密码
+        
+        Args:
+            encrypted_password: 加密后的密码
+            
+        Returns:
+            原始密码
+        """
+        return decrypt_password(encrypted_password)
+    
+    def verify_password(self, password: str, encrypted_password: str) -> bool:
         """
         验证密码
         
         Args:
             password: 原始密码
-            hashed: 加密后的密码
+            encrypted_password: 加密后的密码
             
         Returns:
             是否匹配
         """
-        return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
+        decrypted = decrypt_password(encrypted_password)
+        return password == decrypted
     
     def create_token(self, user_id: int, role: str) -> str:
         """
@@ -182,14 +194,14 @@ class AuthService:
             }
         
         # 加密密码
-        hashed_password = self.hash_password(password)
+        encrypted_password = self.encrypt_password(password)
         
         # 插入用户
         sql = """
             INSERT INTO users (username, password, role, status)
             VALUES (%s, %s, 'user', 'active')
         """
-        user_id = execute_update(sql, (username, hashed_password))
+        user_id = execute_update(sql, (username, encrypted_password))
         
         return {
             "success": True,
@@ -294,9 +306,9 @@ class AuthService:
             }
         
         # 更新密码
-        hashed_password = self.hash_password(new_password)
+        encrypted_password = self.encrypt_password(new_password)
         sql = "UPDATE users SET password = %s WHERE id = %s"
-        execute_update(sql, (hashed_password, user_id))
+        execute_update(sql, (encrypted_password, user_id))
         
         return {
             "success": True,

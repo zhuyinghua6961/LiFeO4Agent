@@ -14,10 +14,14 @@ const showPasswordModal = ref(false)
 const showStatusModal = ref(false)
 const showDeleteModal = ref(false)
 const showCreateModal = ref(false)
+const showViewPasswordModal = ref(false)
 const selectedUser = ref(null)
 const newPassword = ref('')
 const newUsername = ref('')
 const newUserPassword = ref('')
+const showPassword = ref(false)
+const showCreatePassword = ref(false)
+const viewPassword = ref('')
 
 async function fetchCurrentUser() {
   const result = await authApi.getMe()
@@ -116,6 +120,19 @@ function openCreateModal() {
   showCreateModal.value = true
 }
 
+async function openViewPasswordModal(user) {
+  selectedUser.value = user
+  viewPassword.value = '加载中...'
+  showViewPasswordModal.value = true
+  
+  const result = await adminApi.getUserPassword(user.id)
+  if (result.success) {
+    viewPassword.value = result.data.password
+  } else {
+    viewPassword.value = result.error || '获取失败'
+  }
+}
+
 async function submitCreateUser() {
   error.value = ''
   
@@ -198,6 +215,7 @@ onMounted(async () => {
               <td><span class="status-badge" :class="user.status">{{ user.status === 'active' ? '正常' : '停用' }}</span></td>
               <td>{{ user.created_at }}</td>
               <td class="actions">
+                <button class="action-btn" @click="openViewPasswordModal(user)">查看密码</button>
                 <button class="action-btn" @click="openPasswordModal(user)">修改密码</button>
                 <button class="action-btn" :class="user.status === 'active' ? 'btn-danger' : 'btn-success'" @click="openStatusModal(user)">
                   {{ user.status === 'active' ? '停用' : '启用' }}
@@ -223,7 +241,12 @@ onMounted(async () => {
         <div class="modal-body">
           <div class="form-group">
             <label>新密码</label>
-            <input type="password" v-model="newPassword" placeholder="请输入新密码（至少6位）">
+            <div class="password-input">
+              <input :type="showPassword ? 'text' : 'password'" v-model="newPassword" placeholder="请输入新密码（至少6位）">
+              <button class="toggle-password" @click="showPassword = !showPassword">
+                {{ showPassword ? '👁️' : '👁️‍🗨️' }}
+              </button>
+            </div>
           </div>
         </div>
         <div class="modal-footer">
@@ -265,12 +288,32 @@ onMounted(async () => {
           </div>
           <div class="form-group">
             <label>密码</label>
-            <input type="password" v-model="newUserPassword" placeholder="请输入密码（至少6位）">
+            <div class="password-input">
+              <input :type="showCreatePassword ? 'text' : 'password'" v-model="newUserPassword" placeholder="请输入密码（至少6位）">
+              <button class="toggle-password" @click="showCreatePassword = !showCreatePassword">
+                {{ showCreatePassword ? '👁️' : '👁️‍🗨️' }}
+              </button>
+            </div>
           </div>
         </div>
         <div class="modal-footer">
           <button class="btn-secondary" @click="showCreateModal = false">取消</button>
           <button class="btn-primary" @click="submitCreateUser">确认添加</button>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="showViewPasswordModal" class="modal-overlay" @click.self="showViewPasswordModal = false">
+      <div class="modal">
+        <h3>用户密码 - {{ selectedUser?.username }}</h3>
+        <div class="modal-body">
+          <div class="password-display">
+            <label>密码：</label>
+            <span class="password-value">{{ viewPassword }}</span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" @click="showViewPasswordModal = false">关闭</button>
         </div>
       </div>
     </div>
@@ -320,7 +363,13 @@ onMounted(async () => {
 .modal-body .form-group { display: flex; flex-direction: column; gap: 8px; }
 .modal-body .form-group label { font-size: 14px; color: #374151; }
 .modal-body .form-group input { padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; }
+.modal-body .password-input { display: flex; gap: 8px; }
+.modal-body .password-input input { flex: 1; }
+.modal-body .toggle-password { background: none; border: none; padding: 8px; cursor: pointer; font-size: 16px; }
 .modal-body .warning { color: #dc2626; font-size: 14px; }
+.modal-body .password-display { background: #f3f4f6; padding: 16px; border-radius: 8px; font-size: 16px; color: #1f2937; }
+.modal-body .password-display label { font-weight: 500; margin-right: 8px; }
+.modal-body .password-value { font-family: monospace; letter-spacing: 1px; }
 .modal-footer { display: flex; justify-content: flex-end; gap: 12px; }
 .btn-primary, .btn-secondary, .btn-danger { padding: 10px 20px; border-radius: 6px; font-size: 14px; cursor: pointer; border: none; }
 .btn-primary { background: #667eea; color: white; }
