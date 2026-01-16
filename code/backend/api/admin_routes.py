@@ -288,6 +288,98 @@ def change_user_status(user_id: int):
         }), 500
 
 
+@admin_bp.route('/users', methods=['POST'])
+@require_admin
+def create_user():
+    """
+    创建新用户（管理员）
+    
+    请求体:
+    {
+        "username": "newuser",
+        "password": "password123"
+    }
+    """
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({
+                "success": False,
+                "error": "请求体不能为空",
+                "code": "INVALID_REQUEST"
+            }), 400
+        
+        username = data.get('username', '').strip()
+        password = data.get('password', '')
+        
+        if not username or not password:
+            return jsonify({
+                "success": False,
+                "error": "用户名和密码不能为空",
+                "code": "VALIDATION_ERROR"
+            }), 400
+        
+        # 用户名长度验证
+        if len(username) < 3 or len(username) > 50:
+            return jsonify({
+                "success": False,
+                "error": "用户名长度必须在3-50之间",
+                "code": "VALIDATION_ERROR"
+            }), 400
+        
+        # 密码长度验证
+        if len(password) < 6:
+            return jsonify({
+                "success": False,
+                "error": "密码长度不能少于6位",
+                "code": "VALIDATION_ERROR"
+            }), 400
+        
+        # 检查用户名是否以 admin 开头（管理员账号保留）
+        if username.lower().startswith('admin'):
+            return jsonify({
+                "success": False,
+                "error": "不能创建以 admin 为前缀的用户名",
+                "code": "USERNAME_INVALID"
+            }), 400
+        
+        # 检查用户名是否已存在
+        existing = auth_service.get_user_by_username(username)
+        if existing:
+            return jsonify({
+                "success": False,
+                "error": "用户名已存在",
+                "code": "USERNAME_EXISTS"
+            }), 400
+        
+        # 创建用户
+        hashed_password = auth_service.hash_password(password)
+        sql = """
+            INSERT INTO users (username, password, role, status, created_at)
+            VALUES (%s, %s, 'user', 'active', NOW())
+        """
+        user_id = execute_update(sql, (username, hashed_password))
+        
+        return jsonify({
+            "success": True,
+            "message": f"用户 {username} 创建成功",
+            "data": {
+                "id": user_id,
+                "username": username,
+                "role": "user",
+                "status": "active"
+            }
+        }), 201
+        
+    except Exception as e:
+        logger.error(f"创建用户失败: {e}")
+        return jsonify({
+            "success": False,
+            "error": "创建用户失败",
+            "code": "CREATE_ERROR"
+        }), 500
+
+
 @admin_bp.route('/users/<int:user_id>', methods=['DELETE'])
 @require_admin
 def delete_user(user_id: int):

@@ -225,6 +225,7 @@ class AuthService:
                 "id": user['id'],
                 "username": user['username'],
                 "role": user['role'],
+                "status": user['status'],
                 "created_at": user['created_at'].isoformat() if user['created_at'] else None
             }
         }

@@ -30,6 +30,12 @@ router.beforeEach((to, from, next) => {
     return
   }
   
+  // 管理员访问根路径时，自动跳转到管理后台
+  if (to.path === '/' && token && user?.role === 'admin') {
+    next('/admin')
+    return
+  }
+  
   if (to.path === '/login' && token) {
     next(user?.role === 'admin' ? '/admin' : '/')
     return

@@ -13,8 +13,11 @@ const pagination = ref({ page: 1, pageSize: 10, total: 0 })
 const showPasswordModal = ref(false)
 const showStatusModal = ref(false)
 const showDeleteModal = ref(false)
+const showCreateModal = ref(false)
 const selectedUser = ref(null)
 const newPassword = ref('')
+const newUsername = ref('')
+const newUserPassword = ref('')
 
 async function fetchCurrentUser() {
   const result = await authApi.getMe()
@@ -106,6 +109,48 @@ function changePage(page) {
   fetchUsers()
 }
 
+function openCreateModal() {
+  newUsername.value = ''
+  newUserPassword.value = ''
+  error.value = ''
+  showCreateModal.value = true
+}
+
+async function submitCreateUser() {
+  error.value = ''
+  
+  if (!newUsername.value || !newUserPassword.value) {
+    error.value = '用户名和密码不能为空'
+    return
+  }
+  
+  if (newUsername.value.length < 3 || newUsername.value.length > 50) {
+    error.value = '用户名长度必须在3-50之间'
+    return
+  }
+  
+  if (newUserPassword.value.length < 6) {
+    error.value = '密码长度不能少于6位'
+    return
+  }
+  
+  if (newUsername.value.toLowerCase().startsWith('admin')) {
+    error.value = '不能创建以 admin 为前缀的用户名'
+    return
+  }
+  
+  const result = await adminApi.createUser(newUsername.value, newUserPassword.value)
+  
+  if (result.success) {
+    success.value = `用户 ${newUsername.value} 创建成功`
+    showCreateModal.value = false
+    await fetchUsers()
+    setTimeout(() => success.value = '', 3000)
+  } else {
+    error.value = result.error
+  }
+}
+
 onMounted(async () => {
   await fetchCurrentUser()
   await fetchUsers()
@@ -129,7 +174,7 @@ onMounted(async () => {
       <div class="user-section">
         <div class="section-header">
           <h2>用户管理</h2>
-          <span class="user-count">共 {{ pagination.total }} 个用户</span>
+          <button class="add-user-btn" @click="openCreateModal">添加用户</button>
         </div>
 
         <div v-if="loading" class="loading">加载中...</div>
@@ -209,6 +254,26 @@ onMounted(async () => {
         </div>
       </div>
     </div>
+
+    <div v-if="showCreateModal" class="modal-overlay" @click.self="showCreateModal = false">
+      <div class="modal">
+        <h3>添加新用户</h3>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>用户名</label>
+            <input type="text" v-model="newUsername" placeholder="请输入用户名（3-50字符）">
+          </div>
+          <div class="form-group">
+            <label>密码</label>
+            <input type="password" v-model="newUserPassword" placeholder="请输入密码（至少6位）">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" @click="showCreateModal = false">取消</button>
+          <button class="btn-primary" @click="submitCreateUser">确认添加</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -226,6 +291,8 @@ onMounted(async () => {
 .user-section { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 .section-header h2 { font-size: 18px; color: #1f2937; margin: 0; }
+.add-user-btn { background: #667eea; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px; }
+.add-user-btn:hover { background: #5a67d8; }
 .user-count { color: #6b7280; font-size: 14px; }
 .loading { text-align: center; padding: 40px; color: #6b7280; }
 .user-table { width: 100%; border-collapse: collapse; }

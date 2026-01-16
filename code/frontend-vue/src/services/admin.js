@@ -9,6 +9,16 @@ export const adminApi = {
     return response.json()
   },
 
+  async createUser(username, password) {
+    const token = localStorage.getItem('token')
+    const response = await fetch(`${API_BASE}/users`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ username, password })
+    })
+    return response.json()
+  },
+
   async changeUserPassword(userId, newPassword) {
     const token = localStorage.getItem('token')
     const response = await fetch(`${API_BASE}/users/${userId}/password`, {
