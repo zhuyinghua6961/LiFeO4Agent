@@ -242,6 +242,8 @@ class AuthService:
         Returns:
             修改结果
         """
+        import re
+        
         # 获取用户
         sql = "SELECT id, password FROM users WHERE id = %s"
         results = execute_query(sql, (user_id,))
@@ -260,6 +262,35 @@ class AuthService:
                 "success": False,
                 "error": "旧密码错误",
                 "code": "INVALID_PASSWORD"
+            }
+        
+        # 新密码验证：字母+数字+英文符号（至少8位）
+        if len(new_password) < 8:
+            return {
+                "success": False,
+                "error": "密码长度不能少于8位",
+                "code": "PASSWORD_TOO_SHORT"
+            }
+        
+        if not re.search(r'[a-zA-Z]', new_password):
+            return {
+                "success": False,
+                "error": "密码必须包含字母",
+                "code": "PASSWORD_NO_LETTER"
+            }
+        
+        if not re.search(r'[0-9]', new_password):
+            return {
+                "success": False,
+                "error": "密码必须包含数字",
+                "code": "PASSWORD_NO_DIGIT"
+            }
+        
+        if not re.search(r'[!@#$%^&*()_+\-=\[\]{};\'\\:"|<,./>?]', new_password):
+            return {
+                "success": False,
+                "error": "密码必须包含英文符号",
+                "code": "PASSWORD_NO_SYMBOL"
             }
         
         # 更新密码

@@ -37,8 +37,23 @@ async function submitPasswordChange() {
     return
   }
   
-  if (newPassword.value.length < 6) {
-    error.value = '新密码长度不能少于6位'
+  if (newPassword.value.length < 8) {
+    error.value = '新密码长度不能少于8位'
+    return
+  }
+  
+  if (!/[a-zA-Z]/.test(newPassword.value)) {
+    error.value = '新密码必须包含字母'
+    return
+  }
+  
+  if (!/[0-9]/.test(newPassword.value)) {
+    error.value = '新密码必须包含数字'
+    return
+  }
+  
+  if (!/[!@#$%^&*()_+\-=\[\]{};\'\\:"|<,./>?]/.test(newPassword.value)) {
+    error.value = '新密码必须包含英文符号'
     return
   }
   
@@ -124,7 +139,7 @@ onMounted(fetchCurrentUser)
             </div>
             <div class="form-group">
               <label>新密码</label>
-              <input type="password" v-model="newPassword" placeholder="请输入新密码（至少6位）">
+              <input type="password" v-model="newPassword" placeholder="请输入新密码（8位以上，包含字母、数字、符号）">
             </div>
             <div class="form-actions">
               <button class="btn-secondary" @click="showPasswordForm = false">取消</button>
