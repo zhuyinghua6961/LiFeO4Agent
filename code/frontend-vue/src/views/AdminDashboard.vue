@@ -181,7 +181,10 @@ onMounted(async () => {
         <h1>管理员后台</h1>
         <span class="user-info" v-if="currentUser">管理员: {{ currentUser.username }}</span>
       </div>
-      <button class="logout-btn" @click="logout">退出登录</button>
+      <div class="header-actions">
+        <a href="/profile" class="profile-btn">个人中心</a>
+        <button class="logout-btn" @click="logout">退出登录</button>
+      </div>
     </header>
 
     <main class="admin-main">
@@ -326,6 +329,9 @@ onMounted(async () => {
 .header-left { display: flex; align-items: center; gap: 20px; }
 .header-left h1 { font-size: 20px; color: #1f2937; margin: 0; }
 .user-info { color: #6b7280; font-size: 14px; }
+.header-actions { display: flex; align-items: center; gap: 12px; }
+.profile-btn { background: #667eea; color: white; text-decoration: none; padding: 8px 16px; border-radius: 6px; font-size: 14px; }
+.profile-btn:hover { background: #5a67d8; }
 .logout-btn { background: #f3f4f6; border: 1px solid #d1d5db; padding: 8px 16px; border-radius: 6px; cursor: pointer; }
 .admin-main { padding: 24px; max-width: 1200px; margin: 0 auto; }
 .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; }

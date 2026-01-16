@@ -3,10 +3,12 @@ import Login from '../views/Login.vue'
 import AdminDashboard from '../views/AdminDashboard.vue'
 import Home from '../views/Home.vue'
 import UserProfile from '../views/UserProfile.vue'
+import ForgotPassword from '../views/ForgotPassword.vue'
 
 const routes = [
   { path: '/', component: Home, meta: { requiresAuth: true } },
   { path: '/login', component: Login },
+  { path: '/forgot-password', component: ForgotPassword },
   { path: '/admin', component: AdminDashboard, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/profile', component: UserProfile, meta: { requiresAuth: true } }
 ]

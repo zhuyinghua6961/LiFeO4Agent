@@ -73,5 +73,62 @@ export const authApi = {
       }
     })
     return response.json()
+  },
+
+  /**
+   * 发起密码重置 - 检查安全问题
+   */
+  async initiatePasswordReset(username) {
+    const response = await fetch(`${API_BASE}/forgot-password/initiate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ username })
+    })
+    return response.json()
+  },
+
+  /**
+   * 验证安全问题并重置密码
+   */
+  async verifyAndResetPassword(username, answers, newPassword) {
+    const response = await fetch(`${API_BASE}/forgot-password/verify`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ username, answers, new_password: newPassword })
+    })
+    return response.json()
+  },
+
+  /**
+   * 获取当前用户设置的安全问题
+   */
+  async getSecurityQuestions() {
+    const token = localStorage.getItem('token')
+    const response = await fetch(`${API_BASE}/security-questions`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+    return response.json()
+  },
+
+  /**
+   * 设置/更新安全问题
+   */
+  async setSecurityQuestions(questions) {
+    const token = localStorage.getItem('token')
+    const response = await fetch(`${API_BASE}/security-questions`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ questions })
+    })
+    return response.json()
   }
 }

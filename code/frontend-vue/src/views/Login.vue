@@ -82,6 +82,8 @@ async function handleLogin() {
       
       <div class="login-footer">
         <a href="/">返回首页</a>
+        <span class="divider">|</span>
+        <a href="/forgot-password">忘记密码？</a>
       </div>
     </div>
   </div>
@@ -197,5 +199,10 @@ async function handleLogin() {
 
 .login-footer a:hover {
   color: #667eea;
+}
+
+.login-footer .divider {
+  margin: 0 12px;
+  color: #d1d5db;
 }
 </style>

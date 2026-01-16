@@ -12,12 +12,29 @@ const showPasswordForm = ref(false)
 const oldPassword = ref('')
 const newPassword = ref('')
 
+// 安全问题表单
+const showSecurityForm = ref(false)
+const securityQuestions = ref([])
+const securityAnswers = ref([])
+const presetQuestions = [
+  "我最喜欢的水果是什么？",
+  "我出生在哪个城市？",
+  "我最喜欢的一本书是什么？",
+  "我的小学名称是什么？",
+  "我最喜欢的电影是什么？",
+  "我最喜欢的一句话是什么？",
+  "我的偶像是谁？",
+  "我最喜欢的一种运动是什么？"
+]
+
 async function fetchCurrentUser() {
   loading.value = true
   try {
     const result = await authApi.getMe()
     if (result.success) {
       currentUser.value = result.data
+      // 获取已设置的安全问题
+      await fetchSecurityQuestions()
     } else {
       error.value = result.error
     }
@@ -25,6 +42,17 @@ async function fetchCurrentUser() {
     error.value = '获取用户信息失败'
   } finally {
     loading.value = false
+  }
+}
+
+async function fetchSecurityQuestions() {
+  const result = await authApi.getSecurityQuestions()
+  if (result.success && result.data.questions) {
+    securityQuestions.value = result.data.questions
+    // 如果有已设置的问题，初始化答案数组
+    if (securityQuestions.value.length > 0) {
+      securityAnswers.value = securityQuestions.value.map(() => '')
+    }
   }
 }
 
@@ -70,8 +98,54 @@ async function submitPasswordChange() {
   }
 }
 
+// 添加一个问题
+function addQuestion() {
+  if (securityQuestions.value.length < 3) {
+    securityQuestions.value.push('')
+    securityAnswers.value.push('')
+  }
+}
+
+// 移除一个问题
+function removeQuestion(index) {
+  securityQuestions.value.splice(index, 1)
+  securityAnswers.value.splice(index, 1)
+}
+
+// 保存安全问题
+async function saveSecurityQuestions() {
+  error.value = ''
+  success.value = ''
+  
+  // 验证
+  for (let i = 0; i < securityQuestions.value.length; i++) {
+    if (!securityQuestions.value[i]) {
+      error.value = `请选择或输入第${i + 1}个问题`
+      return
+    }
+    if (!securityAnswers.value[i] || !securityAnswers.value[i].trim()) {
+      error.value = `请输入第${i + 1}个问题的答案`
+      return
+    }
+  }
+  
+  const questions = securityQuestions.value.map((q, i) => ({
+    question: q,
+    answer: securityAnswers.value[i].trim()
+  }))
+  
+  const result = await authApi.setSecurityQuestions(questions)
+  
+  if (result.success) {
+    success.value = '安全问题设置成功'
+    showSecurityForm.value = false
+    setTimeout(() => success.value = '', 3000)
+  } else {
+    error.value = result.error
+  }
+}
+
 async function logout() {
-  await authApi.logout()
   localStorage.removeItem('token')
   localStorage.removeItem('user')
   window.location.href = '/login'
@@ -147,6 +221,76 @@ onMounted(fetchCurrentUser)
             </div>
           </div>
         </div>
+
+        <!-- 安全问题设置 -->
+        <div class="action-card">
+          <h2>安全问题设置</h2>
+          <p class="hint">设置安全问题后，可以通过回答问题找回密码（最多设置3个问题）</p>
+          
+          <div v-if="success" class="alert alert-success">{{ success }}</div>
+          <div v-if="error" class="alert alert-error">{{ error }}</div>
+          
+          <div v-if="!showSecurityForm">
+            <div class="security-status">
+              <span v-if="securityQuestions.length > 0" class="has-questions">
+                已设置 {{ securityQuestions.length }} 个安全问题
+              </span>
+              <span v-else class="no-questions">
+                尚未设置安全问题
+              </span>
+            </div>
+            <button class="action-btn" @click="showSecurityForm = true">
+              {{ securityQuestions.length > 0 ? '修改安全问题' : '设置安全问题' }}
+            </button>
+          </div>
+          
+          <div v-else class="security-form">
+            <div 
+              v-for="(question, index) in securityQuestions" 
+              :key="index" 
+              class="question-item"
+            >
+              <div class="question-header">
+                <span class="question-number">问题 {{ index + 1 }}</span>
+                <button 
+                  v-if="securityQuestions.length > 1" 
+                  class="remove-btn"
+                  @click="removeQuestion(index)"
+                >
+                  移除
+                </button>
+              </div>
+              <select v-model="securityQuestions[index]">
+                <option value="">请选择问题</option>
+                <option 
+                  v-for="pq in presetQuestions" 
+                  :key="pq" 
+                  :value="pq"
+                >
+                  {{ pq }}
+                </option>
+              </select>
+              <input 
+                type="text" 
+                v-model="securityAnswers[index]" 
+                placeholder="请输入答案"
+              >
+            </div>
+            
+            <button 
+              v-if="securityQuestions.length < 3" 
+              class="add-btn" 
+              @click="addQuestion"
+            >
+              + 添加问题
+            </button>
+            
+            <div class="form-actions">
+              <button class="btn-secondary" @click="showSecurityForm = false">取消</button>
+              <button class="btn-primary" @click="saveSecurityQuestions">保存</button>
+            </div>
+          </div>
+        </div>
       </template>
     </main>
   </div>
@@ -156,6 +300,7 @@ onMounted(fetchCurrentUser)
 .profile-container {
   min-height: 100vh;
   background: #f3f4f6;
+  overflow-y: auto;
 }
 
 .profile-header {
@@ -221,9 +366,15 @@ onMounted(fetchCurrentUser)
 .info-card h2, .action-card h2 {
   font-size: 16px;
   color: #1f2937;
-  margin: 0 0 16px 0;
+  margin: 0 0 8px 0;
   padding-bottom: 12px;
   border-bottom: 1px solid #e5e7eb;
+}
+
+.hint {
+  color: #6b7280;
+  font-size: 13px;
+  margin: 0 0 16px 0;
 }
 
 .info-row {
@@ -365,5 +516,84 @@ onMounted(fetchCurrentUser)
 .alert-error {
   background: #fef2f2;
   color: #dc2626;
+}
+
+.security-status {
+  padding: 12px;
+  background: #f3f4f6;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.security-status .has-questions {
+  color: #166534;
+}
+
+.security-status .no-questions {
+  color: #dc2626;
+}
+
+.security-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.question-item {
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.question-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.question-number {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.remove-btn {
+  background: none;
+  border: none;
+  color: #dc2626;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.question-item select,
+.question-item input {
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.question-item select:focus,
+.question-item input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.add-btn {
+  background: none;
+  border: 1px dashed #d1d5db;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #667eea;
+}
+
+.add-btn:hover {
+  background: #f9fafb;
 }
 </style>
