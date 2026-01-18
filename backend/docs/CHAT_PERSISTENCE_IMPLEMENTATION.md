@@ -31,46 +31,46 @@ chat_history/
 
 #### 1.1 实体类 (entities.py)
 
-- [ ] **1.1.1** 创建 `Conversation` 实体类
-  - [ ] 定义字段：id, user_id, title, file_path, message_count, created_at, updated_at
-  - [ ] 实现 `to_dict()` 方法
-  - [ ] 实现 `from_dict()` 类方法
-  - [ ] 添加字段验证
+- [x] **1.1.1** 创建 `Conversation` 实体类
+  - [x] 定义字段：id, user_id, title, file_path, message_count, created_at, updated_at
+  - [x] 实现 `to_dict()` 方法
+  - [x] 实现 `from_dict()` 类方法
+  - [x] 添加字段验证
 
-- [ ] **1.1.2** 创建 `Message` 实体类
-  - [ ] 定义字段：role, content, timestamp
-  - [ ] 定义字段：queryMode, expert（可选，仅bot消息）
-  - [ ] 定义字段：steps（数组，保存处理步骤）
-  - [ ] 定义字段：references（数组，保存参考文献）
-  - [ ] 实现 `to_dict()` 方法
-  - [ ] 实现 `from_dict()` 类方法
+- [x] **1.1.2** 创建 `Message` 实体类
+  - [x] 定义字段：role, content, timestamp
+  - [x] 定义字段：queryMode, expert（可选，仅bot消息）
+  - [x] 定义字段：steps（数组，保存处理步骤）
+  - [x] 定义字段：references（数组，保存参考文献）
+  - [x] 实现 `to_dict()` 方法
+  - [x] 实现 `from_dict()` 类方法
 
-- [ ] **1.1.3** 创建 `Step` 实体类
-  - [ ] 定义字段：step, message, status, data, error
-  - [ ] 实现 `to_dict()` 方法
-  - [ ] 实现 `from_dict()` 类方法
+- [x] **1.1.3** 创建 `Step` 实体类
+  - [x] 定义字段：step, message, status, data, error
+  - [x] 实现 `to_dict()` 方法
+  - [x] 实现 `from_dict()` 类方法
 
 #### 1.2 DTO类 (dtos.py)
 
-- [ ] **1.2.1** 创建 `ConversationCreateRequest` DTO
-  - [ ] 定义字段：user_id, title（可选）
-  - [ ] 实现 `validate()` 方法
+- [x] **1.2.1** 创建 `ConversationCreateRequest` DTO
+  - [x] 定义字段：user_id, title（可选）
+  - [x] 实现 `validate()` 方法
 
-- [ ] **1.2.2** 创建 `ConversationListResponse` DTO
-  - [ ] 定义字段：conversations（数组）, total_count
-  - [ ] 实现 `to_dict()` 方法
+- [x] **1.2.2** 创建 `ConversationListResponse` DTO
+  - [x] 定义字段：conversations（数组）, total_count
+  - [x] 实现 `to_dict()` 方法
 
-- [ ] **1.2.3** 创建 `ConversationDetailResponse` DTO
-  - [ ] 定义字段：conversation_id, title, messages, created_at, updated_at
-  - [ ] 实现 `to_dict()` 方法
+- [x] **1.2.3** 创建 `ConversationDetailResponse` DTO
+  - [x] 定义字段：conversation_id, title, messages, created_at, updated_at
+  - [x] 实现 `to_dict()` 方法
 
-- [ ] **1.2.4** 创建 `MessageAddRequest` DTO
-  - [ ] 定义字段：role, content, steps, references
-  - [ ] 实现 `validate()` 方法
+- [x] **1.2.4** 创建 `MessageAddRequest` DTO
+  - [x] 定义字段：role, content, steps, references
+  - [x] 实现 `validate()` 方法
 
-- [ ] **1.2.5** 创建 `ConversationUpdateRequest` DTO
-  - [ ] 定义字段：title
-  - [ ] 实现 `validate()` 方法
+- [x] **1.2.5** 创建 `ConversationUpdateRequest` DTO
+  - [x] 定义字段：title
+  - [x] 实现 `validate()` 方法
 
 ---
 
@@ -78,107 +78,107 @@ chat_history/
 
 #### 2.1 数据库仓储 (conversation_repository.py)
 
-- [ ] **2.1.1** 创建 `ConversationRepository` 类
-  - [ ] 实现构造函数，初始化数据库连接
+- [x] **2.1.1** 创建 `ConversationRepository` 类
+  - [x] 实现构造函数，初始化数据库连接
 
-- [ ] **2.1.2** 实现 `create()` 方法
-  - [ ] 插入对话记录到 conversations 表
-  - [ ] 返回新创建的对话ID
-  - [ ] 处理数据库异常
+- [x] **2.1.2** 实现 `create()` 方法
+  - [x] 插入对话记录到 conversations 表
+  - [x] 返回新创建的对话ID
+  - [x] 处理数据库异常
 
-- [ ] **2.1.3** 实现 `get_by_id()` 方法
-  - [ ] 根据对话ID查询单条记录
-  - [ ] 返回 Conversation 实体
-  - [ ] 处理不存在的情况
+- [x] **2.1.3** 实现 `get_by_id()` 方法
+  - [x] 根据对话ID查询单条记录
+  - [x] 返回 Conversation 实体
+  - [x] 处理不存在的情况
 
-- [ ] **2.1.4** 实现 `get_by_user()` 方法
-  - [ ] 根据用户ID查询所有对话
-  - [ ] 按 updated_at 降序排序
-  - [ ] 支持分页（offset, limit）
-  - [ ] 返回 Conversation 实体列表
+- [x] **2.1.4** 实现 `get_by_user()` 方法
+  - [x] 根据用户ID查询所有对话
+  - [x] 按 updated_at 降序排序
+  - [x] 支持分页（offset, limit）
+  - [x] 返回 Conversation 实体列表
 
-- [ ] **2.1.5** 实现 `update_title()` 方法
-  - [ ] 更新对话标题
-  - [ ] 自动更新 updated_at
-  - [ ] 返回是否成功
+- [x] **2.1.5** 实现 `update_title()` 方法
+  - [x] 更新对话标题
+  - [x] 自动更新 updated_at
+  - [x] 返回是否成功
 
-- [ ] **2.1.6** 实现 `update_message_count()` 方法
-  - [ ] 更新消息数量
-  - [ ] 自动更新 updated_at
-  - [ ] 返回是否成功
+- [x] **2.1.6** 实现 `update_message_count()` 方法
+  - [x] 更新消息数量
+  - [x] 自动更新 updated_at
+  - [x] 返回是否成功
 
-- [ ] **2.1.7** 实现 `delete()` 方法
-  - [ ] 删除对话记录
-  - [ ] 检查用户权限（只能删除自己的对话）
-  - [ ] 返回是否成功
+- [x] **2.1.7** 实现 `delete()` 方法
+  - [x] 删除对话记录
+  - [x] 检查用户权限（只能删除自己的对话）
+  - [x] 返回是否成功
 
-- [ ] **2.1.8** 实现 `exists()` 方法
-  - [ ] 检查对话是否存在
-  - [ ] 检查是否属于指定用户
-  - [ ] 返回布尔值
+- [x] **2.1.8** 实现 `exists()` 方法
+  - [x] 检查对话是否存在
+  - [x] 检查是否属于指定用户
+  - [x] 返回布尔值
 
-- [ ] **2.1.9** 实现 `count_by_user()` 方法
-  - [ ] 统计用户的对话总数
-  - [ ] 返回整数
+- [x] **2.1.9** 实现 `count_by_user()` 方法
+  - [x] 统计用户的对话总数
+  - [x] 返回整数
 
 #### 2.2 文件仓储 (conversation_file_repository.py)
 
-- [ ] **2.2.1** 创建 `ConversationFileRepository` 类
-  - [ ] 定义基础路径常量 `CHAT_HISTORY_DIR`
-  - [ ] 实现构造函数，确保目录存在
+- [x] **2.2.1** 创建 `ConversationFileRepository` 类
+  - [x] 定义基础路径常量 `CHAT_HISTORY_DIR`
+  - [x] 实现构造函数，确保目录存在
 
-- [ ] **2.2.2** 实现 `_get_file_path()` 私有方法
-  - [ ] 根据 user_id 和 conversation_id 生成文件路径
-  - [ ] 格式：`chat_history/user_{user_id}/conv_{conv_id}.json`
-  - [ ] 返回完整路径
+- [x] **2.2.2** 实现 `_get_file_path()` 私有方法
+  - [x] 根据 user_id 和 conversation_id 生成文件路径
+  - [x] 格式：`chat_history/user_{user_id}/conv_{conv_id}.json`
+  - [x] 返回完整路径
 
-- [ ] **2.2.3** 实现 `_ensure_user_dir()` 私有方法
-  - [ ] 确保用户目录存在
-  - [ ] 如果不存在则创建
-  - [ ] 处理权限错误
+- [x] **2.2.3** 实现 `_ensure_user_dir()` 私有方法
+  - [x] 确保用户目录存在
+  - [x] 如果不存在则创建
+  - [x] 处理权限错误
 
-- [ ] **2.2.4** 实现 `create()` 方法
-  - [ ] 创建新的对话JSON文件
-  - [ ] 初始化空消息数组
-  - [ ] 写入基本元数据（conversation_id, user_id, title, created_at）
-  - [ ] 处理文件写入异常
+- [x] **2.2.4** 实现 `create()` 方法
+  - [x] 创建新的对话JSON文件
+  - [x] 初始化空消息数组
+  - [x] 写入基本元数据（conversation_id, user_id, title, created_at）
+  - [x] 处理文件写入异常
 
-- [ ] **2.2.5** 实现 `read()` 方法
-  - [ ] 读取对话JSON文件
-  - [ ] 解析JSON内容
-  - [ ] 返回消息列表
-  - [ ] 处理文件不存在的情况
-  - [ ] 处理JSON解析错误
+- [x] **2.2.5** 实现 `read()` 方法
+  - [x] 读取对话JSON文件
+  - [x] 解析JSON内容
+  - [x] 返回消息列表
+  - [x] 处理文件不存在的情况
+  - [x] 处理JSON解析错误
 
-- [ ] **2.2.6** 实现 `append_message()` 方法
-  - [ ] 读取现有JSON文件
-  - [ ] 追加新消息到 messages 数组
-  - [ ] 更新 updated_at 时间戳
-  - [ ] 写回JSON文件
-  - [ ] 实现文件锁机制（防止并发写入）
-  - [ ] 处理异常情况
+- [x] **2.2.6** 实现 `append_message()` 方法
+  - [x] 读取现有JSON文件
+  - [x] 追加新消息到 messages 数组
+  - [x] 更新 updated_at 时间戳
+  - [x] 写回JSON文件
+  - [x] 实现文件锁机制（防止并发写入）
+  - [x] 处理异常情况
 
-- [ ] **2.2.7** 实现 `update_title()` 方法
-  - [ ] 读取JSON文件
-  - [ ] 更新 title 字段
-  - [ ] 更新 updated_at 时间戳
-  - [ ] 写回JSON文件
-  - [ ] 处理异常情况
+- [x] **2.2.7** 实现 `update_title()` 方法
+  - [x] 读取JSON文件
+  - [x] 更新 title 字段
+  - [x] 更新 updated_at 时间戳
+  - [x] 写回JSON文件
+  - [x] 处理异常情况
 
-- [ ] **2.2.8** 实现 `delete()` 方法
-  - [ ] 删除对话JSON文件
-  - [ ] 检查文件是否存在
-  - [ ] 处理删除失败的情况
-  - [ ] 返回是否成功
+- [x] **2.2.8** 实现 `delete()` 方法
+  - [x] 删除对话JSON文件
+  - [x] 检查文件是否存在
+  - [x] 处理删除失败的情况
+  - [x] 返回是否成功
 
-- [ ] **2.2.9** 实现 `exists()` 方法
-  - [ ] 检查JSON文件是否存在
-  - [ ] 返回布尔值
+- [x] **2.2.9** 实现 `exists()` 方法
+  - [x] 检查JSON文件是否存在
+  - [x] 返回布尔值
 
-- [ ] **2.2.10** 实现 `get_file_size()` 方法
-  - [ ] 获取JSON文件大小
-  - [ ] 用于监控文件大小
-  - [ ] 返回字节数
+- [x] **2.2.10** 实现 `get_file_size()` 方法
+  - [x] 获取JSON文件大小
+  - [x] 用于监控文件大小
+  - [x] 返回字节数
 
 ---
 
@@ -186,76 +186,76 @@ chat_history/
 
 #### 3.1 对话服务 (conversation_service.py)
 
-- [ ] **3.1.1** 创建 `ConversationService` 类
-  - [ ] 注入 `ConversationRepository` 依赖
-  - [ ] 注入 `ConversationFileRepository` 依赖
-  - [ ] 实现构造函数
+- [x] **3.1.1** 创建 `ConversationService` 类
+  - [x] 注入 `ConversationRepository` 依赖
+  - [x] 注入 `ConversationFileRepository` 依赖
+  - [x] 实现构造函数
 
-- [ ] **3.1.2** 实现 `create_conversation()` 方法
-  - [ ] 验证用户ID
-  - [ ] 生成默认标题（如果未提供）
-  - [ ] 调用数据库仓储创建记录
-  - [ ] 生成文件路径
-  - [ ] 调用文件仓储创建JSON文件
-  - [ ] 更新数据库中的 file_path
-  - [ ] 返回对话ID和详情
-  - [ ] 实现事务回滚（如果任一步骤失败）
+- [x] **3.1.2** 实现 `create_conversation()` 方法
+  - [x] 验证用户ID
+  - [x] 生成默认标题（如果未提供）
+  - [x] 调用数据库仓储创建记录
+  - [x] 生成文件路径
+  - [x] 调用文件仓储创建JSON文件
+  - [x] 更新数据库中的 file_path
+  - [x] 返回对话ID和详情
+  - [x] 实现事务回滚（如果任一步骤失败）
 
-- [ ] **3.1.3** 实现 `get_conversation_list()` 方法
-  - [ ] 验证用户ID
-  - [ ] 调用数据库仓储获取对话列表
-  - [ ] 支持分页参数
-  - [ ] 返回对话元数据列表（不含消息内容）
-  - [ ] 处理异常情况
+- [x] **3.1.3** 实现 `get_conversation_list()` 方法
+  - [x] 验证用户ID
+  - [x] 调用数据库仓储获取对话列表
+  - [x] 支持分页参数
+  - [x] 返回对话元数据列表（不含消息内容）
+  - [x] 处理异常情况
 
-- [ ] **3.1.4** 实现 `get_conversation_detail()` 方法
-  - [ ] 验证用户ID和对话ID
-  - [ ] 从数据库获取对话元数据
-  - [ ] 检查对话是否属于该用户
-  - [ ] 从JSON文件读取完整消息
-  - [ ] 合并元数据和消息内容
-  - [ ] 返回完整对话详情
-  - [ ] 处理文件不存在的情况
+- [x] **3.1.4** 实现 `get_conversation_detail()` 方法
+  - [x] 验证用户ID和对话ID
+  - [x] 从数据库获取对话元数据
+  - [x] 检查对话是否属于该用户
+  - [x] 从JSON文件读取完整消息
+  - [x] 合并元数据和消息内容
+  - [x] 返回完整对话详情
+  - [x] 处理文件不存在的情况
 
-- [ ] **3.1.5** 实现 `add_message()` 方法
-  - [ ] 验证用户ID和对话ID
-  - [ ] 验证消息内容
-  - [ ] 调用文件仓储追加消息
-  - [ ] 更新数据库中的 message_count
-  - [ ] 更新数据库中的 updated_at
-  - [ ] 如果是第一条消息，自动生成标题
-  - [ ] 返回是否成功
-  - [ ] 处理异常情况
+- [x] **3.1.5** 实现 `add_message()` 方法
+  - [x] 验证用户ID和对话ID
+  - [x] 验证消息内容
+  - [x] 调用文件仓储追加消息
+  - [x] 更新数据库中的 message_count
+  - [x] 更新数据库中的 updated_at
+  - [x] 如果是第一条消息，自动生成标题
+  - [x] 返回是否成功
+  - [x] 处理异常情况
 
-- [ ] **3.1.6** 实现 `update_conversation_title()` 方法
-  - [ ] 验证用户ID和对话ID
-  - [ ] 验证标题内容
-  - [ ] 同时更新数据库和JSON文件
-  - [ ] 返回是否成功
-  - [ ] 处理异常情况
+- [x] **3.1.6** 实现 `update_conversation_title()` 方法
+  - [x] 验证用户ID和对话ID
+  - [x] 验证标题内容
+  - [x] 同时更新数据库和JSON文件
+  - [x] 返回是否成功
+  - [x] 处理异常情况
 
-- [ ] **3.1.7** 实现 `delete_conversation()` 方法
-  - [ ] 验证用户ID和对话ID
-  - [ ] 检查对话是否属于该用户
-  - [ ] 先删除JSON文件
-  - [ ] 再删除数据库记录
-  - [ ] 返回是否成功
-  - [ ] 处理部分删除失败的情况
+- [x] **3.1.7** 实现 `delete_conversation()` 方法
+  - [x] 验证用户ID和对话ID
+  - [x] 检查对话是否属于该用户
+  - [x] 先删除JSON文件
+  - [x] 再删除数据库记录
+  - [x] 返回是否成功
+  - [x] 处理部分删除失败的情况
 
-- [ ] **3.1.8** 实现 `get_conversation_count()` 方法
-  - [ ] 验证用户ID
-  - [ ] 调用数据库仓储统计数量
-  - [ ] 返回对话总数
+- [x] **3.1.8** 实现 `get_conversation_count()` 方法
+  - [x] 验证用户ID
+  - [x] 调用数据库仓储统计数量
+  - [x] 返回对话总数
 
-- [ ] **3.1.9** 实现 `_generate_title_from_message()` 私有方法
-  - [ ] 从第一条用户消息生成标题
-  - [ ] 截取前30个字符
-  - [ ] 如果超过30字符，添加省略号
-  - [ ] 返回标题字符串
+- [x] **3.1.9** 实现 `_generate_title_from_message()` 私有方法
+  - [x] 从第一条用户消息生成标题
+  - [x] 截取前30个字符
+  - [x] 如果超过30字符，添加省略号
+  - [x] 返回标题字符串
 
-- [ ] **3.1.10** 实现 `_validate_user_permission()` 私有方法
-  - [ ] 检查对话是否属于指定用户
-  - [ ] 抛出权限异常（如果不匹配）
+- [x] **3.1.10** 实现 `_validate_user_permission()` 私有方法
+  - [x] 检查对话是否属于指定用户
+  - [x] 抛出权限异常（如果不匹配）
 
 ---
 
@@ -517,15 +517,15 @@ chat_history/
 ## 📊 进度追踪
 
 ### 总体进度
-- **阶段一（数据模型层）**：0/13 (0%)
-- **阶段二（仓储层）**：0/19 (0%)
-- **阶段三（服务层）**：0/10 (0%)
+- **阶段一（数据模型层）**：13/13 (100%) ✅
+- **阶段二（仓储层）**：19/19 (100%) ✅
+- **阶段三（服务层）**：10/10 (100%) ✅
 - **阶段四（API层）**：0/9 (0%)
 - **阶段五（前端改造）**：0/14 (0%)
 - **阶段六（测试与优化）**：0/14 (0%)
 - **阶段七（文档与部署）**：0/6 (0%)
 
-**总计**：0/85 (0%)
+**总计**：42/85 (49.4%)
 
 ---
 

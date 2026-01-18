@@ -199,3 +199,130 @@ class SearchResult:
             "total_count": self.total_count,
             "search_time_ms": self.search_time_ms
         }
+
+
+@dataclass
+class Step:
+    """处理步骤实体"""
+    step: str  # 步骤ID
+    message: str  # 显示消息
+    status: str  # 状态: processing/success/error/warning
+    data: Optional[Dict[str, Any]] = None  # 额外数据
+    error: Optional[str] = None  # 错误信息
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """转换为字典"""
+        result = {
+            "step": self.step,
+            "message": self.message,
+            "status": self.status
+        }
+        if self.data:
+            result["data"] = self.data
+        if self.error:
+            result["error"] = self.error
+        return result
+    
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'Step':
+        """从字典创建"""
+        return cls(
+            step=data.get("step", ""),
+            message=data.get("message", ""),
+            status=data.get("status", ""),
+            data=data.get("data"),
+            error=data.get("error")
+        )
+
+
+@dataclass
+class Message:
+    """消息实体"""
+    role: str  # user/assistant
+    content: str  # 消息内容
+    timestamp: str  # ISO格式时间戳
+    query_mode: Optional[str] = None  # 查询模式（仅bot消息）
+    expert: Optional[str] = None  # 使用的专家（仅bot消息）
+    steps: List[Step] = field(default_factory=list)  # 处理步骤
+    references: List[Dict[str, Any]] = field(default_factory=list)  # 参考文献
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """转换为字典"""
+        result = {
+            "role": self.role,
+            "content": self.content,
+            "timestamp": self.timestamp
+        }
+        if self.query_mode:
+            result["queryMode"] = self.query_mode
+        if self.expert:
+            result["expert"] = self.expert
+        if self.steps:
+            result["steps"] = [step.to_dict() for step in self.steps]
+        if self.references:
+            result["references"] = self.references
+        return result
+    
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'Message':
+        """从字典创建"""
+        steps_data = data.get("steps", [])
+        steps = [Step.from_dict(s) if isinstance(s, dict) else s for s in steps_data]
+        
+        return cls(
+            role=data.get("role", ""),
+            content=data.get("content", ""),
+            timestamp=data.get("timestamp", ""),
+            query_mode=data.get("queryMode"),
+            expert=data.get("expert"),
+            steps=steps,
+            references=data.get("references", [])
+        )
+
+
+@dataclass
+class Conversation:
+    """对话实体"""
+    id: int
+    user_id: int
+    title: str
+    file_path: str
+    message_count: int
+    created_at: str  # ISO格式时间戳
+    updated_at: str  # ISO格式时间戳
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """转换为字典"""
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "title": self.title,
+            "file_path": self.file_path,
+            "message_count": self.message_count,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at
+        }
+    
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'Conversation':
+        """从字典创建"""
+        return cls(
+            id=data.get("id", 0),
+            user_id=data.get("user_id", 0),
+            title=data.get("title", ""),
+            file_path=data.get("file_path", ""),
+            message_count=data.get("message_count", 0),
+            created_at=data.get("created_at", ""),
+            updated_at=data.get("updated_at", "")
+        )
+    
+    def validate(self) -> List[str]:
+        """验证实体数据"""
+        errors = []
+        if not self.user_id or self.user_id <= 0:
+            errors.append("user_id 必须是正整数")
+        if not self.title or not self.title.strip():
+            errors.append("title 不能为空")
+        if self.message_count < 0:
+            errors.append("message_count 不能为负数")
+        return errors

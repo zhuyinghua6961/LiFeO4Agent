@@ -248,3 +248,100 @@ class ErrorResponse:
             "code": self.code,
             "details": self.details
         }
+
+
+# ==================== 对话管理 DTOs ====================
+
+@dataclass
+class ConversationCreateRequest:
+    """创建对话请求 DTO"""
+    user_id: int
+    title: Optional[str] = None
+    
+    def validate(self) -> List[str]:
+        """验证请求数据"""
+        errors = []
+        if not self.user_id or self.user_id <= 0:
+            errors.append("user_id 必须是正整数")
+        if self.title and len(self.title) > 255:
+            errors.append("title 长度不能超过255个字符")
+        return errors
+
+
+@dataclass
+class ConversationListResponse:
+    """对话列表响应 DTO"""
+    conversations: List[Dict[str, Any]]
+    total_count: int
+    page: int = 1
+    page_size: int = 20
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """转换为字典"""
+        return {
+            "conversations": self.conversations,
+            "total_count": self.total_count,
+            "page": self.page,
+            "page_size": self.page_size
+        }
+
+
+@dataclass
+class ConversationDetailResponse:
+    """对话详情响应 DTO"""
+    conversation_id: int
+    user_id: int
+    title: str
+    messages: List[Dict[str, Any]]
+    message_count: int
+    created_at: str
+    updated_at: str
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """转换为字典"""
+        return {
+            "conversation_id": self.conversation_id,
+            "user_id": self.user_id,
+            "title": self.title,
+            "messages": self.messages,
+            "message_count": self.message_count,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at
+        }
+
+
+@dataclass
+class MessageAddRequest:
+    """添加消息请求 DTO"""
+    role: str
+    content: str
+    query_mode: Optional[str] = None
+    expert: Optional[str] = None
+    steps: Optional[List[Dict[str, Any]]] = None
+    references: Optional[List[Dict[str, Any]]] = None
+    
+    def validate(self) -> List[str]:
+        """验证请求数据"""
+        errors = []
+        if self.role not in ["user", "assistant"]:
+            errors.append("role 必须是 'user' 或 'assistant'")
+        if not self.content or not self.content.strip():
+            errors.append("content 不能为空")
+        if len(self.content) > 50000:
+            errors.append("content 长度不能超过50000个字符")
+        return errors
+
+
+@dataclass
+class ConversationUpdateRequest:
+    """更新对话请求 DTO"""
+    title: str
+    
+    def validate(self) -> List[str]:
+        """验证请求数据"""
+        errors = []
+        if not self.title or not self.title.strip():
+            errors.append("title 不能为空")
+        if len(self.title) > 255:
+            errors.append("title 长度不能超过255个字符")
+        return errors
