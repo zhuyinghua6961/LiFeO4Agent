@@ -89,42 +89,14 @@ export const useChatStore = defineStore('chat', () => {
   }
 
   async function createNewChat() {
-    const uid = getUserId()
-    
-    if (uid) {
-      // 服务器创建
-      try {
-        syncStatus.value = 'syncing'
-        const response = await api.createConversation(uid, '新对话')
-        
-        const chat = {
-          id: response.conversation_id.toString(),
-          title: response.title || '新对话',
-          messages: [],
-          createdAt: response.created_at,
-          updatedAt: response.updated_at,
-          messageCount: 0,
-          synced: true
-        }
-        
-        chats.value.unshift(chat)
-        currentChatId.value = chat.id
-        saveChats()
-        syncStatus.value = 'synced'
-        return chat
-      } catch (e) {
-        console.error('创建对话失败:', e)
-        syncStatus.value = 'failed'
-      }
-    }
-    
-    // 降级到本地创建
+    // 总是先在本地创建对话，不立即同步到服务器
+    // 只有当用户第一次发送消息时才会创建服务器对话
     const chat = {
       id: Date.now().toString(),
       title: '新对话',
       messages: [],
       createdAt: new Date(),
-      synced: false
+      synced: false  // 标记为未同步
     }
     chats.value.unshift(chat)
     currentChatId.value = chat.id
@@ -201,6 +173,31 @@ export const useChatStore = defineStore('chat', () => {
   async function addUserMessage(content) {
     if (!currentChat.value) return
     
+    const uid = getUserId()
+    
+    // 如果是第一次发送消息且对话未同步，先在服务器创建对话
+    if (!currentChat.value.synced && currentChat.value.messages.length === 0 && uid) {
+      try {
+        syncStatus.value = 'syncing'
+        const title = content.substring(0, 30) + (content.length > 30 ? '...' : '')
+        const response = await api.createConversation(uid, title)
+        
+        // 更新本地对话信息
+        currentChat.value.id = response.conversation_id.toString()
+        currentChat.value.title = response.title || title
+        currentChat.value.createdAt = response.created_at
+        currentChat.value.updatedAt = response.updated_at
+        currentChat.value.synced = true
+        
+        console.log('[addUserMessage] 首次发送消息，创建服务器对话:', currentChat.value.id)
+        syncStatus.value = 'synced'
+      } catch (e) {
+        console.error('创建服务器对话失败:', e)
+        syncStatus.value = 'failed'
+        // 即使创建失败，也继续添加消息到本地
+      }
+    }
+    
     const message = {
       role: 'user',
       content,
@@ -209,15 +206,14 @@ export const useChatStore = defineStore('chat', () => {
     
     currentChat.value.messages.push(message)
     
-    // 自动生成标题
-    if (currentChat.value.messages.length === 1) {
+    // 自动生成标题（如果还没有自定义标题）
+    if (currentChat.value.messages.length === 1 && currentChat.value.title === '新对话') {
       currentChat.value.title = content.substring(0, 30) + (content.length > 30 ? '...' : '')
     }
     
     saveChats()
     
-    // 同步到服务器
-    const uid = getUserId()
+    // 同步到服务器（如果对话已经同步）
     if (uid && currentChat.value.synced) {
       try {
         await api.addMessage(parseInt(currentChat.value.id), uid, message)

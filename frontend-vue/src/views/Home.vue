@@ -105,8 +105,11 @@ async function sendMessage() {
       .map(m => ({ role: m.role, content: m.content }))
 
     // 传递 userId 和 conversationId 到 askStream
+    // 注意：addUserMessage 可能已经创建了服务器对话，所以这里重新获取 chat
     const userId = store.getUserId()
-    const conversationId = chat.synced ? parseInt(chat.id) : null
+    const conversationId = store.currentChat.synced ? parseInt(store.currentChat.id) : null
+
+    console.log('[sendMessage] 发送消息, userId:', userId, 'conversationId:', conversationId, 'synced:', store.currentChat.synced)
 
     for await (const data of api.askStream(message, chatHistory, userId, conversationId)) {
       if (data.type === 'step') {
