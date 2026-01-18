@@ -3,6 +3,101 @@
 const API_BASE = '' // Vite 代理处理（开发环境）或相对路径（生产环境）
 
 export const api = {
+  // ==================== 对话管理 API ====================
+  
+  // 创建新对话
+  async createConversation(userId, title = '新对话') {
+    const res = await fetch(`${API_BASE}/api/conversations`, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+      },
+      body: JSON.stringify({ user_id: userId, title })
+    })
+    if (!res.ok) throw new Error('创建对话失败')
+    return res.json()
+  },
+
+  // 获取对话列表
+  async getConversationList(userId, page = 1, pageSize = 20) {
+    const res = await fetch(
+      `${API_BASE}/api/conversations?user_id=${userId}&page=${page}&page_size=${pageSize}`,
+      {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+        }
+      }
+    )
+    if (!res.ok) throw new Error('获取对话列表失败')
+    return res.json()
+  },
+
+  // 获取对话详情
+  async getConversationDetail(conversationId, userId) {
+    const res = await fetch(
+      `${API_BASE}/api/conversations/${conversationId}?user_id=${userId}`,
+      {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+        }
+      }
+    )
+    if (!res.ok) throw new Error('获取对话详情失败')
+    return res.json()
+  },
+
+  // 添加消息到对话
+  async addMessage(conversationId, userId, message) {
+    const res = await fetch(
+      `${API_BASE}/api/conversations/${conversationId}/messages`,
+      {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+        },
+        body: JSON.stringify({ user_id: userId, message })
+      }
+    )
+    if (!res.ok) throw new Error('添加消息失败')
+    return res.json()
+  },
+
+  // 更新对话标题
+  async updateConversationTitle(conversationId, userId, title) {
+    const res = await fetch(
+      `${API_BASE}/api/conversations/${conversationId}`,
+      {
+        method: 'PUT',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+        },
+        body: JSON.stringify({ user_id: userId, title })
+      }
+    )
+    if (!res.ok) throw new Error('更新标题失败')
+    return res.json()
+  },
+
+  // 删除对话
+  async deleteConversation(conversationId, userId) {
+    const res = await fetch(
+      `${API_BASE}/api/conversations/${conversationId}?user_id=${userId}`,
+      {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+        }
+      }
+    )
+    if (!res.ok) throw new Error('删除对话失败')
+    return res.status === 204 ? { success: true } : res.json()
+  },
+
+  // ==================== 知识库 API ====================
+  
   // 获取知识库信息
   async getKbInfo() {
     const res = await fetch(`${API_BASE}/api/kb_info`)
@@ -10,16 +105,23 @@ export const api = {
   },
 
   // 流式问答（重要：对接重构后的 /api/ask_stream 端点）
-  async *askStream(question, chatHistory = []) {
+  async *askStream(question, chatHistory = [], userId = null, conversationId = null) {
+    const body = {
+      question,
+      chat_history: chatHistory.slice(-10)
+    }
+    
+    // 如果提供了 userId 和 conversationId，添加到请求体
+    if (userId) body.user_id = userId
+    if (conversationId) body.conversation_id = conversationId
+    
     const response = await fetch(`${API_BASE}/api/ask_stream`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        question,
-        chat_history: chatHistory.slice(-10)
-        // 注意：重构后的后端不再需要 use_pdf 参数
-        // IntegratedAgent 会自动处理路由
-      })
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('auth_token') || ''}`
+      },
+      body: JSON.stringify(body)
     })
 
     if (!response.ok) {

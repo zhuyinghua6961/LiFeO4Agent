@@ -14,12 +14,22 @@ const hasMessages = computed(() => store.currentMessages.length > 0)
 const canSend = computed(() => inputMessage.value.trim() && !store.isStreaming)
 
 onMounted(async () => {
-  store.loadChats()
-  await fetchKbInfo()
-  if (store.chats.length === 0) {
-    store.createNewChat()
+  // 设置用户ID（临时方案：从 localStorage 获取或使用默认值）
+  const savedUserId = localStorage.getItem('lfp_user_id')
+  if (savedUserId) {
+    store.setUserId(parseInt(savedUserId))
   } else {
-    store.switchChat(store.chats[0].id)
+    // 默认使用用户ID 3（zyh）- 实际应用中应该从登录状态获取
+    store.setUserId(3)
+  }
+  
+  await store.loadChats()
+  await fetchKbInfo()
+  
+  if (store.chats.length === 0) {
+    await store.createNewChat()
+  } else {
+    await store.switchChat(store.chats[0].id)
   }
   
   document.addEventListener('click', (e) => {
@@ -72,7 +82,7 @@ async function sendMessage() {
   const chat = store.currentChat
   if (!chat) return
 
-  store.addUserMessage(message)
+  await store.addUserMessage(message)
   inputMessage.value = ''
   scrollToBottom()
 
@@ -94,7 +104,11 @@ async function sendMessage() {
       .slice(-10)
       .map(m => ({ role: m.role, content: m.content }))
 
-    for await (const data of api.askStream(message, chatHistory)) {
+    // 传递 userId 和 conversationId 到 askStream
+    const userId = store.getUserId()
+    const conversationId = chat.synced ? parseInt(chat.id) : null
+
+    for await (const data of api.askStream(message, chatHistory, userId, conversationId)) {
       if (data.type === 'step') {
         const currentMsg = store.currentMessages[store.currentMessages.length - 1]
         const existingSteps = currentMsg.steps || []
@@ -174,7 +188,12 @@ function autoResize(e) {
           :class="{ active: chat.id === store.currentChatId }"
           @click="switchChat(chat.id)"
         >
-          <div class="history-title">{{ chat.title }}</div>
+          <div class="history-title">
+            {{ chat.title }}
+            <span v-if="chat.synced === false" class="sync-icon sync-failed" title="同步失败">⚠️</span>
+            <span v-else-if="store.syncStatus === 'syncing'" class="sync-icon sync-syncing" title="同步中">🔄</span>
+            <span v-else-if="chat.synced" class="sync-icon sync-synced" title="已同步">☁️</span>
+          </div>
           <div class="history-time">{{ formatTime(chat.createdAt) }}</div>
         </div>
       </div>
@@ -208,7 +227,7 @@ function autoResize(e) {
             <template v-if="msg.role === 'user'">
               <div class="message-content">{{ msg.content }}</div>
             </template>
-            <template v-else-if="msg.role === 'bot'">
+            <template v-else-if="msg.role === 'bot' || msg.role === 'assistant'">
               <div class="bot-avatar">✨</div>
               <div class="message-content">
                 <div v-if="msg.queryMode" class="query-mode-badge">{{ msg.queryMode }}</div>
@@ -367,6 +386,23 @@ function autoResize(e) {
   font-size: 14px;
   color: #1e293b;
   margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sync-icon {
+  font-size: 12px;
+  margin-left: 4px;
+}
+
+.sync-syncing {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 .history-time {

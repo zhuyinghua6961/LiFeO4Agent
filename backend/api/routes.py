@@ -121,6 +121,8 @@ def ask_stream():
     logger.info(f"🔍 收到问题: {question}, user_id={user_id}, conversation_id={conversation_id}")
     
     def generate():
+        nonlocal conversation_id  # 声明使用外层的 conversation_id 变量
+        
         # 用于收集AI回复的完整数据
         collected_steps = []
         collected_content = ""
@@ -240,21 +242,12 @@ def serve_pdf(filename):
     
     logger.info(f"📄 收到PDF请求: {filename}")
     
-    # PDF 文件目录 - 定位到项目根目录 main/
-    # settings.base_dir 指向 .../main/code/backend
-    # 需要往上三层到 main/
-    # settings.base_dir = main/code/backend
+    # 使用 settings 中配置的路径
     from backend.config.settings import settings
-    backend_dir = settings.base_dir  # main/code/backend
-    code_dir = os.path.dirname(backend_dir)  # main/code
-    project_root = os.path.dirname(code_dir)  # main/
     
-    pdf_dir = os.path.join(project_root, 'papers')
-    mapping_file = os.path.join(project_root, 'doi_to_pdf_mapping.json')
+    pdf_dir = settings.papers_dir
+    mapping_file = settings.doi_to_pdf_mapping
     
-    logger.debug(f"   Backend目录: {backend_dir}")
-    logger.debug(f"   Code目录: {code_dir}")
-    logger.debug(f"   项目根目录: {project_root}")
     logger.debug(f"   PDF目录: {pdf_dir}")
     logger.debug(f"   映射文件: {mapping_file}")
     
