@@ -96,11 +96,14 @@ def ask_stream():
     2. IntegratedAgent 自动路由到合适的专家
     3. 专家执行查询并合成答案
     4. 流式返回结果
+    5. (可选) 保存对话到持久化存储
     
     请求体:
     {
         "question": "磷酸铁锂的电压是多少",
-        "chat_history": []
+        "chat_history": [],
+        "user_id": 1 (可选),
+        "conversation_id": 123 (可选)
     }
     """
     data = request.get_json()
@@ -111,13 +114,51 @@ def ask_stream():
     if not question:
         return jsonify(ErrorResponse(error='问题不能为空', code='VALIDATION_ERROR').to_dict()), 400
     
-    logger.info(f"🔍 收到问题: {question}")
+    # 获取可选的持久化参数
+    user_id = data.get('user_id')
+    conversation_id = data.get('conversation_id')
+    
+    logger.info(f"🔍 收到问题: {question}, user_id={user_id}, conversation_id={conversation_id}")
     
     def generate():
+        # 用于收集AI回复的完整数据
+        collected_steps = []
+        collected_content = ""
+        collected_references = []
+        expert_used = None
+        query_mode = None
+        
         try:
             # 获取 IntegratedAgent
             from backend.agents.integrated_agent import get_integrated_agent
             integrated_agent = get_integrated_agent()
+            
+            # 如果提供了user_id但没有conversation_id，自动创建新对话
+            if user_id and not conversation_id:
+                try:
+                    from backend.services.conversation_service import ConversationService
+                    conv_service = ConversationService()
+                    result = conv_service.create_conversation(user_id, "新对话")
+                    conversation_id = result['conversation_id']
+                    logger.info(f"自动创建新对话: conversation_id={conversation_id}")
+                except Exception as e:
+                    logger.warning(f"自动创建对话失败: {e}")
+            
+            # 如果启用持久化，保存用户消息
+            if user_id and conversation_id:
+                try:
+                    from backend.services.conversation_service import ConversationService
+                    conv_service = ConversationService()
+                    user_message = {
+                        'role': 'user',
+                        'content': question,
+                        'steps': [],
+                        'references': []
+                    }
+                    conv_service.add_message(conversation_id, user_id, user_message)
+                    logger.info(f"保存用户消息成功: conversation_id={conversation_id}")
+                except Exception as e:
+                    logger.warning(f"保存用户消息失败: {e}")
             
             # 发送开始信号
             start_data = json.dumps({'type': 'start', 'message': '开始处理问题'}, ensure_ascii=False)
@@ -125,8 +166,52 @@ def ask_stream():
             
             # 使用 IntegratedAgent 流式查询
             for chunk in integrated_agent.query_stream(question):
+                # 收集数据用于持久化
+                if chunk.get('type') == 'step':
+                    collected_steps.append({
+                        'step': chunk.get('step'),
+                        'message': chunk.get('message'),
+                        'status': chunk.get('status'),
+                        'data': chunk.get('data'),
+                        'error': chunk.get('error')
+                    })
+                elif chunk.get('type') == 'content':
+                    collected_content += chunk.get('content', '')
+                elif chunk.get('type') == 'done':
+                    collected_references = chunk.get('references', [])
+                    if chunk.get('metadata'):
+                        expert_used = chunk.get('metadata', {}).get('expert')
+                
+                # 流式输出
                 chunk_data = json.dumps(chunk, ensure_ascii=False)
                 yield f"data: {chunk_data}\n\n"
+            
+            # 如果启用持久化，保存AI回复
+            if user_id and conversation_id and collected_content:
+                try:
+                    from backend.services.conversation_service import ConversationService
+                    conv_service = ConversationService()
+                    
+                    # 确定查询模式
+                    if expert_used == 'neo4j':
+                        query_mode = '知识图谱'
+                    elif expert_used == 'community':
+                        query_mode = '社区分析'
+                    else:
+                        query_mode = '文献检索'
+                    
+                    ai_message = {
+                        'role': 'assistant',
+                        'content': collected_content,
+                        'queryMode': query_mode,
+                        'expert': expert_used,
+                        'steps': collected_steps,
+                        'references': collected_references
+                    }
+                    conv_service.add_message(conversation_id, user_id, ai_message)
+                    logger.info(f"保存AI回复成功: conversation_id={conversation_id}, steps={len(collected_steps)}")
+                except Exception as e:
+                    logger.warning(f"保存AI回复失败: {e}")
             
             # 发送完成信号
             done_data = json.dumps({'type': 'done', 'message': '回答完成'}, ensure_ascii=False)

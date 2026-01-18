@@ -27,6 +27,7 @@ from backend.config.settings import settings
 from backend.api.routes import api
 from backend.api.auth_routes import auth_bp  # 认证蓝图
 from backend.api.admin_routes import admin_bp  # 管理员蓝图
+from backend.api.conversation_routes import conversation_bp  # 对话管理蓝图
 from backend.services import get_llm_service, get_neo4j_service, get_vector_service
 
 
@@ -50,6 +51,9 @@ def create_app() -> Flask:
     
     # 注册管理员蓝图
     app.register_blueprint(admin_bp)
+    
+    # 注册对话管理蓝图
+    app.register_blueprint(conversation_bp)
     
     # 根路由
     @app.route('/')

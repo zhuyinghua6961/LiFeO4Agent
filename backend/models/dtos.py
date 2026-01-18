@@ -323,8 +323,8 @@ class MessageAddRequest:
     def validate(self) -> List[str]:
         """验证请求数据"""
         errors = []
-        if self.role not in ["user", "assistant"]:
-            errors.append("role 必须是 'user' 或 'assistant'")
+        if self.role not in ["user", "assistant", "bot"]:
+            errors.append("role 必须是 'user'、'assistant' 或 'bot'")
         if not self.content or not self.content.strip():
             errors.append("content 不能为空")
         if len(self.content) > 50000:

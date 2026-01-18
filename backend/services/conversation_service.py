@@ -253,9 +253,12 @@ class ConversationService:
             if errors:
                 raise ValueError(f"消息数据验证失败: {', '.join(errors)}")
             
+            # 统一 role：将 'bot' 转换为 'assistant' 以保持数据一致性
+            normalized_role = 'assistant' if request.role == 'bot' else request.role
+            
             # 创建Message实体
             message = Message(
-                role=request.role,
+                role=normalized_role,
                 content=request.content,
                 timestamp=datetime.now().isoformat(),
                 query_mode=request.query_mode,

@@ -8,7 +8,7 @@ import requests
 import json
 import time
 
-API_BASE = "http://localhost:5000/api"
+API_BASE = "http://localhost:8000/api"
 
 
 def print_section(title):
@@ -183,9 +183,9 @@ def main():
     
     # 检查服务是否运行
     try:
-        requests.get("http://localhost:5000/", timeout=3)
+        requests.get("http://localhost:8000/", timeout=3)
     except:
-        print("\n❌ 无法连接到后端服务 (http://localhost:5000)")
+        print("\n❌ 无法连接到后端服务 (http://localhost:8000)")
         print("   请先启动服务: cd code/backend && python main.py")
         return 1
     
