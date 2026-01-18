@@ -11,7 +11,7 @@ export const api = {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
       },
       body: JSON.stringify({ user_id: userId, title })
     })
@@ -25,7 +25,7 @@ export const api = {
       `${API_BASE}/api/conversations?user_id=${userId}&page=${page}&page_size=${pageSize}`,
       {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       }
     )
@@ -39,7 +39,7 @@ export const api = {
       `${API_BASE}/api/conversations/${conversationId}?user_id=${userId}`,
       {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       }
     )
@@ -55,7 +55,7 @@ export const api = {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify({ user_id: userId, message })
       }
@@ -72,7 +72,7 @@ export const api = {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify({ user_id: userId, title })
       }
@@ -88,7 +88,7 @@ export const api = {
       {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       }
     )
@@ -105,21 +105,21 @@ export const api = {
   },
 
   // 流式问答（重要：对接重构后的 /api/ask_stream 端点）
-  async *askStream(question, chatHistory = [], userId = null, conversationId = null) {
+  async *askStream(question, chatHistory = [], conversationId = null) {
     const body = {
       question,
       chat_history: chatHistory.slice(-10)
     }
     
-    // 如果提供了 userId 和 conversationId，添加到请求体
-    if (userId) body.user_id = userId
+    // 如果提供了 conversationId，添加到请求体
+    // 注意：userId 从后端 JWT token 中获取，不需要前端传递
     if (conversationId) body.conversation_id = conversationId
     
     const response = await fetch(`${API_BASE}/api/ask_stream`, {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('auth_token') || ''}`
+        'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
       },
       body: JSON.stringify(body)
     })

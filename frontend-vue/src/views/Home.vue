@@ -14,13 +14,27 @@ const hasMessages = computed(() => store.currentMessages.length > 0)
 const canSend = computed(() => inputMessage.value.trim() && !store.isStreaming)
 
 onMounted(async () => {
-  // 设置用户ID（临时方案：从 localStorage 获取或使用默认值）
-  const savedUserId = localStorage.getItem('lfp_user_id')
-  if (savedUserId) {
-    store.setUserId(parseInt(savedUserId))
-  } else {
-    // 默认使用用户ID 3（zyh）- 实际应用中应该从登录状态获取
-    store.setUserId(3)
+  // 从登录状态获取用户信息
+  const userStr = localStorage.getItem('user')
+  if (!userStr) {
+    // 如果没有用户信息，跳转到登录页
+    window.location.href = '/login'
+    return
+  }
+  
+  try {
+    const user = JSON.parse(userStr)
+    if (!user.id) {
+      window.location.href = '/login'
+      return
+    }
+    
+    // 设置用户ID
+    store.setUserId(user.id)
+  } catch (e) {
+    console.error('解析用户信息失败:', e)
+    window.location.href = '/login'
+    return
   }
   
   await store.loadChats()
@@ -104,14 +118,13 @@ async function sendMessage() {
       .slice(-10)
       .map(m => ({ role: m.role, content: m.content }))
 
-    // 传递 userId 和 conversationId 到 askStream
-    // 注意：addUserMessage 可能已经创建了服务器对话，所以这里重新获取 chat
-    const userId = store.getUserId()
+    // 传递 conversationId 到 askStream
+    // 注意：userId 从后端 JWT token 中获取，不需要前端传递
     const conversationId = store.currentChat.synced ? parseInt(store.currentChat.id) : null
 
-    console.log('[sendMessage] 发送消息, userId:', userId, 'conversationId:', conversationId, 'synced:', store.currentChat.synced)
+    console.log('[sendMessage] 发送消息, conversationId:', conversationId, 'synced:', store.currentChat.synced)
 
-    for await (const data of api.askStream(message, chatHistory, userId, conversationId)) {
+    for await (const data of api.askStream(message, chatHistory, conversationId)) {
       if (data.type === 'step') {
         const currentMsg = store.currentMessages[store.currentMessages.length - 1]
         const existingSteps = currentMsg.steps || []

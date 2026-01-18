@@ -18,6 +18,7 @@ from backend.models import (
     QueryResponse, RouteResponse, SearchResponse,
     ErrorResponse
 )
+from backend.utils.auth_decorators import optional_auth
 
 logger = logging.getLogger(__name__)
 
@@ -87,6 +88,7 @@ def get_services():
 # ============== 问答流式端点 (RAG 模式) ==============
 
 @api.route('/ask_stream', methods=['POST'])
+@optional_auth
 def ask_stream():
     """
     问答流式接口 (SSE格式) - 使用 IntegratedAgent
@@ -102,9 +104,10 @@ def ask_stream():
     {
         "question": "磷酸铁锂的电压是多少",
         "chat_history": [],
-        "user_id": 1 (可选),
         "conversation_id": 123 (可选)
     }
+    
+    注意：user_id 从 JWT token 中获取，不需要在请求体中提供
     """
     data = request.get_json()
     if not data:
@@ -114,8 +117,8 @@ def ask_stream():
     if not question:
         return jsonify(ErrorResponse(error='问题不能为空', code='VALIDATION_ERROR').to_dict()), 400
     
-    # 获取可选的持久化参数
-    user_id = data.get('user_id')
+    # 从认证装饰器获取 user_id（如果已登录）
+    user_id = getattr(request, 'user_id', None)
     conversation_id = data.get('conversation_id')
     
     logger.info(f"🔍 收到问题: {question}, user_id={user_id}, conversation_id={conversation_id}")

@@ -8,6 +8,7 @@ from typing import Dict, Any
 
 from backend.services.conversation_service import ConversationService
 from backend.models.dtos import ErrorResponse
+from backend.utils.auth_decorators import require_auth
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +30,7 @@ def get_conversation_service() -> ConversationService:
 # ============== API 端点 ==============
 
 @conversation_bp.route('', methods=['POST'])
+@require_auth
 def create_conversation():
     """
     创建新对话
@@ -88,6 +90,7 @@ def create_conversation():
 
 
 @conversation_bp.route('', methods=['GET'])
+@require_auth
 def get_conversation_list():
     """
     获取用户的对话列表
@@ -137,6 +140,7 @@ def get_conversation_list():
 
 
 @conversation_bp.route('/<int:conversation_id>', methods=['GET'])
+@require_auth
 def get_conversation_detail(conversation_id: int):
     """
     获取对话详情（包含完整消息）
@@ -200,6 +204,7 @@ def get_conversation_detail(conversation_id: int):
 
 
 @conversation_bp.route('/<int:conversation_id>/messages', methods=['POST'])
+@require_auth
 def add_message(conversation_id: int):
     """
     添加消息到对话
@@ -285,6 +290,7 @@ def add_message(conversation_id: int):
 
 
 @conversation_bp.route('/<int:conversation_id>', methods=['PUT'])
+@require_auth
 def update_conversation(conversation_id: int):
     """
     更新对话标题
@@ -363,6 +369,7 @@ def update_conversation(conversation_id: int):
 
 
 @conversation_bp.route('/<int:conversation_id>', methods=['DELETE'])
+@require_auth
 def delete_conversation(conversation_id: int):
     """
     删除对话
