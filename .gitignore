@@ -1,0 +1,211 @@
+# ==================== Python ====================
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# ==================== 配置文件（敏感信息）====================
+# 后端配置文件（包含API密钥、数据库密码等）
+backend/config.env
+backend/.env
+config.env
+.env
+
+# ==================== 数据库 ====================
+# SQLite
+*.db
+*.sqlite
+*.sqlite3
+
+# MySQL dumps
+*.sql
+*.dump
+
+# ==================== 日志文件 ====================
+*.log
+logs/
+*.log.*
+
+# ==================== IDE / 编辑器 ====================
+# VSCode
+.vscode/
+*.code-workspace
+
+# PyCharm
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# ==================== 操作系统 ====================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+# ==================== Node.js / 前端 ====================
+# Dependencies
+node_modules/
+jspm_packages/
+
+# Production builds
+frontend-vue/dist/
+frontend-vue/build/
+frontend/dist/
+frontend/build/
+
+# npm
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# ==================== 向量数据库 ====================
+# ChromaDB 数据文件
+vector_database/
+vector_db/
+backend/vector_database/
+backend/vector_db/
+*.chroma
+chroma_data/
+
+# ==================== 聊天记录（持久化存储）====================
+# 聊天历史JSON文件（用户数据）
+chat_history/
+backend/chat_history/
+
+# ==================== PDF 文件 ====================
+# 文献PDF文件（体积大，不适合Git）
+papers/
+*.pdf
+
+# PDF映射文件（如果包含敏感信息）
+doi_to_pdf_mapping.json
+backend/doi_to_pdf_mapping.json
+
+# ==================== 文本数据 ====================
+# 文献文本文件
+txt/
+backend/txt/
+*.txt
+
+# ==================== 临时文件 ====================
+# 临时文件
+tmp/
+temp/
+*.tmp
+*.bak
+*.swp
+
+# 上传文件
+uploads/
+
+# ==================== 测试相关 ====================
+# pytest
+.pytest_cache/
+.tox/
+
+# ==================== 其他 ====================
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# 压缩文件
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# 备份文件
+*.backup
+*.old
+
+# 文档生成
+docs/_build/
+site/
+
+# ==================== 项目特定 ====================
+# 旧版前端（如果不需要）
+frontend/
+
+# Shell脚本生成的文件
+shFiles/*.log
+
+# 完成报告（可选，如果不想提交）
+# backend/COMPLETION_REPORT.md
+# backend/REFACTORING_PROGRESS.md
+# backend/REFACTORING_SUMMARY.md
