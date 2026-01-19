@@ -56,8 +56,8 @@ class SemanticExpert:
         )
         
         # 相似度阈值配置
-        self._broad_threshold = getattr(settings, 'broad_similarity_threshold', 0.65)
-        self._precise_threshold = getattr(settings, 'precise_similarity_threshold', 0.5)
+        self._broad_threshold = getattr(settings, 'broad_similarity_threshold', 0.55)  # 从0.65降到0.55
+        self._precise_threshold = getattr(settings, 'precise_similarity_threshold', 0.45)  # 从0.5降到0.45
         
         # BGE API配置（用于生成查询embedding）
         self._bge_api_url = settings.bge_api_url
@@ -209,7 +209,7 @@ class SemanticExpert:
     def search(
         self, 
         question: str, 
-        top_k: int = 10,
+        top_k: int = 15,  # 从10增加到15
         with_scores: bool = False,
         filter_metadata: Optional[Dict] = None
     ) -> Dict[str, Any]:
@@ -573,7 +573,7 @@ class SemanticExpert:
     def query_with_details(
         self,
         question: str,
-        top_k: int = 20,
+        top_k: int = 20,  # 从20保持不变，但会被search的默认值15覆盖
         load_pdf: bool = True
     ) -> Dict[str, Any]:
         """执行查询并返回详细信息（包括PDF加载情况）"""
@@ -654,16 +654,52 @@ class SemanticExpert:
             return self._format_simple_answer(documents)
         
         try:
-            # 构建文献列表
+            # 构建文献列表（使用上下文扩展）
+            logger.info("\n" + "="*80)
+            logger.info("📖 [步骤5.5] 扩展上下文窗口")
+            logger.info(f"原始段落数: {len(documents)}")
+            
             literature_list = []
             for i, doc in enumerate(documents[:10], 1):
-                lit = {
-                    "序号": i,
-                    "内容": doc.get('content', '')[:500]
-                }
+                chunk_id = doc.get('id')
+                
+                # 获取带上下文的完整内容
+                context_result = self._vector_repo.get_chunk_with_context(
+                    chunk_id=chunk_id,
+                    window=2  # 前后各2个段落
+                )
+                
+                if context_result.get('success'):
+                    full_text = context_result['full_text']
+                    context_range = context_result['context_range']
+                    main_meta = context_result['metadata']
+                    
+                    logger.info(f"  [{i}] 扩展成功: {context_result['context_chunks']}个段落")
+                    logger.info(f"      范围: 第{context_range['start_page']}-{context_range['end_page']}页")
+                    logger.info(f"      长度: {len(full_text)} 字符")
+                    
+                    lit = {
+                        "序号": i,
+                        "内容": full_text,  # 使用完整上下文，不截断
+                        "核心段落": context_result['main_text'][:200] + "...",  # 标注核心段落
+                        "上下文信息": f"第{main_meta.get('page')}页第{main_meta.get('chunk_index_in_page', 0)+1}段（含前后各2段）"
+                    }
+                else:
+                    # 如果获取上下文失败，使用原始内容
+                    logger.warning(f"  [{i}] 扩展失败，使用原始段落")
+                    lit = {
+                        "序号": i,
+                        "内容": doc.get('content', ''),
+                        "核心段落": doc.get('content', '')[:200] + "...",
+                        "上下文信息": "仅核心段落"
+                    }
+                
                 if doc.get('metadata'):
                     lit["元数据"] = doc['metadata']
                 literature_list.append(lit)
+            
+            logger.info(f"✅ 上下文扩展完成，共 {len(literature_list)} 篇文献")
+            logger.info("="*80)
             
             literature_json = json.dumps(literature_list, ensure_ascii=False, indent=2)
             
@@ -763,7 +799,7 @@ class SemanticExpert:
     
     def query(self, question: str, load_pdf: bool = True) -> str:
         """执行查询并返回格式化的答案"""
-        result = self.search(question=question, top_k=20, with_scores=True)
+        result = self.search(question=question, top_k=15, with_scores=True)  # 从20改为15
         
         if not result.get('success'):
             return f"搜索失败: {result.get('error', '未知错误')}"

@@ -136,8 +136,8 @@ yarn.lock
 
 # ==================== 向量数据库 ====================
 # ChromaDB 数据文件
-vector_database/
-vector_db/
+vector_database*/
+vector_db*/
 backend/vector_database/
 backend/vector_db/
 *.chroma

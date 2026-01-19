@@ -8,7 +8,7 @@
 PAPERS_DIR_STR = "/Users/zhuyinghua/Desktop/agent/main/papers"
 JSON_DIR_STR = "/Users/zhuyinghua/Desktop/agent/main/json"
 LFP_HC_JSON_DIR_STR = "/Users/zhuyinghua/Desktop/agent/main/lfp_hc_json"
-VECTOR_DATABASE_PATH_STR = "/Users/zhuyinghua/Desktop/agent/main/vector_database"
+VECTOR_DATABASE_PATH_STR = "/Users/zhuyinghua/Desktop/code/vector_database_v3"
 COMMUNITY_VECTOR_DB_PATH_STR = "/Users/zhuyinghua/Desktop/agent/main/vector_db"
 DOI_TO_PDF_MAPPING_STR = "/Users/zhuyinghua/Desktop/agent/main/code/backend/doi_to_pdf_mapping.json"
 LOGS_DIR_STR = "/Users/zhuyinghua/Desktop/agent/main/logs"
