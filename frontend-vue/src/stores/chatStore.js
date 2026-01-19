@@ -171,28 +171,63 @@ export const useChatStore = defineStore('chat', () => {
   // ==================== 消息管理 ====================
   
   async function addUserMessage(content) {
-    if (!currentChat.value) return
+    console.log('[addUserMessage] 开始添加用户消息')
+    console.log('[addUserMessage] currentChat.value:', currentChat.value)
+    console.log('[addUserMessage] currentChatId.value:', currentChatId.value)
+    
+    if (!currentChat.value) {
+      console.error('[addUserMessage] ❌ currentChat.value 为空，无法添加消息')
+      return
+    }
     
     const uid = getUserId()
+    console.log('[addUserMessage] userId:', uid)
     
     // 如果是第一次发送消息且对话未同步，先在服务器创建对话
     if (!currentChat.value.synced && currentChat.value.messages.length === 0 && uid) {
+      console.log('[addUserMessage] 检测到首次发送消息，准备创建服务器对话')
       try {
         syncStatus.value = 'syncing'
         const title = content.substring(0, 30) + (content.length > 30 ? '...' : '')
+        console.log('[addUserMessage] 调用 api.createConversation, title:', title)
         const response = await api.createConversation(uid, title)
+        console.log('[addUserMessage] 服务器返回:', response)
         
-        // 更新本地对话信息
-        currentChat.value.id = response.conversation_id.toString()
-        currentChat.value.title = response.title || title
-        currentChat.value.createdAt = response.created_at
-        currentChat.value.updatedAt = response.updated_at
-        currentChat.value.synced = true
+        // 保存旧的本地id
+        const oldId = currentChatId.value
+        console.log('[addUserMessage] 旧的本地id:', oldId)
         
-        console.log('[addUserMessage] 首次发送消息，创建服务器对话:', currentChat.value.id)
+        // 🔧 关键修复：直接在 chats 数组中找到并更新对话对象
+        const chatIndex = chats.value.findIndex(c => c.id === oldId)
+        if (chatIndex !== -1) {
+          const newId = response.conversation_id.toString()
+          
+          // 更新对话信息
+          chats.value[chatIndex].id = newId
+          chats.value[chatIndex].title = response.title || title
+          chats.value[chatIndex].createdAt = response.created_at
+          chats.value[chatIndex].updatedAt = response.updated_at
+          chats.value[chatIndex].synced = true
+          
+          // 同步更新 currentChatId
+          currentChatId.value = newId
+          
+          console.log('[addUserMessage] ✅ 对话ID已更新:', oldId, '->', newId)
+          console.log('[addUserMessage] ✅ currentChatId已同步:', currentChatId.value)
+          
+          // 验证更新后的状态
+          const verifyChat = chats.value.find(c => c.id === currentChatId.value)
+          console.log('[addUserMessage] 验证 currentChat:', verifyChat ? '✅ 找到' : '❌ 找不到')
+          if (verifyChat) {
+            console.log('[addUserMessage] 验证详情 - id:', verifyChat.id, 'synced:', verifyChat.synced, 'messages:', verifyChat.messages.length)
+          }
+        } else {
+          console.error('[addUserMessage] ❌ 在 chats 数组中找不到对话:', oldId)
+        }
+        
         syncStatus.value = 'synced'
       } catch (e) {
-        console.error('创建服务器对话失败:', e)
+        console.error('[addUserMessage] ❌ 创建服务器对话失败:', e)
         syncStatus.value = 'failed'
         // 即使创建失败，也继续添加消息到本地
       }
@@ -225,7 +260,16 @@ export const useChatStore = defineStore('chat', () => {
   }
 
   async function addBotMessage(message) {
-    if (!currentChat.value) return
+    console.log('[addBotMessage] 开始添加Bot消息')
+    console.log('[addBotMessage] currentChat.value:', currentChat.value)
+    console.log('[addBotMessage] currentChatId.value:', currentChatId.value)
+    
+    if (!currentChat.value) {
+      console.error('[addBotMessage] ❌ currentChat.value 为空，无法添加Bot消息')
+      console.error('[addBotMessage] chats.value:', chats.value)
+      console.error('[addBotMessage] 尝试查找对话:', chats.value.find(c => c.id === currentChatId.value))
+      return
+    }
     
     const botMessage = {
       role: 'bot',
@@ -233,8 +277,10 @@ export const useChatStore = defineStore('chat', () => {
       timestamp: new Date()
     }
     
+    console.log('[addBotMessage] 添加Bot消息到 messages 数组')
     currentChat.value.messages.push(botMessage)
     saveChats()
+    console.log('[addBotMessage] ✅ Bot消息已添加，当前消息数:', currentChat.value.messages.length)
     
     // 注意：不在这里同步到服务器，因为消息可能还不完整
     // 等流式响应完成后，由 ask_stream 接口自动保存完整消息

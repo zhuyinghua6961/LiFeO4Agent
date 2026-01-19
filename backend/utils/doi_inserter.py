@@ -74,32 +74,41 @@ class ProgrammaticDOIInserter:
         self,
         answer: str,
         search_results: Dict[str, Any]
-    ) -> str:
+    ) -> Dict[str, Any]:
         """
-        将DOI程序化插入到答案中
+        将DOI程序化插入到答案中，并返回位置信息
         
         工作原理：
         1. 将答案拆分为句子
         2. 对每个句子，计算与检索文档的相似度
         3. 如果相似度超过阈值，插入对应文档的DOI
-        4. 确保DOI来自检索结果，不会编造
+        4. 记录每个DOI的位置信息（页码、段落号等）
         
         Args:
             answer: LLM生成的纯净答案（不含DOI）
             search_results: 检索结果，包含documents, metadatas, distances
             
         Returns:
-            插入DOI后的答案
+            {
+                'answer': 插入DOI后的答案,
+                'doi_locations': 每个DOI的位置信息
+            }
         """
         if not answer or not search_results:
-            return answer
+            return {
+                'answer': answer,
+                'doi_locations': {}
+            }
         
         # 提取检索结果中的候选文档
         candidate_docs = self._extract_candidate_docs(search_results)
         
         if not candidate_docs:
             logger.info("   ⚠️ 无可用的带DOI文档，跳过DOI插入")
-            return answer
+            return {
+                'answer': answer,
+                'doi_locations': {}
+            }
         
         # 将答案拆分为句子
         sentences = self._split_sentences(answer)
@@ -109,6 +118,7 @@ class ProgrammaticDOIInserter:
         inserted_dois = set()
         matched_count = 0
         total_sentences = 0
+        doi_locations = {}  # 记录每个DOI的位置信息
         
         for sent in sentences:
             # 检查是否是换行符、空行、标题行、表格行
@@ -154,6 +164,22 @@ class ProgrammaticDOIInserter:
                 doi = best_doc['doi']
                 inserted_dois.add(doi)
                 matched_count += 1
+                
+                # 记录位置信息
+                metadata = best_doc.get('metadata', {})
+                if doi not in doi_locations:
+                    doi_locations[doi] = []
+                
+                doi_locations[doi].append({
+                    'sentence': sent_content if sent_content else sent_strip,
+                    'page': metadata.get('page', 0),
+                    'chunk_index_in_page': metadata.get('chunk_index_in_page', 0),
+                    'total_chunks_in_page': metadata.get('total_chunks_in_page', 1),
+                    'similarity': best_score,
+                    'source_preview': best_doc['text'][:300],
+                    'confidence': 'high' if best_score >= 0.4 else 'medium' if best_score >= 0.3 else 'low'
+                })
+                
                 # DOI插入到内容末尾，保留序号前缀和换行符
                 if prefix:
                     output_sent = prefix + sent_content.rstrip() + f" (doi={doi})\n"
@@ -176,10 +202,20 @@ class ProgrammaticDOIInserter:
             logger.warning(f"      2. 阈值设置过高，建议降低到 0.3-0.35")
             logger.warning(f"      3. 答案内容与检索结果不匹配")
         
-        return result
+        # 记录位置信息统计
+        if doi_locations:
+            logger.info(f"   📍 位置信息统计:")
+            for doi, locations in doi_locations.items():
+                pages = set(loc['page'] for loc in locations)
+                logger.info(f"      {doi}: {len(locations)}个引用，分布在第{sorted(pages)}页")
+        
+        return {
+            'answer': result,
+            'doi_locations': doi_locations
+        }
     
     def _extract_candidate_docs(self, search_results: Dict[str, Any]) -> List[Dict]:
-        """从检索结果中提取候选文档（带DOI）"""
+        """从检索结果中提取候选文档（带DOI和元数据）"""
         metadatas = search_results.get('metadatas', []) or []
         documents = search_results.get('documents', []) or []
         distances = search_results.get('distances', []) or []
@@ -212,7 +248,8 @@ class ProgrammaticDOIInserter:
             candidates.append({
                 'doi': doi_clean,
                 'text': doc,
-                'vector_sim': vector_sim
+                'vector_sim': vector_sim,
+                'metadata': meta  # 保留完整的元数据
             })
         
         logger.info(f"   提取到 {len(candidates)} 个候选文档（带DOI）")

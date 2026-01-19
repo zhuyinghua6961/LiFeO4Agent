@@ -302,6 +302,7 @@ class IntegratedAgent:
             answer = ""
             references = []
             metadata = {}
+            doi_locations = {}  # 添加位置信息
             
             # 执行完整查询生成答案
             try:
@@ -321,13 +322,14 @@ class IntegratedAgent:
                         "details": result.get('error', '未知错误')
                     }
                     # 发送完成信号
-                    yield {"type": "done", "references": [], "metadata": {}}
+                    yield {"type": "done", "references": [], "metadata": {}, "doi_locations": {}}
                     return
                 
                 answer = result.get("answer", "")
                 references = result.get("references", [])
                 metadata = result.get("metadata", {})
                 pdf_info = result.get("pdf_info", {})
+                doi_locations = result.get("doi_locations", {})  # 获取位置信息
                 
                 # 显示PDF加载信息（不显示失败数量）
                 if pdf_info:
@@ -407,7 +409,8 @@ class IntegratedAgent:
             yield {
                 "type": "done",
                 "references": references,
-                "metadata": metadata
+                "metadata": metadata,
+                "doi_locations": doi_locations  # 添加位置信息
             }
             
         except Exception as e:
@@ -439,10 +442,11 @@ class IntegratedAgent:
         logger.info("="*80)
         try:
             # 使用query()方法，会调用LLM生成综合答案（RAG模式）
-            # 返回值中包含pdf_info信息
+            # 返回值中包含pdf_info和doi_locations信息
             query_result = self.semantic_expert.query_with_details(question, load_pdf=True)
             answer = query_result.get('answer', '')
             pdf_info = query_result.get('pdf_info', {})
+            doi_locations = query_result.get('doi_locations', {})  # 获取位置信息
             
             # 同时获取检索结果以提取引用
             search_result = self.semantic_expert.search(question, top_k=n_results, with_scores=True)
@@ -464,7 +468,8 @@ class IntegratedAgent:
                 "answer": answer,
                 "references": references,
                 "expert_used": "literature",
-                "pdf_info": pdf_info
+                "pdf_info": pdf_info,
+                "doi_locations": doi_locations  # 添加位置信息
             }
         except Exception as e:
             logger.error(f"文献搜索失败: {e}")

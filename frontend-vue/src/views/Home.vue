@@ -51,8 +51,13 @@ onMounted(async () => {
     if (target.classList && target.classList.contains('doi-link')) {
       e.preventDefault()
       const doi = target.getAttribute('data-doi')
+      
+      // 获取当前消息的位置信息
+      const currentMsg = store.currentMessages[store.currentMessages.length - 1]
+      const locations = currentMsg.doiLocations?.[doi] || []
+      
       if (doi && pdfReader.value) {
-        pdfReader.value.openReader(doi)
+        pdfReader.value.openReader(doi, locations)  // 传递位置信息
       }
     }
   })
@@ -146,6 +151,7 @@ async function sendMessage() {
       } else if (data.type === 'done') {
         const updates = { references: data.references || [], referenceLinks: data.reference_links || [] }
         if (data.final_answer) updates.content = data.final_answer
+        if (data.doi_locations) updates.doiLocations = data.doi_locations  // 保存位置信息
         store.updateLastBotMessage(updates)
       } else if (data.type === 'error') {
         store.updateLastBotMessage({ content: '错误: ' + data.error })

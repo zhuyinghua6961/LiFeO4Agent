@@ -20,7 +20,7 @@
       <div class="pdf-viewer-layout">
         <!-- 左侧PDF -->
         <div class="pdf-viewer-left">
-          <div class="pdf-canvas-wrapper"
+          <div class="pdf-canvas-wrapper">
             <!-- PDF错误提示 -->
             <div v-if="pdfError" class="pdf-error-container">
               <div class="pdf-error-content">
@@ -57,57 +57,88 @@
           </div>
         </div>
 
-        <!-- 右侧翻译面板 -->
-        <div v-show="showTranslationPanel" class="translation-panel">
-          <div class="translation-panel-header">
-            <h3>🌐 翻译助手</h3>
-            <p>选中文本后点击翻译按钮</p>
+        <!-- 右侧面板 - 位置提示或翻译 -->
+        <div class="right-panel">
+          <!-- 位置提示面板 -->
+          <div v-if="locationHints.length > 0" class="location-panel">
+            <div class="location-panel-header">
+              <h3>📍 引用位置</h3>
+              <p>共 {{ locationHints.length }} 处引用</p>
+            </div>
+            <div class="location-panel-content">
+              <div v-for="(hint, idx) in locationHints" :key="idx" 
+                   class="location-item"
+                   :class="hint.confidence">
+                <div class="location-header">
+                  <span class="page-badge">第{{ hint.page }}页 第{{ hint.chunk_index_in_page + 1 }}段</span>
+                  <span class="similarity-badge" :class="hint.confidence">
+                    {{ hint.similarity.toFixed(2) }}
+                  </span>
+                </div>
+                <div class="location-sentence">"{{ hint.sentence }}"</div>
+                <div class="location-source">
+                  <strong>原文片段:</strong>
+                  <p>{{ hint.source_preview }}</p>
+                </div>
+                <button @click="jumpToPage(hint.page)" class="jump-btn">
+                  📄 跳转到第{{ hint.page }}页
+                </button>
+              </div>
+            </div>
           </div>
 
-          <div class="translation-panel-content">
-            <!-- 欢迎页 -->
-            <div v-if="translations.length === 0" class="translation-welcome">
-              <div class="welcome-icon">📖</div>
-              <p class="welcome-title">欢迎使用翻译助手</p>
-              <p class="welcome-desc">在下方输入框粘贴英文文本，点击翻译按钮即可</p>
+          <!-- 翻译面板 -->
+          <div v-show="showTranslationPanel" class="translation-panel">
+            <div class="translation-panel-header">
+              <h3>🌐 翻译助手</h3>
+              <p>选中文本后点击翻译按钮</p>
             </div>
 
-            <!-- 翻译历史 -->
-            <div v-for="(item, index) in translations" :key="index" class="translation-item">
-              <div class="translation-item-header">
-                <span class="translation-time">{{ item.time }}</span>
+            <div class="translation-panel-content">
+              <!-- 欢迎页 -->
+              <div v-if="translations.length === 0" class="translation-welcome">
+                <div class="welcome-icon">📖</div>
+                <p class="welcome-title">欢迎使用翻译助手</p>
+                <p class="welcome-desc">在下方输入框粘贴英文文本，点击翻译按钮即可</p>
               </div>
-              <div class="translation-item-content">
-                <div class="translation-source">
-                  <div class="lang-label">🇬🇧 英文</div>
-                  <div class="text-content">{{ item.source }}</div>
+
+              <!-- 翻译历史 -->
+              <div v-for="(item, index) in translations" :key="index" class="translation-item">
+                <div class="translation-item-header">
+                  <span class="translation-time">{{ item.time }}</span>
                 </div>
-                <div class="translation-target">
-                  <div class="lang-label">🇨🇳 中文</div>
-                  <div class="text-content" :class="{ loading: item.loading }">
-                    {{ item.loading ? '翻译中...' : item.translation }}
+                <div class="translation-item-content">
+                  <div class="translation-source">
+                    <div class="lang-label">🇬🇧 英文</div>
+                    <div class="text-content">{{ item.source }}</div>
+                  </div>
+                  <div class="translation-target">
+                    <div class="lang-label">🇨🇳 中文</div>
+                    <div class="text-content" :class="{ loading: item.loading }">
+                      {{ item.loading ? '翻译中...' : item.translation }}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- 翻译按钮 -->
-          <div class="translation-actions">
-            <!-- 手动输入框 (备用方案) -->
-            <textarea 
-              v-model="manualText"
-              class="manual-input"
-              placeholder="在此粘贴要翻译的英文文本..."
-              rows="3"
-            ></textarea>
-            <button 
-              class="translate-btn" 
-              :disabled="!manualText || isTranslating"
-              @click="translateSelected"
-            >
-              {{ isTranslating ? '⏳ 翻译中...' : '🌐 翻译文本' }}
-            </button>
+            <!-- 翻译按钮 -->
+            <div class="translation-actions">
+              <!-- 手动输入框 (备用方案) -->
+              <textarea 
+                v-model="manualText"
+                class="manual-input"
+                placeholder="在此粘贴要翻译的英文文本..."
+                rows="3"
+              ></textarea>
+              <button 
+                class="translate-btn" 
+                :disabled="!manualText || isTranslating"
+                @click="translateSelected"
+              >
+                {{ isTranslating ? '⏳ 翻译中...' : '🌐 翻译文本' }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -131,18 +162,27 @@ const showTranslationPanel = ref(true)
 const manualText = ref('')
 const translations = ref([])
 const isTranslating = ref(false)
+const locationHints = ref([])  // 位置提示
+const targetPage = ref(1)  // 目标页码
 
 // Methods
-async function openReader(doi) {
+async function openReader(doi, locations = []) {
   currentDoi.value = doi
+  locationHints.value = locations
   pdfUrl.value = `/api/pdf/${doi.replace(/\//g, '_')}.pdf`
   pdfError.value = null
   isOpen.value = true
   translations.value = []
   manualText.value = ''
   
+  // 如果有位置信息，跳转到第一个引用的页面
+  if (locations.length > 0) {
+    targetPage.value = locations[0].page || 1
+    pdfUrl.value = `/api/pdf/${doi.replace(/\//g, '_')}.pdf#page=${targetPage.value}`
+  }
+  
   // 检查PDF是否存在
-  fetch(pdfUrl.value, { method: 'HEAD' })
+  fetch(`/api/pdf/${doi.replace(/\//g, '_')}.pdf`, { method: 'HEAD' })
     .then(response => {
       if (!response.ok) {
         pdfError.value = {
@@ -157,6 +197,11 @@ async function openReader(doi) {
         doi: currentDoi.value
       }
     })
+}
+
+function jumpToPage(page) {
+  targetPage.value = page
+  pdfUrl.value = `/api/pdf/${currentDoi.value.replace(/\//g, '_')}.pdf#page=${page}`
 }
 
 function closeReader() {
@@ -329,6 +374,164 @@ defineExpose({
   display: flex;
   flex-direction: column;
   background: #f3f4f6;
+}
+
+.right-panel {
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-left: 1px solid #e5e7eb;
+  overflow-y: auto;
+}
+
+/* 位置提示面板 */
+.location-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.location-panel-header {
+  padding: 20px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.location-panel-header h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  color: #374151;
+}
+
+.location-panel-header p {
+  margin: 0;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.location-panel-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.location-item {
+  margin-bottom: 16px;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 12px;
+  border: 2px solid #e5e7eb;
+  transition: all 0.2s;
+}
+
+.location-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.location-item.high {
+  border-color: #10b981;
+  background: linear-gradient(to right, #d1fae5 0%, #f9fafb 100%);
+}
+
+.location-item.medium {
+  border-color: #f59e0b;
+  background: linear-gradient(to right, #fef3c7 0%, #f9fafb 100%);
+}
+
+.location-item.low {
+  border-color: #ef4444;
+  background: linear-gradient(to right, #fee2e2 0%, #f9fafb 100%);
+}
+
+.location-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.page-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  background: #667eea;
+  color: white;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.similarity-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.similarity-badge.high {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.similarity-badge.medium {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.similarity-badge.low {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.location-sentence {
+  font-size: 14px;
+  color: #1f2937;
+  margin-bottom: 12px;
+  padding: 8px;
+  background: white;
+  border-radius: 6px;
+  font-style: italic;
+}
+
+.location-source {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 12px;
+  padding: 8px;
+  background: white;
+  border-radius: 6px;
+}
+
+.location-source strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #374151;
+}
+
+.location-source p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.jump-btn {
+  width: 100%;
+  padding: 8px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.jump-btn:hover {
+  background: #5568d3;
+  transform: translateY(-1px);
 }
 
 .pdf-canvas-wrapper {

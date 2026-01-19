@@ -576,20 +576,22 @@ class SemanticExpert:
         top_k: int = 20,  # 从20保持不变，但会被search的默认值15覆盖
         load_pdf: bool = True
     ) -> Dict[str, Any]:
-        """执行查询并返回详细信息（包括PDF加载情况）"""
+        """执行查询并返回详细信息（包括PDF加载情况和位置信息）"""
         search_result = self.search(question, top_k=top_k, with_scores=True)
         
         if not search_result.get('success'):
             return {
                 'answer': '检索失败',
-                'pdf_info': {'error': search_result.get('error')}
+                'pdf_info': {'error': search_result.get('error')},
+                'doi_locations': {}
             }
         
         documents = search_result.get('documents', [])
         if not documents:
             return {
                 'answer': '未找到相关文献。',
-                'pdf_info': {'documents_found': 0}
+                'pdf_info': {'documents_found': 0},
+                'doi_locations': {}
             }
         
         # 判断问题类型
@@ -610,7 +612,8 @@ class SemanticExpert:
             answer = self._synthesize_broad_answer(question, documents)
             return {
                 'answer': answer,
-                'pdf_info': pdf_info
+                'pdf_info': pdf_info,
+                'doi_locations': {}
             }
         
         # 精确问题：加载PDF
@@ -637,10 +640,11 @@ class SemanticExpert:
                 logger.info("⚠️  未提取到DOI")
             logger.info("="*80)
         
-        answer = self._synthesize_semantic_answer(question, documents, pdf_contents)
+        answer, doi_locations = self._synthesize_semantic_answer(question, documents, pdf_contents)
         return {
             'answer': answer,
-            'pdf_info': pdf_info
+            'pdf_info': pdf_info,
+            'doi_locations': doi_locations
         }
     
     def _synthesize_semantic_answer(
@@ -655,12 +659,14 @@ class SemanticExpert:
         
         try:
             # 构建文献列表（使用上下文扩展）
+            # 精确问题：减少到5篇，为PDF全文留出更多token空间
             logger.info("\n" + "="*80)
             logger.info("📖 [步骤5.5] 扩展上下文窗口")
             logger.info(f"原始段落数: {len(documents)}")
             
             literature_list = []
-            for i, doc in enumerate(documents[:10], 1):
+            num_abstracts = 5  # 精确问题只用5篇摘要
+            for i, doc in enumerate(documents[:num_abstracts], 1):
                 chunk_id = doc.get('id')
                 
                 # 获取带上下文的完整内容
@@ -698,17 +704,19 @@ class SemanticExpert:
                     lit["元数据"] = doc['metadata']
                 literature_list.append(lit)
             
-            logger.info(f"✅ 上下文扩展完成，共 {len(literature_list)} 篇文献")
+            logger.info(f"✅ 上下文扩展完成，共 {len(literature_list)} 篇文献摘要")
             logger.info("="*80)
             
             literature_json = json.dumps(literature_list, ensure_ascii=False, indent=2)
             
-            # 添加PDF原文
+            # 添加PDF原文（使用完整内容，不截断）
             pdf_section = ""
             if pdf_contents:
-                pdf_section = "\n\n## 📄 相关论文原文摘要\n"
+                pdf_section = "\n\n## 📄 相关论文原文（完整内容）\n"
                 for doi, content in pdf_contents.items():
-                    pdf_section += f"\n### DOI: {doi}\n{content[:5000]}\n"
+                    # 使用完整的PDF内容，不截断到5000字符
+                    pdf_section += f"\n### DOI: {doi}\n{content}\n"
+                    logger.info(f"  添加PDF全文: {doi} ({len(content)} 字符)")
             
             prompt = self._semantic_synthesis_prompt.replace("{user_question}", user_question)
             prompt = prompt.replace("{literature_results}", literature_json)
@@ -716,9 +724,12 @@ class SemanticExpert:
             
             logger.info("\n" + "="*80)
             logger.info("📋 [步骤6] 构建Prompt")
-            logger.info(f"文献摘要: {len(literature_list)} 篇")
-            logger.info(f"PDF原文: {len(pdf_contents) if pdf_contents else 0} 篇")
-            logger.info(f"Prompt长度: {len(prompt):,} 字符 (~{len(prompt)//4:,} tokens)")
+            logger.info(f"文献摘要: {len(literature_list)} 篇（精确问题优化：减少到5篇）")
+            logger.info(f"PDF原文: {len(pdf_contents) if pdf_contents else 0} 篇（完整内容，不截断）")
+            if pdf_contents:
+                total_pdf_chars = sum(len(content) for content in pdf_contents.values())
+                logger.info(f"PDF总字符数: {total_pdf_chars:,} 字符")
+            logger.info(f"Prompt总长度: {len(prompt):,} 字符 (~{len(prompt)//4:,} tokens)")
             logger.info(f"\nPrompt预览 (前200字):")
             logger.info(prompt[:200] + "...")
             logger.info("="*80)
@@ -740,10 +751,12 @@ class SemanticExpert:
                 'metadatas': [doc.get('metadata', {}) for doc in documents],
                 'distances': [1.0 - doc.get('score', 0.5) for doc in documents]  # 转换回距离
             }
-            answer_with_doi = self._doi_inserter.insert_dois(pure_answer, search_result_for_insert)
+            doi_result = self._doi_inserter.insert_dois(pure_answer, search_result_for_insert)
+            answer_with_doi = doi_result['answer']
+            doi_locations = doi_result['doi_locations']
             logger.info("="*80)
             
-            return answer_with_doi
+            return answer_with_doi, doi_locations
             
         except Exception as e:
             logger.error(f"语义答案合成失败: {e}")
@@ -759,18 +772,34 @@ class SemanticExpert:
             return self._format_simple_answer(documents)
         
         try:
-            # 提取文献摘要
+            # 宽泛问题：使用更多摘要（10篇），但不扩展上下文，不加载PDF
+            logger.info("\n" + "="*80)
+            logger.info("📖 [宽泛问题] 提取文献摘要")
+            logger.info(f"使用 10 篇摘要（不扩展上下文，节省token）")
+            
             summaries = []
-            for i, doc in enumerate(documents[:15], 1):
+            for i, doc in enumerate(documents[:10], 1):
+                # 使用原始内容，不扩展上下文
+                content = doc.get('content', '')
                 summaries.append({
                     "序号": i,
-                    "摘要": doc.get('content', '')[:800]
+                    "摘要": content[:1000]  # 每篇最多1000字符
                 })
+                logger.info(f"  [{i}] 摘要长度: {len(content[:1000])} 字符")
+            
+            logger.info(f"✅ 摘要提取完成，共 {len(summaries)} 篇")
+            logger.info("="*80)
             
             summaries_json = json.dumps(summaries, ensure_ascii=False, indent=2)
             
             prompt = self._broad_question_prompt.replace("{user_question}", user_question)
             prompt = prompt.replace("{literature_summaries}", summaries_json)
+            
+            logger.info("\n" + "="*80)
+            logger.info("📋 [步骤6] 构建Prompt（宽泛问题）")
+            logger.info(f"文献摘要: {len(summaries)} 篇（原始内容，不扩展）")
+            logger.info(f"Prompt总长度: {len(prompt):,} 字符 (~{len(prompt)//4:,} tokens)")
+            logger.info("="*80)
             
             from langchain_core.messages import HumanMessage
             
