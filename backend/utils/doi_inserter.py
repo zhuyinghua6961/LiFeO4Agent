@@ -49,18 +49,18 @@ class ProgrammaticDOIInserter:
     
     def __init__(
         self,
-        similarity_threshold: float = 0.22,  # 降低阈值到0.22,基于实际测试优化
-        seq_weight: float = 0.4,  # 降低文本权重,LLM会重组表达
-        vector_weight: float = 0.6,  # 提高向量权重,更可靠的语义相似度
+        similarity_threshold: float = 0.20,  # 进一步降低阈值到0.20
+        seq_weight: float = 0.7,  # 保持文本权重优先
+        vector_weight: float = 0.3,  # 向量权重辅助
         max_compare_chars: int = 1000
     ):
         """
         初始化DOI插入器
         
         Args:
-            similarity_threshold: 相似度阈值，超过此值才插入DOI（默认0.30）
-            seq_weight: 文本序列相似度权重
-            vector_weight: 向量相似度权重
+            similarity_threshold: 相似度阈值，超过此值才插入DOI（默认0.20）
+            seq_weight: 文本序列相似度权重（默认0.7，优先文本匹配）
+            vector_weight: 向量相似度权重（默认0.3，辅助语义判断）
             max_compare_chars: 最大比较字符数
         """
         self.similarity_threshold = similarity_threshold
@@ -150,6 +150,9 @@ class ProgrammaticDOIInserter:
             
             total_sentences += 1
             
+            # 🔧 智能阈值调整：对包含具体数值/数据的句子降低阈值
+            adaptive_threshold = self._get_adaptive_threshold(sent_content if sent_content else sent_strip)
+            
             # 使用去除序号后的内容进行匹配
             best_doc, best_score = self._find_best_match(sent_content if sent_content else sent_strip, candidate_docs)
             
@@ -157,10 +160,10 @@ class ProgrammaticDOIInserter:
             if total_sentences <= 5:  # 只记录前5个句子的详细信息
                 logger.debug(f"   句子 {total_sentences}: {sent_content[:50] if sent_content else sent_strip[:50]}...")
                 logger.debug(f"   最佳匹配DOI: {best_doc['doi'] if best_doc else 'None'}")
-                logger.debug(f"   相似度分数: {best_score:.3f} (阈值: {self.similarity_threshold})")
+                logger.debug(f"   相似度分数: {best_score:.3f} (自适应阈值: {adaptive_threshold:.3f})")
             
-            # 如果相似度超过阈值，插入DOI（在内容后，序号保持原位）
-            if best_doc and best_score >= self.similarity_threshold:
+            # 如果相似度超过自适应阈值，插入DOI
+            if best_doc and best_score >= adaptive_threshold:
                 doi = best_doc['doi']
                 inserted_dois.add(doi)
                 matched_count += 1
@@ -308,6 +311,39 @@ class ProgrammaticDOIInserter:
     def _has_doi(self, text: str) -> bool:
         """检查文本中是否已包含DOI"""
         return bool(re.search(r'\(doi\s*=\s*10\.\d+/', text, re.IGNORECASE))
+    
+    def _get_adaptive_threshold(self, sentence: str) -> float:
+        """
+        根据句子内容自适应调整阈值
+        
+        包含具体数值/数据的句子降低阈值（更容易匹配）
+        标题类/通用描述的句子提高阈值（更难匹配）
+        
+        Args:
+            sentence: 待分析的句子
+            
+        Returns:
+            自适应阈值
+        """
+        # 检测标题类特征（应该提高阈值，避免误匹配）
+        is_title = bool(re.search(r'^(标题|Title|Structure|Principle|Study|Analysis|Introduction)[:：]', sentence))
+        has_page_marker = bool(re.search(r'第\s*\d+\s*页|Page\s+\d+|---', sentence))
+        
+        if is_title or has_page_marker:
+            return self.similarity_threshold * 1.5  # 提高50%，避免标题被匹配
+        
+        # 检测句子中是否包含具体数值/数据的特征（应该降低阈值）
+        has_numbers = bool(re.search(r'\d+\.?\d*\s*(V|mV|K|°C|mAh|Wh|%)', sentence))  # 带单位的数值
+        has_chemical = bool(re.search(r'Li[A-Z][a-z]*[₀-₉]*|[A-Z][a-z]*PO[₀-₉]*', sentence))  # 化学式
+        has_specific_data = bool(re.search(r'(Data Set|数据集|ΔE|电位差|峰值)', sentence))  # 特定数据术语
+        has_range = bool(re.search(r'\d+[–-]\d+', sentence))  # 数值范围
+        
+        # 如果包含具体数据特征，降低阈值
+        if has_numbers or has_chemical or has_specific_data or has_range:
+            return self.similarity_threshold * 0.8  # 降低20%
+        
+        # 通用描述保持原阈值
+        return self.similarity_threshold
     
     def _find_best_match(
         self,

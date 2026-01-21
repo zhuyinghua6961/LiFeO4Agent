@@ -1,0 +1,14 @@
+{
+  "压实密度": ["电极密度", "压制密度", "堆积密度", "tap density"],
+  "导电率": ["电导率", "电子电导", "离子电导", "conductivity"],
+  "比容量": ["放电容量", "充电容量", "理论容量", "specific capacity"],
+  "循环性能": ["循环稳定性", "循环寿命", "容量保持率", "cycling stability"],
+  "碳包覆": ["碳涂层", "碳修饰", "表面包覆", "carbon coating"],
+  "离子掺杂": ["元素掺杂", "离子取代", "掺杂改性", "ion doping"],
+  "倍率性能": ["快充性能", "功率性能", "rate capability", "rate performance"],
+  "电化学性能": ["电池性能", "电化学特性", "electrochemical properties"],
+  "正极材料": ["阴极材料", "cathode material", "positive electrode"],
+  "充放电": ["充电放电", "charge discharge", "charging-discharging"],
+  "电压": ["电位", "电势", "voltage", "potential"],
+  "工作电压": ["放电电压", "充电电压", "operating voltage", "discharge voltage"]
+}

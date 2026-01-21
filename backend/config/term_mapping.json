@@ -1,0 +1,22 @@
+{
+  "磷酸铁锂": "LiFePO4",
+  "压实密度": "compaction density",
+  "电极密度": "electrode density",
+  "导电率": "conductivity",
+  "电导率": "electrical conductivity",
+  "比容量": "specific capacity",
+  "循环性能": "cycling performance",
+  "碳包覆": "carbon coating",
+  "离子掺杂": "ion doping",
+  "充放电": "charge-discharge",
+  "倍率性能": "rate performance",
+  "容量保持率": "capacity retention",
+  "电化学性能": "electrochemical performance",
+  "正极材料": "cathode material",
+  "锂离子电池": "lithium-ion battery",
+  "电压": "voltage",
+  "工作电压": "operating voltage",
+  "放电电压": "discharge voltage",
+  "充电电压": "charge voltage",
+  "电压平台": "voltage plateau"
+}

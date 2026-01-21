@@ -15,6 +15,7 @@ from .formatters import (
     truncate_text,
     format_duration
 )
+from .query_logger import QueryFailureLogger
 
 __all__ = [
     # PDF工具
@@ -34,4 +35,6 @@ __all__ = [
     'ResponseFormatter',
     'truncate_text',
     'format_duration',
+    # 查询日志工具
+    'QueryFailureLogger',
 ]

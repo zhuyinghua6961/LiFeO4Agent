@@ -105,6 +105,34 @@ class Settings:
         self.jwt_secret: str = os.getenv("JWT_SECRET", "your-secret-key-change-in-production")
         self.jwt_expire: int = int(os.getenv("JWT_EXPIRE", "86400"))  # 24小时
         
+        # 查询扩展配置
+        self.enable_query_expansion: bool = os.getenv("ENABLE_QUERY_EXPANSION", "True").lower() == "true"
+        self.enable_reranking: bool = os.getenv("ENABLE_RERANKING", "True").lower() == "true"
+        self.max_queries: int = int(os.getenv("MAX_QUERIES", "3"))
+        
+        # Prompt配置
+        self.use_robust_prompt: bool = os.getenv("USE_ROBUST_PROMPT", "True").lower() == "true"
+        
+        # 重排序配置
+        self.rerank_top_k: int = int(os.getenv("RERANK_TOP_K", "20"))  # 只对前20个候选重排序
+        self.rerank_timeout: int = int(os.getenv("RERANK_TIMEOUT", "5"))  # 重排序超时（秒）
+        
+        # 术语映射表和同义词库路径
+        self.term_mapping_file: str = os.getenv(
+            "TERM_MAPPING_FILE",
+            str(self.base_dir / "config" / "term_mapping.json")
+        )
+        self.synonym_file: str = os.getenv(
+            "SYNONYM_FILE",
+            str(self.base_dir / "config" / "synonyms.json")
+        )
+        
+        # 查询失败日志路径
+        self.query_failure_log: str = os.getenv(
+            "QUERY_FAILURE_LOG",
+            str(self.base_dir / "logs" / "query_failures.log")
+        )
+        
     @property
     def llm_api_key(self) -> Optional[str]:
         """获取LLM API密钥（优先使用阿里百炼）"""

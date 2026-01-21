@@ -149,10 +149,24 @@ async function sendMessage() {
       } else if (data.type === 'content') {
         store.updateLastBotMessage({ content: store.currentMessages[store.currentMessages.length - 1].content + data.content })
       } else if (data.type === 'done') {
-        const updates = { references: data.references || [], referenceLinks: data.reference_links || [] }
+        console.log('[done事件] 收到done事件，references:', data.references)
+        const updates = { 
+          references: data.references || [], 
+          referenceLinks: data.reference_links || [],
+          isComplete: true  // 标记消息已完成
+        }
         if (data.final_answer) updates.content = data.final_answer
-        if (data.doi_locations) updates.doiLocations = data.doi_locations  // 保存位置信息
+        if (data.doi_locations) updates.doiLocations = data.doi_locations
+        if (data.metadata) updates.metadata = data.metadata
+        
+        console.log('[done事件] 更新内容:', updates)
         store.updateLastBotMessage(updates)
+        
+        // 强制触发Vue更新
+        nextTick(() => {
+          console.log('[done事件] 更新后的消息:', store.currentMessages[store.currentMessages.length - 1])
+          scrollToBottom()
+        })
       } else if (data.type === 'error') {
         store.updateLastBotMessage({ content: '错误: ' + data.error })
       }

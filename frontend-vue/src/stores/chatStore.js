@@ -290,6 +290,15 @@ export const useChatStore = defineStore('chat', () => {
     if (!currentChat.value || currentChat.value.messages.length === 0) return
     const last = currentChat.value.messages[currentChat.value.messages.length - 1]
     if (last.role === 'bot') {
+      // 使用扩展运算符确保Vue能检测到数组变化
+      if (updates.references) {
+        last.references = [...updates.references]
+        delete updates.references
+      }
+      if (updates.referenceLinks) {
+        last.referenceLinks = [...updates.referenceLinks]
+        delete updates.referenceLinks
+      }
       Object.assign(last, updates)
       saveChats()
       // 注意：不在这里同步，由后端 ask_stream 统一处理
@@ -311,15 +320,6 @@ export const useChatStore = defineStore('chat', () => {
           currentChat.value.synced = false
         }
       }
-    }
-  }
-  function updateLastBotMessage(updates) {
-    if (!currentChat.value || currentChat.value.messages.length === 0) return
-    const last = currentChat.value.messages[currentChat.value.messages.length - 1]
-    if (last.role === 'bot') {
-      Object.assign(last, updates)
-      saveChats()
-      // 注意：不在这里同步，由后端 ask_stream 统一处理
     }
   }
 
