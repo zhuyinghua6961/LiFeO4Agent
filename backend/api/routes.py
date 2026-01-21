@@ -186,6 +186,10 @@ def ask_stream():
                     collected_references = chunk.get('references', [])
                     if chunk.get('metadata'):
                         expert_used = chunk.get('metadata', {}).get('expert')
+                    
+                    # 调试日志
+                    logger.info(f"[done事件] references数量: {len(collected_references)}")
+                    logger.info(f"[done事件] chunk内容: {chunk}")
                 
                 # 流式输出
                 chunk_data = json.dumps(chunk, ensure_ascii=False)
@@ -218,9 +222,7 @@ def ask_stream():
                 except Exception as e:
                     logger.warning(f"保存AI回复失败: {e}")
             
-            # 发送完成信号
-            done_data = json.dumps({'type': 'done', 'message': '回答完成'}, ensure_ascii=False)
-            yield f"data: {done_data}\n\n"
+            # 注意：不要在这里发送done信号，integrated_agent已经发送了
             
         except Exception as e:
             logger.error(f"❌ 处理问题时出错: {e}", exc_info=True)

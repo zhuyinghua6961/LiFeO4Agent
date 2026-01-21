@@ -287,21 +287,50 @@ export const useChatStore = defineStore('chat', () => {
   }
 
   function updateLastBotMessage(updates) {
-    if (!currentChat.value || currentChat.value.messages.length === 0) return
-    const last = currentChat.value.messages[currentChat.value.messages.length - 1]
+    if (!currentChat.value || currentChat.value.messages.length === 0) {
+      console.warn('[updateLastBotMessage] 无法更新：currentChat或messages为空')
+      return
+    }
+    
+    const lastIndex = currentChat.value.messages.length - 1
+    const last = currentChat.value.messages[lastIndex]
+    
     if (last.role === 'bot') {
-      // 使用扩展运算符确保Vue能检测到数组变化
-      if (updates.references) {
-        last.references = [...updates.references]
-        delete updates.references
+      console.log('[updateLastBotMessage] 更新前:', JSON.stringify({
+        hasReferences: !!last.references,
+        referencesLength: last.references?.length || 0
+      }))
+      
+      // 创建新对象以触发Vue响应式更新
+      const updated = { ...last }
+      
+      // 处理references
+      if (updates.references !== undefined) {
+        updated.references = [...updates.references]
+        console.log('[updateLastBotMessage] 设置references:', updates.references.length, '个')
       }
-      if (updates.referenceLinks) {
-        last.referenceLinks = [...updates.referenceLinks]
-        delete updates.referenceLinks
+      
+      // 处理referenceLinks
+      if (updates.referenceLinks !== undefined) {
+        updated.referenceLinks = [...updates.referenceLinks]
       }
-      Object.assign(last, updates)
+      
+      // 合并其他更新
+      Object.keys(updates).forEach(key => {
+        if (key !== 'references' && key !== 'referenceLinks') {
+          updated[key] = updates[key]
+        }
+      })
+      
+      // 替换整个消息对象以确保Vue检测到变化
+      currentChat.value.messages[lastIndex] = updated
+      
+      console.log('[updateLastBotMessage] 更新后:', JSON.stringify({
+        hasReferences: !!updated.references,
+        referencesLength: updated.references?.length || 0
+      }))
+      
       saveChats()
-      // 注意：不在这里同步，由后端 ask_stream 统一处理
     }
   }
   

@@ -149,7 +149,11 @@ async function sendMessage() {
       } else if (data.type === 'content') {
         store.updateLastBotMessage({ content: store.currentMessages[store.currentMessages.length - 1].content + data.content })
       } else if (data.type === 'done') {
-        console.log('[done事件] 收到done事件，references:', data.references)
+        console.log('[done事件] 原始data对象:', data)
+        console.log('[done事件] data.references:', data.references)
+        console.log('[done事件] data.references类型:', typeof data.references)
+        console.log('[done事件] data所有键:', Object.keys(data))
+        
         const updates = { 
           references: data.references || [], 
           referenceLinks: data.reference_links || [],
@@ -160,11 +164,15 @@ async function sendMessage() {
         if (data.metadata) updates.metadata = data.metadata
         
         console.log('[done事件] 更新内容:', updates)
+        console.log('[done事件] updates.references长度:', updates.references.length)
         store.updateLastBotMessage(updates)
         
         // 强制触发Vue更新
         nextTick(() => {
-          console.log('[done事件] 更新后的消息:', store.currentMessages[store.currentMessages.length - 1])
+          const lastMsg = store.currentMessages[store.currentMessages.length - 1]
+          console.log('[done事件] 更新后的消息:', lastMsg)
+          console.log('[done事件] 更新后references:', lastMsg.references)
+          console.log('[done事件] 更新后references长度:', lastMsg.references?.length)
           scrollToBottom()
         })
       } else if (data.type === 'error') {
@@ -276,10 +284,10 @@ function autoResize(e) {
                 </div>
                 <div v-if="msg.content" v-html="formatAnswer(msg.content, msg.referenceLinks)"></div>
                 <div v-else class="loading-animation"><span>思考中...</span></div>
-                <div v-if="msg.references && msg.references.length > 0" class="references-section">
+                <div v-show="msg.references && msg.references.length > 0" class="references-section" :key="'ref-' + index">
                   <div class="references-title">📚 参考文献</div>
                   <div class="references-list">
-                    <div v-for="(ref, idx) in msg.references" :key="idx" class="reference-item" @click="ref.doi && pdfReader.openReader(ref.doi)">
+                    <div v-for="(ref, idx) in msg.references" :key="'ref-' + index + '-' + idx" class="reference-item" @click="ref.doi && pdfReader.openReader(ref.doi)">
                       <div class="reference-index">[{{ idx + 1 }}]</div>
                       <div class="reference-content">
                         <div class="reference-title">{{ ref.title || '未提供标题' }}</div>
