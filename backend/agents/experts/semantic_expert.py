@@ -1225,20 +1225,20 @@ class SemanticExpert:
         self,
         answer: str,
         documents: List[Dict],
-        pdf_contents: Optional[Dict[str, str]] = None
+        pdf_contents: Optional[Dict[str, str]] = None,
+        reference_dois: Optional[List[str]] = None
     ) -> tuple:
         """
-        基于二级检索的DOI插入方法
+        基于二级检索的DOI插入方法（增强版）
         
         工作流程：
         【一级检索】段落级数据库
-        1. 从检索结果提取候选DOI池
+        1. 从检索结果提取候选DOI池和参考文献列表
         
-        【二级检索】句子级数据库
-        2. 拆分答案为句子
-        3. 批量生成句子的embedding
-        4. 在句子数据库中搜索（只匹配候选DOI）
-        5. 相似度>0.6时插入DOI
+        【二级检索】句子级数据库 + 反向查找
+        2. 步骤1：为答案句子找最相关的DOI（原有逻辑）
+        3. 步骤2：为参考文献DOI找最相关的答案句子（新增）
+        4. 合并引用位置，确保参考文献列表中的所有DOI都有引用位置
         
         优先使用句子级数据库，失败时回退到PDF搜索
         
@@ -1246,6 +1246,7 @@ class SemanticExpert:
             answer: LLM生成的纯净答案
             documents: 检索到的文献列表（一级检索结果）
             pdf_contents: PDF全文内容（回退方案）
+            reference_dois: 参考文献列表中的DOI（top-5），如果为None则自动提取
             
         Returns:
             (answer_with_doi, doi_locations)
@@ -1253,14 +1254,26 @@ class SemanticExpert:
         if not answer:
             return answer, {}
         
-        # 如果有句子数据库，使用二级检索
-        if self._sentence_collection:
+        # 如果没有提供reference_dois，从documents中提取top-5
+        if reference_dois is None:
+            reference_dois = self._extract_reference_dois(documents, top_k=5)
+            logger.info(f"📚 自动提取参考文献列表: {len(reference_dois)} 个DOI")
+        
+        # 如果有句子数据库和段落数据库，使用增强的DOI插入器
+        if self._sentence_collection and self._vector_repo._collection:
+            logger.info("\n" + "="*80)
+            logger.info("🎯 使用增强的DOI插入器（确保参考文献完整覆盖）")
+            logger.info("="*80)
+            return self._insert_dois_with_enhanced_inserter(answer, documents, reference_dois)
+        
+        # 否则回退到原有的句子数据库检索
+        elif self._sentence_collection:
             logger.info("\n" + "="*80)
             logger.info("🎯 使用二级检索模式（句子级数据库）")
             logger.info("="*80)
             return self._insert_dois_by_sentence_db(answer, documents)
         
-        # 否则回退到PDF搜索
+        # 最后回退到PDF搜索
         else:
             logger.info("\n" + "="*80)
             logger.info("⚠️  回退到PDF搜索模式")
@@ -1671,6 +1684,85 @@ class SemanticExpert:
                 candidate_dois.add(doi)
         
         return candidate_dois
+    
+    def _extract_reference_dois(self, documents: List[Dict], top_k: int = 5) -> List[str]:
+        """
+        从一级检索结果中提取参考文献列表（top-k DOI）
+        
+        Args:
+            documents: 一级检索返回的文档列表（已按相似度排序）
+            top_k: 返回的参考文献数量
+            
+        Returns:
+            参考文献DOI列表
+        """
+        reference_dois = []
+        
+        for doc in documents[:top_k * 2]:  # 多取一些以防有无效DOI
+            if len(reference_dois) >= top_k:
+                break
+                
+            meta = doc.get('metadata', {})
+            doi = meta.get('doi') or meta.get('DOI')
+            
+            if doi and doi != 'N/A' and 'unknown' not in doi.lower():
+                if doi not in reference_dois:  # 去重
+                    reference_dois.append(doi)
+        
+        return reference_dois[:top_k]
+    
+    def _insert_dois_with_enhanced_inserter(
+        self,
+        answer: str,
+        documents: List[Dict],
+        reference_dois: List[str]
+    ) -> tuple:
+        """
+        使用EnhancedDOIInserter进行DOI插入
+        
+        确保参考文献列表中的所有DOI都有引用位置
+        
+        Args:
+            answer: LLM生成的答案
+            documents: 一级检索结果
+            reference_dois: 参考文献DOI列表
+            
+        Returns:
+            (answer_with_doi, doi_locations)
+        """
+        try:
+            from backend.agents.enhanced_doi_inserter import EnhancedDOIInserter
+            
+            # 创建EnhancedDOIInserter实例
+            inserter = EnhancedDOIInserter(
+                sentence_collection=self._sentence_collection,
+                paragraph_collection=self._vector_repo._collection,
+                bge_api_url=self._bge_api_url
+            )
+            
+            # 执行增强的DOI插入
+            answer_with_dois, doi_locations_obj = inserter.insert_dois_with_full_coverage(
+                answer=answer,
+                documents=documents,
+                reference_dois=reference_dois,
+                similarity_threshold=0.3  # 使用较低的阈值确保覆盖
+            )
+            
+            # 转换CitationLocation对象为字典格式（兼容现有代码）
+            doi_locations = {}
+            for doi, locations in doi_locations_obj.items():
+                doi_locations[doi] = [loc.to_dict() for loc in locations]
+            
+            return answer_with_dois, doi_locations
+            
+        except Exception as e:
+            logger.error(f"❌ 增强的DOI插入失败: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
+            
+            # 回退到原有的句子数据库检索
+            logger.warning("⚠️  回退到原有的句子数据库检索")
+            return self._insert_dois_by_sentence_db(answer, documents)
     
     def _validate_citation(self, sentence: str, source_text: str) -> bool:
         """

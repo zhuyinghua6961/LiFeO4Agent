@@ -70,15 +70,25 @@
                    class="location-item"
                    :class="hint.confidence">
                 <div class="location-header">
-                  <span class="page-badge">第{{ hint.page }}页 第{{ hint.chunk_index_in_page + 1 }}段</span>
+                  <span class="page-badge">
+                    {{ hint.chunk_index_in_page !== null && hint.chunk_index_in_page !== undefined 
+                       ? `第${hint.page}页 第${hint.chunk_index_in_page + 1}段` 
+                       : `第${hint.page}页` }}
+                  </span>
                   <span class="similarity-badge" :class="hint.confidence">
-                    {{ hint.similarity.toFixed(2) }}
+                    {{ (hint.similarity * 100).toFixed(0) }}%
                   </span>
                 </div>
-                <div class="location-sentence">"{{ hint.sentence }}"</div>
+                <div class="location-sentence">
+                  "{{ hint.answer_sentence || hint.sentence }}"
+                </div>
                 <div class="location-source">
                   <strong>原文片段:</strong>
-                  <p>{{ hint.source_preview }}</p>
+                  <p>{{ hint.source_text || hint.source_preview }}</p>
+                </div>
+                <div v-if="hint.has_number || hint.has_unit" class="location-tags">
+                  <span v-if="hint.has_number" class="tag">📊 含数值</span>
+                  <span v-if="hint.has_unit" class="tag">📏 含单位</span>
                 </div>
                 <button @click="jumpToPage(hint.page)" class="jump-btn">
                   📄 跳转到第{{ hint.page }}页
@@ -514,6 +524,22 @@ defineExpose({
 .location-source p {
   margin: 0;
   line-height: 1.5;
+}
+
+.location-tags {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.location-tags .tag {
+  display: inline-block;
+  padding: 4px 8px;
+  background: #e0e7ff;
+  color: #4338ca;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
 }
 
 .jump-btn {

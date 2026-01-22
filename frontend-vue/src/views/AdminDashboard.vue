@@ -2,6 +2,8 @@
 import { ref, onMounted } from 'vue'
 import { authApi } from '../services/auth'
 import { adminApi } from '../services/admin'
+import BatchImportDialog from '../components/BatchImportDialog.vue'
+import ImportResultDialog from '../components/ImportResultDialog.vue'
 
 const currentUser = ref(null)
 const users = ref([])
@@ -15,13 +17,55 @@ const showStatusModal = ref(false)
 const showDeleteModal = ref(false)
 const showCreateModal = ref(false)
 const showViewPasswordModal = ref(false)
+const showBatchImportDialog = ref(false)
+const showImportResultDialog = ref(false)
+const importResult = ref(null)
 const selectedUser = ref(null)
 const newPassword = ref('')
 const newUsername = ref('')
 const newUserPassword = ref('')
+const newUserType = ref('common')  // 默认为普通用户
 const showPassword = ref(false)
 const showCreatePassword = ref(false)
 const viewPassword = ref('')
+
+// 获取角色显示名称
+function getRoleText(user) {
+  // 优先根据 user_type 判断（更准确）
+  const userType = user.user_type
+  console.log(`getRoleText - username: ${user.username}, user_type: ${userType}, role: ${user.role}`)
+  
+  // user_type = 1: 管理员
+  if (userType === 1 || user.role === 'admin') {
+    return '管理员'
+  }
+  
+  // user_type = 2: 超级用户
+  if (userType === 2) {
+    return '超级用户'
+  }
+  
+  // user_type = 3 或其他: 普通用户
+  return '普通用户'
+}
+
+// 获取角色样式类名
+function getRoleClass(user) {
+  const userType = user.user_type
+  
+  // user_type = 1: 管理员
+  if (userType === 1 || user.role === 'admin') {
+    return 'admin'
+  }
+  
+  // user_type = 2: 超级用户
+  if (userType === 2) {
+    return 'super'
+  }
+  
+  // user_type = 3 或其他: 普通用户
+  return 'common'
+}
 
 async function fetchCurrentUser() {
   const result = await authApi.getMe()
@@ -33,8 +77,10 @@ async function fetchUsers() {
   error.value = ''
   try {
     const result = await adminApi.getUsers(pagination.value.page, pagination.value.pageSize)
+    console.log('fetchUsers - API result:', result)
     if (result.success) {
       users.value = result.data
+      console.log('fetchUsers - users.value:', users.value)
       pagination.value.total = result.pagination.total
     } else {
       error.value = result.error
@@ -116,6 +162,7 @@ function changePage(page) {
 function openCreateModal() {
   newUsername.value = ''
   newUserPassword.value = ''
+  newUserType.value = 'common'  // 重置为默认值
   error.value = ''
   showCreateModal.value = true
 }
@@ -156,7 +203,7 @@ async function submitCreateUser() {
     return
   }
   
-  const result = await adminApi.createUser(newUsername.value, newUserPassword.value)
+  const result = await adminApi.createUser(newUsername.value, newUserPassword.value, newUserType.value)
   
   if (result.success) {
     success.value = `用户 ${newUsername.value} 创建成功`
@@ -166,6 +213,23 @@ async function submitCreateUser() {
   } else {
     error.value = result.error
   }
+}
+
+function openBatchImportDialog() {
+  showBatchImportDialog.value = true
+}
+
+function handleImportSuccess(result) {
+  importResult.value = result
+  showImportResultDialog.value = true
+  
+  // 显示成功消息
+  const { summary } = result
+  success.value = `导入完成：成功 ${summary.success} 条，失败 ${summary.failed} 条，跳过 ${summary.skipped} 条`
+  setTimeout(() => success.value = '', 5000)
+  
+  // 刷新用户列表
+  fetchUsers()
 }
 
 onMounted(async () => {
@@ -194,7 +258,10 @@ onMounted(async () => {
       <div class="user-section">
         <div class="section-header">
           <h2>用户管理</h2>
-          <button class="add-user-btn" @click="openCreateModal">添加用户</button>
+          <div class="header-actions">
+            <button class="add-user-btn batch-import-btn" @click="openBatchImportDialog">批量导入</button>
+            <button class="add-user-btn" @click="openCreateModal">添加用户</button>
+          </div>
         </div>
 
         <div v-if="loading" class="loading">加载中...</div>
@@ -214,7 +281,7 @@ onMounted(async () => {
             <tr v-for="user in users" :key="user.id">
               <td>{{ user.id }}</td>
               <td>{{ user.username }}</td>
-              <td><span class="role-badge" :class="user.role">{{ user.role === 'admin' ? '管理员' : '用户' }}</span></td>
+              <td><span class="role-badge" :class="getRoleClass(user)">{{ getRoleText(user) }}</span></td>
               <td><span class="status-badge" :class="user.status">{{ user.status === 'active' ? '正常' : '停用' }}</span></td>
               <td>{{ user.created_at }}</td>
               <td class="actions">
@@ -236,6 +303,19 @@ onMounted(async () => {
         </div>
       </div>
     </main>
+
+    <!-- Batch Import Dialogs -->
+    <BatchImportDialog 
+      :show="showBatchImportDialog" 
+      @close="showBatchImportDialog = false"
+      @import-success="handleImportSuccess"
+    />
+    
+    <ImportResultDialog 
+      :show="showImportResultDialog" 
+      :result="importResult"
+      @close="showImportResultDialog = false"
+    />
 
     <!-- Modals -->
     <div v-if="showPasswordModal" class="modal-overlay" @click.self="showPasswordModal = false">
@@ -298,6 +378,23 @@ onMounted(async () => {
               </button>
             </div>
           </div>
+          <div class="form-group">
+            <label>用户类型</label>
+            <div class="user-type-selector">
+              <label class="radio-option">
+                <input type="radio" v-model="newUserType" value="super">
+                <span class="radio-label">
+                  <span class="role-badge super">超级用户</span>
+                </span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" v-model="newUserType" value="common">
+                <span class="radio-label">
+                  <span class="role-badge common">普通用户</span>
+                </span>
+              </label>
+            </div>
+          </div>
         </div>
         <div class="modal-footer">
           <button class="btn-secondary" @click="showCreateModal = false">取消</button>
@@ -340,8 +437,11 @@ onMounted(async () => {
 .user-section { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 .section-header h2 { font-size: 18px; color: #1f2937; margin: 0; }
+.section-header .header-actions { display: flex; gap: 12px; }
 .add-user-btn { background: #667eea; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px; }
 .add-user-btn:hover { background: #5a67d8; }
+.add-user-btn.batch-import-btn { background: #10b981; }
+.add-user-btn.batch-import-btn:hover { background: #059669; }
 .user-count { color: #6b7280; font-size: 14px; }
 .loading { text-align: center; padding: 40px; color: #6b7280; }
 .user-table { width: 100%; border-collapse: collapse; }
@@ -350,7 +450,9 @@ onMounted(async () => {
 .user-table td { color: #1f2937; font-size: 14px; }
 .role-badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; }
 .role-badge.admin { background: #dbeafe; color: #1d4ed8; }
-.role-badge.user { background: #dcfce7; color: #166534; }
+.role-badge.super { background: #fef3c7; color: #92400e; }
+.role-badge.common { background: #dcfce7; color: #166534; }
+.role-badge.user { background: #f3f4f6; color: #6b7280; }
 .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; }
 .status-badge.active { background: #dcfce7; color: #166534; }
 .status-badge.disabled { background: #fee2e2; color: #dc2626; }
@@ -372,6 +474,13 @@ onMounted(async () => {
 .modal-body .password-input { display: flex; gap: 8px; }
 .modal-body .password-input input { flex: 1; }
 .modal-body .toggle-password { background: none; border: none; padding: 8px; cursor: pointer; font-size: 16px; }
+.modal-body .user-type-selector { display: flex; gap: 12px; }
+.modal-body .radio-option { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px 12px; border: 2px solid #e5e7eb; border-radius: 8px; transition: all 0.2s; }
+.modal-body .radio-option:hover { border-color: #d1d5db; background: #f9fafb; }
+.modal-body .radio-option input[type="radio"] { cursor: pointer; }
+.modal-body .radio-option input[type="radio"]:checked + .radio-label { font-weight: 500; }
+.modal-body .radio-option:has(input:checked) { border-color: #667eea; background: #eef2ff; }
+.modal-body .radio-label { display: flex; align-items: center; }
 .modal-body .warning { color: #dc2626; font-size: 14px; }
 .modal-body .password-display { background: #f3f4f6; padding: 16px; border-radius: 8px; font-size: 16px; color: #1f2937; }
 .modal-body .password-display label { font-weight: 500; margin-right: 8px; }

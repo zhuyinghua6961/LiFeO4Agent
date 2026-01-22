@@ -29,6 +29,8 @@ from .dtos import (
     ErrorResponse
 )
 
+from .citation_location import CitationLocation
+
 __all__ = [
     # Entities
     'Material',
@@ -52,4 +54,6 @@ __all__ = [
     'SynthesisResponse',
     'HealthResponse',
     'ErrorResponse',
+    # Citation
+    'CitationLocation',
 ]

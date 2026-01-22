@@ -1,0 +1,4 @@
+username,password,user_type
+testuser001,Pass123!,common
+testuser002,Test456@,super
+testuser003,Demo789#,common

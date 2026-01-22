@@ -49,8 +49,10 @@ class VectorRepository:
                 name=self._collection_name
             )
             
-            logger.info(f"✅ ChromaDB 连接成功，集合: {self._collection_name}")
-            logger.info(f"   文档数量: {self._collection.count()}")
+            logger.info(f"📂 段落级向量数据库初始化成功")
+            logger.info(f"   路径: {settings.vector_db_path}")
+            logger.info(f"   Collection: {self._collection_name}")
+            logger.info(f"   文档数量: {self._collection.count():,}")
             
         except Exception as e:
             logger.error(f"❌ ChromaDB 连接失败: {e}")
@@ -474,8 +476,10 @@ class CommunityVectorRepository:
                 metadata={"hnsw:space": "cosine"}
             )
             
-            logger.info(f"✅ 社区向量库连接成功，集合: {self._collection_name}")
-            logger.info(f"   文档数量: {self._collection.count()}")
+            logger.info(f"📂 社区向量数据库初始化成功")
+            logger.info(f"   路径: {settings.community_vector_db_path}")
+            logger.info(f"   Collection: {self._collection_name}")
+            logger.info(f"   文档数量: {self._collection.count():,}")
             
         except Exception as e:
             logger.error(f"❌ 社区向量库连接失败: {e}")

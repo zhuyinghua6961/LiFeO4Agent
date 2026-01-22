@@ -210,3 +210,5 @@ shFiles/*.log
 # backend/COMPLETION_REPORT.md
 # backend/REFACTORING_PROGRESS.md
 # backend/REFACTORING_SUMMARY.md
+
+.kiro/
