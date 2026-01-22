@@ -6,9 +6,12 @@ const username = ref('')
 const password = ref('')
 const error = ref('')
 const loading = ref(false)
+const showPasswordWarning = ref(false)
+const passwordWarningMessage = ref('')
 
 async function handleLogin() {
   error.value = ''
+  showPasswordWarning.value = false
   
   if (!username.value || !password.value) {
     error.value = '请输入用户名和密码'
@@ -25,11 +28,18 @@ async function handleLogin() {
       localStorage.setItem('token', result.data.token)
       localStorage.setItem('user', JSON.stringify(result.data.user))
       
-      // 根据角色跳转
-      if (result.data.user.role === 'admin') {
-        window.location.href = '/admin'
+      // 检查是否有密码过期警告
+      if (result.warning && result.warning.code === 'PASSWORD_EXPIRED') {
+        showPasswordWarning.value = true
+        passwordWarningMessage.value = result.warning.message
+        
+        // 3秒后跳转
+        setTimeout(() => {
+          redirectAfterLogin(result.data.user.role)
+        }, 3000)
       } else {
-        window.location.href = '/'
+        // 直接跳转
+        redirectAfterLogin(result.data.user.role)
       }
     } else {
       error.value = result.error
@@ -39,6 +49,19 @@ async function handleLogin() {
   } finally {
     loading.value = false
   }
+}
+
+function redirectAfterLogin(role) {
+  // 根据角色跳转
+  if (role === 'admin') {
+    window.location.href = '/admin'
+  } else {
+    window.location.href = '/'
+  }
+}
+
+function goToChangePassword() {
+  window.location.href = '/profile'
 }
 </script>
 
@@ -53,6 +76,18 @@ async function handleLogin() {
       <form @submit.prevent="handleLogin" class="login-form">
         <div v-if="error" class="error-message">
           {{ error }}
+        </div>
+        
+        <div v-if="showPasswordWarning" class="warning-message">
+          <div class="warning-icon">⚠️</div>
+          <div class="warning-content">
+            <p class="warning-title">密码过期提醒</p>
+            <p class="warning-text">{{ passwordWarningMessage }}</p>
+            <button type="button" class="change-password-btn" @click="goToChangePassword">
+              立即修改密码
+            </button>
+            <p class="warning-hint">3秒后自动跳转...</p>
+          </div>
         </div>
         
         <div class="form-group">
@@ -163,6 +198,61 @@ async function handleLogin() {
   border-radius: 8px;
   font-size: 14px;
   text-align: center;
+}
+
+.warning-message {
+  background: #fffbeb;
+  border: 2px solid #fbbf24;
+  padding: 20px;
+  border-radius: 8px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.warning-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.warning-content {
+  flex: 1;
+}
+
+.warning-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #92400e;
+  margin: 0 0 8px 0;
+}
+
+.warning-text {
+  font-size: 14px;
+  color: #78350f;
+  margin: 0 0 12px 0;
+  line-height: 1.5;
+}
+
+.change-password-btn {
+  background: #f59e0b;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.change-password-btn:hover {
+  background: #d97706;
+}
+
+.warning-hint {
+  font-size: 12px;
+  color: #92400e;
+  margin: 8px 0 0 0;
+  font-style: italic;
 }
 
 .login-btn {

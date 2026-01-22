@@ -100,8 +100,8 @@ class BatchImportService:
             
             # 插入数据库
             sql = """
-                INSERT INTO users (username, password, role, status, user_type, created_at)
-                VALUES (%s, %s, 'user', 'active', %s, NOW())
+                INSERT INTO users (username, password, role, status, user_type, created_at, password_updated_at)
+                VALUES (%s, %s, 'user', 'active', %s, NOW(), NOW())
             """
             user_id = execute_update(sql, (username, encrypted_password, user_type_code))
             

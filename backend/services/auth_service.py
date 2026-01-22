@@ -103,7 +103,7 @@ class AuthService:
         Returns:
             用户信息，失败返回None
         """
-        sql = "SELECT id, username, password, role, status, created_at FROM users WHERE username = %s"
+        sql = "SELECT id, username, password, role, status, created_at, password_updated_at FROM users WHERE username = %s"
         results = execute_query(sql, (username,))
         return results[0] if results else None
     
@@ -157,10 +157,28 @@ class AuthService:
                 "code": "INVALID_CREDENTIALS"
             }
         
+        # 检查密码是否过期（180天）
+        password_expired = False
+        days_since_update = None
+        
+        if user.get('password_updated_at'):
+            from datetime import datetime, timedelta
+            password_updated_at = user['password_updated_at']
+            
+            # 如果是 datetime 对象，直接使用；如果是字符串，需要解析
+            if isinstance(password_updated_at, str):
+                password_updated_at = datetime.fromisoformat(password_updated_at)
+            
+            days_since_update = (datetime.now() - password_updated_at).days
+            
+            # 密码超过 180 天未更新
+            if days_since_update >= 180:
+                password_expired = True
+        
         # 生成Token
         token = self.create_token(user['id'], user['role'])
         
-        return {
+        result = {
             "success": True,
             "message": "登录成功",
             "data": {
@@ -172,6 +190,16 @@ class AuthService:
                 }
             }
         }
+        
+        # 如果密码过期，添加警告信息
+        if password_expired:
+            result["warning"] = {
+                "code": "PASSWORD_EXPIRED",
+                "message": f"您的密码已经 {days_since_update} 天未更新，为了账号安全，建议您尽快修改密码",
+                "days_since_update": days_since_update
+            }
+        
+        return result
     
     def register(self, username: str, password: str) -> Dict[str, Any]:
         """
@@ -307,7 +335,7 @@ class AuthService:
         
         # 更新密码
         encrypted_password = self.encrypt_password(new_password)
-        sql = "UPDATE users SET password = %s WHERE id = %s"
+        sql = "UPDATE users SET password = %s, password_updated_at = NOW() WHERE id = %s"
         execute_update(sql, (encrypted_password, user_id))
         
         return {

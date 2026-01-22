@@ -197,8 +197,8 @@ def change_user_password(user_id: int):
         # 加密新密码
         encrypted_password = auth_service.encrypt_password(new_password)
         
-        # 更新密码
-        sql = "UPDATE users SET password = %s WHERE id = %s"
+        # 更新密码和更新时间
+        sql = "UPDATE users SET password = %s, password_updated_at = NOW() WHERE id = %s"
         execute_update(sql, (encrypted_password, user_id))
         
         return jsonify({
@@ -427,8 +427,8 @@ def create_user():
         role = 'super' if user_type_str == 'super' else 'user'
         
         sql = """
-            INSERT INTO users (username, password, role, status, user_type, created_at)
-            VALUES (%s, %s, %s, 'active', %s, NOW())
+            INSERT INTO users (username, password, role, status, user_type, created_at, password_updated_at)
+            VALUES (%s, %s, %s, 'active', %s, NOW(), NOW())
         """
         user_id = execute_update(sql, (username, encrypted_password, role, user_type_code))
         
