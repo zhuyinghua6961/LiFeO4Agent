@@ -2,6 +2,61 @@
 
 const API_BASE = '' // Vite 代理处理（开发环境）或相对路径（生产环境）
 
+// 全局错误处理函数
+function handleApiError(error, response) {
+  // 检查是否是账号停用错误
+  if (error.code === 'ACCOUNT_DISABLED') {
+    // 清除本地存储
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
+    
+    // 显示友好提示
+    alert('您的账号已被停用，请联系管理员')
+    
+    // 跳转到登录页
+    window.location.href = '/login'
+    
+    return
+  }
+  
+  // 检查是否是 token 失效
+  if (error.code === 'TOKEN_INVALID' || error.code === 'TOKEN_MISSING' || response?.status === 401) {
+    // 清除本地存储
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
+    
+    // 跳转到登录页
+    window.location.href = '/login'
+    
+    return
+  }
+}
+
+// 封装 fetch 请求，添加错误处理
+async function fetchWithErrorHandling(url, options = {}) {
+  try {
+    const response = await fetch(url, options)
+    
+    // 如果响应不成功，尝试解析错误信息
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}))
+      handleApiError(error, response)
+      throw new Error(error.error || '请求失败')
+    }
+    
+    return response
+  } catch (error) {
+    // 如果是网络错误，直接抛出
+    if (!error.code) {
+      throw error
+    }
+    
+    // 处理业务错误
+    handleApiError(error)
+    throw error
+  }
+}
+
 export const api = {
   // ==================== 对话管理 API ====================
   
@@ -115,7 +170,7 @@ export const api = {
     // 注意：userId 从后端 JWT token 中获取，不需要前端传递
     if (conversationId) body.conversation_id = conversationId
     
-    const response = await fetch(`${API_BASE}/api/ask_stream`, {
+    const response = await fetchWithErrorHandling(`${API_BASE}/api/ask_stream`, {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
@@ -123,11 +178,6 @@ export const api = {
       },
       body: JSON.stringify(body)
     })
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({}))
-      throw new Error(error.error || '网络错误')
-    }
 
     const reader = response.body.getReader()
     const decoder = new TextDecoder()

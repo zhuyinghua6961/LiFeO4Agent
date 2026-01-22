@@ -52,6 +52,24 @@ def require_auth(f):
                 "code": "TOKEN_INVALID"
             }), 401
         
+        # 检查用户状态（实时查询数据库）
+        user_id = payload.get('user_id')
+        user = auth_service.get_user_by_id(user_id)
+        
+        if not user:
+            return jsonify({
+                "success": False,
+                "error": "用户不存在",
+                "code": "USER_NOT_FOUND"
+            }), 401
+        
+        if user['status'] == 'disabled':
+            return jsonify({
+                "success": False,
+                "error": "您的账号已被停用，请联系管理员",
+                "code": "ACCOUNT_DISABLED"
+            }), 403
+        
         # 将用户信息附加到 request 对象
         request.user_id = payload.get('user_id')
         request.user_role = payload.get('role')
@@ -122,8 +140,26 @@ def optional_auth(f):
         # 验证 token
         payload = auth_service.decode_token(token)
         if payload:
-            request.user_id = payload.get('user_id')
-            request.user_role = payload.get('role')
+            user_id = payload.get('user_id')
+            
+            # 检查用户状态（实时查询数据库）
+            user = auth_service.get_user_by_id(user_id)
+            
+            if user and user['status'] == 'active':
+                # 只有用户存在且状态为 active 时才设置用户信息
+                request.user_id = user_id
+                request.user_role = payload.get('role')
+            else:
+                # 用户不存在或已停用，返回错误
+                if user and user['status'] == 'disabled':
+                    return jsonify({
+                        "success": False,
+                        "error": "您的账号已被停用，请联系管理员",
+                        "code": "ACCOUNT_DISABLED"
+                    }), 403
+                else:
+                    request.user_id = None
+                    request.user_role = None
         else:
             request.user_id = None
             request.user_role = None

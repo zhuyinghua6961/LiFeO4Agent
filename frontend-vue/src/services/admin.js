@@ -1,12 +1,54 @@
 const API_BASE = '/api/admin'
 
+// 全局错误处理函数
+function handleAdminError(error, response) {
+  // 检查是否是账号停用错误
+  if (error.code === 'ACCOUNT_DISABLED') {
+    // 清除本地存储
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
+    
+    // 显示友好提示
+    alert('您的账号已被停用，请联系管理员')
+    
+    // 跳转到登录页
+    window.location.href = '/login'
+    
+    return
+  }
+  
+  // 检查是否是 token 失效
+  if (error.code === 'TOKEN_INVALID' || error.code === 'TOKEN_MISSING' || response?.status === 401) {
+    // 清除本地存储
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
+    
+    // 跳转到登录页
+    window.location.href = '/login'
+    
+    return
+  }
+}
+
+// 封装 fetch 请求，添加错误处理
+async function fetchWithErrorHandling(url, options = {}) {
+  const response = await fetch(url, options)
+  const data = await response.json()
+  
+  // 如果响应不成功，处理错误
+  if (!response.ok || !data.success) {
+    handleAdminError(data, response)
+  }
+  
+  return data
+}
+
 export const adminApi = {
   async getUsers(page = 1, pageSize = 10) {
     const token = localStorage.getItem('token')
-    const response = await fetch(`${API_BASE}/users?page=${page}&page_size=${pageSize}`, {
+    return fetchWithErrorHandling(`${API_BASE}/users?page=${page}&page_size=${pageSize}`, {
       headers: { 'Authorization': `Bearer ${token}` }
     })
-    return response.json()
   },
 
   async createUser(username, password, userType = 'common') {
