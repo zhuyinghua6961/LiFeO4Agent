@@ -9,6 +9,10 @@ const store = useChatStore()
 const pdfReader = ref(null)
 const inputMessage = ref('')
 const messagesArea = ref(null)
+const fileInput = ref(null)
+const uploadedPdf = ref(null)
+const uploading = ref(false)
+const uploadProgress = ref(0)
 
 const hasMessages = computed(() => store.currentMessages.length > 0)
 const canSend = computed(() => inputMessage.value.trim() && !store.isStreaming)
@@ -207,6 +211,63 @@ function autoResize(e) {
   e.target.style.height = 'auto'
   e.target.style.height = e.target.scrollHeight + 'px'
 }
+
+function triggerFileUpload() {
+  fileInput.value?.click()
+}
+
+async function handleFileSelect(event) {
+  const file = event.target.files?.[0]
+  if (!file) return
+  
+  // 检查文件类型
+  if (!file.name.toLowerCase().endsWith('.pdf')) {
+    alert('只支持PDF文件')
+    return
+  }
+  
+  // 检查文件大小（2MB for common users）
+  const maxSize = 2 * 1024 * 1024
+  if (file.size > maxSize) {
+    alert('文件大小不能超过2MB')
+    return
+  }
+  
+  uploading.value = true
+  uploadProgress.value = 0
+  
+  try {
+    const result = await api.uploadPdf(file, (progress) => {
+      uploadProgress.value = progress
+    })
+    
+    if (result.success) {
+      uploadedPdf.value = result.document
+      
+      // 添加系统消息提示上传成功
+      store.addSystemMessage(`✅ PDF上传成功: ${result.document.title || file.name}`)
+      
+      // 自动填充提示问题
+      inputMessage.value = `请帮我总结一下这篇文献的主要内容`
+    } else {
+      alert('上传失败: ' + (result.error || '未知错误'))
+    }
+  } catch (error) {
+    alert('上传失败: ' + error.message)
+  } finally {
+    uploading.value = false
+    uploadProgress.value = 0
+    // 清空文件输入
+    if (fileInput.value) {
+      fileInput.value.value = ''
+    }
+  }
+}
+
+function removeUploadedPdf() {
+  uploadedPdf.value = null
+  inputMessage.value = ''
+}
 </script>
 
 <template>
@@ -271,6 +332,12 @@ function autoResize(e) {
             <template v-if="msg.role === 'user'">
               <div class="message-content">{{ msg.content }}</div>
             </template>
+            <template v-else-if="msg.role === 'system'">
+              <div class="system-message">
+                <span class="system-icon">ℹ️</span>
+                <span class="system-text">{{ msg.content }}</span>
+              </div>
+            </template>
             <template v-else-if="msg.role === 'bot' || msg.role === 'assistant'">
               <div class="bot-avatar">✨</div>
               <div class="message-content">
@@ -303,7 +370,40 @@ function autoResize(e) {
       </div>
 
       <div class="input-area">
+        <!-- 上传的PDF提示 -->
+        <div v-if="uploadedPdf" class="uploaded-pdf-banner">
+          <div class="pdf-info">
+            <span class="pdf-icon">📄</span>
+            <span class="pdf-name">{{ uploadedPdf.title || uploadedPdf.filename }}</span>
+            <span class="pdf-badge">已上传</span>
+          </div>
+          <button class="remove-pdf-btn" @click="removeUploadedPdf" title="移除PDF">✕</button>
+        </div>
+        
+        <!-- 上传进度 -->
+        <div v-if="uploading" class="upload-progress">
+          <div class="progress-bar">
+            <div class="progress-fill" :style="{width: uploadProgress + '%'}"></div>
+          </div>
+          <span class="progress-text">上传中 {{ uploadProgress }}%</span>
+        </div>
+        
         <div class="input-wrapper">
+          <input 
+            type="file" 
+            ref="fileInput" 
+            accept=".pdf" 
+            @change="handleFileSelect" 
+            style="display: none"
+          />
+          <button 
+            class="upload-btn" 
+            @click="triggerFileUpload" 
+            :disabled="uploading || store.isStreaming"
+            title="上传PDF文档"
+          >
+            📎
+          </button>
           <textarea v-model="inputMessage" placeholder="问我任何关于磷酸铁锂的问题..." rows="1" @keydown.enter.prevent="sendMessage" @input="autoResize($event)"></textarea>
           <button class="send-btn" :disabled="!canSend" @click="sendMessage">{{ store.isStreaming ? '⏹' : '➤' }}</button>
         </div>
@@ -668,5 +768,136 @@ function autoResize(e) {
 .send-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.uploaded-pdf-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.pdf-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.pdf-icon {
+  font-size: 20px;
+}
+
+.pdf-name {
+  font-size: 14px;
+  color: #0c4a6e;
+  font-weight: 500;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pdf-badge {
+  padding: 2px 8px;
+  background: #0ea5e9;
+  color: white;
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+.remove-pdf-btn {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: #ef4444;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.remove-pdf-btn:hover {
+  background: #dc2626;
+}
+
+.upload-progress {
+  padding: 12px 16px;
+  background: #f8fafc;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.progress-bar {
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  transition: width 0.3s;
+}
+
+.progress-text {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.upload-btn {
+  width: 40px;
+  height: 40px;
+  background: #f1f5f9;
+  color: #475569;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.upload-btn:hover:not(:disabled) {
+  background: #e2e8f0;
+}
+
+.upload-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.system-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #f0f9ff;
+  border-left: 3px solid #0ea5e9;
+  border-radius: 8px;
+  margin: 12px auto;
+  max-width: 80%;
+  font-size: 14px;
+  color: #0c4a6e;
+}
+
+.system-icon {
+  font-size: 16px;
+}
+
+.system-text {
+  flex: 1;
 }
 </style>

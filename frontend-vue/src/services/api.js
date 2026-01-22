@@ -236,5 +236,50 @@ export const api = {
       method: 'POST'
     })
     return res.json()
+  },
+
+  // 上传 PDF
+  async uploadPdf(file, onProgress) {
+    const formData = new FormData()
+    formData.append('file', file)
+    
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest()
+      
+      // 上传进度
+      xhr.upload.addEventListener('progress', (e) => {
+        if (e.lengthComputable) {
+          const percent = Math.round((e.loaded / e.total) * 100)
+          onProgress?.(percent)
+        }
+      })
+      
+      // 上传完成
+      xhr.addEventListener('load', () => {
+        if (xhr.status === 200) {
+          try {
+            resolve(JSON.parse(xhr.responseText))
+          } catch (e) {
+            reject(new Error('响应解析失败'))
+          }
+        } else {
+          try {
+            const error = JSON.parse(xhr.responseText)
+            reject(new Error(error.error || xhr.statusText))
+          } catch (e) {
+            reject(new Error(xhr.statusText))
+          }
+        }
+      })
+      
+      // 上传失败
+      xhr.addEventListener('error', () => {
+        reject(new Error('网络错误'))
+      })
+      
+      xhr.open('POST', `${API_BASE}/api/upload/pdf`)
+      xhr.setRequestHeader('Authorization', `Bearer ${localStorage.getItem('token') || ''}`)
+      xhr.send(formData)
+    })
   }
 }

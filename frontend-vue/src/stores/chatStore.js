@@ -334,6 +334,20 @@ export const useChatStore = defineStore('chat', () => {
     }
   }
   
+  // 新增：添加系统消息
+  function addSystemMessage(content) {
+    if (!currentChat.value) return
+    
+    const message = {
+      role: 'system',
+      content,
+      timestamp: new Date()
+    }
+    
+    currentChat.value.messages.push(message)
+    saveChats()
+  }
+  
   // 新增：同步完整的 bot 消息到服务器（在流式响应完成后调用）
   async function syncLastBotMessage() {
     if (!currentChat.value || currentChat.value.messages.length === 0) return
@@ -382,6 +396,7 @@ export const useChatStore = defineStore('chat', () => {
     addUserMessage,
     addBotMessage,
     updateLastBotMessage,
+    addSystemMessage,
     syncLastBotMessage,
     setStreaming,
     setKbInfo

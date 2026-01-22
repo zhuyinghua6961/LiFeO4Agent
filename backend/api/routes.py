@@ -238,6 +238,137 @@ def ask_stream():
 
 # ============== PDF 文件服务 ==============
 
+@api.route('/upload/pdf', methods=['POST'])
+@optional_auth
+def upload_pdf():
+    """
+    上传PDF文件（用于对话中基于PDF问答）
+    
+    请求:
+    - file: PDF文件（multipart/form-data）
+    
+    响应:
+    {
+        "success": true,
+        "document": {
+            "id": "temp_xxx",
+            "filename": "paper.pdf",
+            "title": "...",
+            "text_preview": "...",
+            "chunks": 5
+        }
+    }
+    
+    注意：这是临时上传，文件会在会话结束后清理
+    """
+    import os
+    import uuid
+    from werkzeug.utils import secure_filename
+    
+    try:
+        # 检查文件
+        if 'file' not in request.files:
+            return jsonify({
+                "success": False,
+                "error": "未提供文件",
+                "code": "FILE_MISSING"
+            }), 400
+        
+        file = request.files['file']
+        
+        # 检查文件名
+        if file.filename == '':
+            return jsonify({
+                "success": False,
+                "error": "文件名为空",
+                "code": "FILENAME_EMPTY"
+            }), 400
+        
+        # 检查文件类型
+        if not file.filename.lower().endswith('.pdf'):
+            return jsonify({
+                "success": False,
+                "error": "只支持PDF文件",
+                "code": "INVALID_FILE_TYPE"
+            }), 400
+        
+        # 检查文件大小（2MB限制）
+        file.seek(0, os.SEEK_END)
+        file_size = file.tell()
+        file.seek(0)
+        
+        max_size = 2 * 1024 * 1024  # 2MB
+        if file_size > max_size:
+            return jsonify({
+                "success": False,
+                "error": f"文件大小超过{max_size/1024/1024:.0f}MB限制",
+                "code": "FILE_TOO_LARGE"
+            }), 413
+        
+        # 保存到临时目录
+        temp_dir = '/tmp/pdf_uploads'
+        os.makedirs(temp_dir, exist_ok=True)
+        
+        # 生成唯一文件名
+        doc_id = f"temp_{uuid.uuid4().hex[:12]}"
+        safe_filename = secure_filename(file.filename)
+        temp_path = os.path.join(temp_dir, f"{doc_id}_{safe_filename}")
+        
+        file.save(temp_path)
+        
+        try:
+            # 提取PDF文本
+            from backend.utils.pdf_loader import PDFLoader
+            pdf_loader = PDFLoader(temp_path)
+            text = pdf_loader.extract_text(max_pages=10, exclude_references=True)
+            
+            # 提取标题（从元数据或文件名）
+            title = pdf_loader._metadata.get('title') if pdf_loader._metadata else None
+            if not title or title.strip() == '':
+                title = safe_filename.replace('.pdf', '')
+            
+            # 简单分段（按段落）
+            chunks = [p.strip() for p in text.split('\n\n') if p.strip() and len(p.strip()) > 50]
+            chunks = chunks[:20]  # 最多20个段落
+            
+            # 生成预览
+            text_preview = text[:500] + ('...' if len(text) > 500 else '')
+            
+            logger.info(f"✅ PDF上传成功: {safe_filename}, 大小: {file_size/1024:.1f}KB, 段落数: {len(chunks)}")
+            
+            return jsonify({
+                "success": True,
+                "document": {
+                    "id": doc_id,
+                    "filename": safe_filename,
+                    "title": title,
+                    "text_preview": text_preview,
+                    "chunks": len(chunks),
+                    "file_size": file_size,
+                    "temp_path": temp_path  # 用于后续问答
+                }
+            }), 200
+            
+        except Exception as e:
+            logger.error(f"❌ PDF处理失败: {e}")
+            # 清理文件
+            if os.path.exists(temp_path):
+                os.remove(temp_path)
+            return jsonify({
+                "success": False,
+                "error": f"PDF处理失败: {str(e)}",
+                "code": "PROCESSING_ERROR"
+            }), 500
+    
+    except Exception as e:
+        logger.error(f"❌ PDF上传失败: {e}")
+        return jsonify({
+            "success": False,
+            "error": "上传失败",
+            "code": "UPLOAD_ERROR"
+        }), 500
+
+
 @api.route('/pdf/<path:filename>', methods=['GET'])
 def serve_pdf(filename):
     """提供 PDF 文件访问 - 通过DOI映射查找实际PDF文件"""
