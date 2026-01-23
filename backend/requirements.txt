@@ -1,0 +1,52 @@
+# ============== 核心框架 ==============
+flask>=3.0.0
+flask-cors>=4.0.0
+python-dotenv>=1.0.0
+
+# ============== LangChain 生态 ==============
+langchain>=0.1.20
+langchain-community>=0.0.38
+langchain-openai>=0.1.0
+langchain-core>=0.1.0
+
+# ============== 数据库 ==============
+# Neo4j 图数据库
+neo4j>=5.15.0
+py2neo>=2021.2.3
+
+# MySQL 数据库
+pymysql>=1.1.0
+
+# ChromaDB 向量数据库（升级到 1.4.x 以支持新数据库）
+chromadb>=1.4.0
+
+# ============== AI/ML 相关 ==============
+# OpenAI API
+openai>=1.12.0
+
+# 向量嵌入模型
+sentence-transformers>=2.2.0
+FlagEmbedding>=1.2.0
+
+# ============== 数据处理 ==============
+pandas>=2.0.0
+numpy>=1.24.0
+openpyxl>=3.1.0  # Excel文件读写
+
+# ============== 文档处理 ==============
+# PDF 处理
+PyMuPDF>=1.23.0
+
+# ============== 安全相关 ==============
+# JWT 认证
+PyJWT>=2.8.0
+
+# AES 加密
+pycryptodome>=3.19.0
+
+# ============== 工具库 ==============
+requests>=2.28.0
+
+# ============== 开发/测试 ==============
+pytest>=7.4.0
+pytest-cov>=4.1.0

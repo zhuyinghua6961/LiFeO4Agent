@@ -162,7 +162,7 @@ backend/doi_to_pdf_mapping.json
 # 文献文本文件
 txt/
 backend/txt/
-*.txt
+
 
 # ==================== 临时文件 ====================
 # 临时文件

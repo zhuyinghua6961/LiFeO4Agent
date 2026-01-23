@@ -1,0 +1,10 @@
+flask==3.0.0
+flask-cors==4.0.0
+marker-pdf
+torch
+torchvision
+torchaudio
+pillow
+ftfy
+python-magic
+pdfplumber
