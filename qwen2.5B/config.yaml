@@ -1,0 +1,40 @@
+# 模型配置
+model:
+  name: "Qwen/Qwen2.5-1.5B-Instruct"
+  path: "./models/qwen2.5-1.5b-instruct"
+  device: "cuda"  # cuda | cpu
+  framework: "vllm"  # vllm | ollama
+  port: 8003  # 模型服务端口
+  max_batch_size: 32
+  max_seq_length: 4096
+  hf_mirror: "https://hf-mirror.com"  # Hugging Face 镜像地址
+
+# 处理配置
+processing:
+  batch_size: 10
+  max_retries: 3
+  timeout: 30
+  min_sentence_length: 5
+  max_sentence_length: 100
+
+# 清洗配置
+cleaning:
+  remove_images: true
+  convert_html: true
+  remove_metadata: true
+  preserve_tables: true
+  preserve_citations: true
+
+# 输出配置
+output:
+  format: "json"
+  encoding: "utf-8"
+  indent: 2
+  include_metadata: true
+  overwrite_existing: false
+
+# 日志配置
+logging:
+  level: "INFO"
+  file: "processing.log"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"

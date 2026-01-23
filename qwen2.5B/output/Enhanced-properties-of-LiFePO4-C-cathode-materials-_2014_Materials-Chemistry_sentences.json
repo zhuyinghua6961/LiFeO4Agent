@@ -1,0 +1,4001 @@
+{
+  "source_file": "Enhanced-properties-of-LiFePO4-C-cathode-materials-_2014_Materials-Chemistry.md",
+  "document_title": "Materials Chemistry and Physics",
+  "processing_timestamp": "2026-01-23T16:57:57.021954",
+  "sentences": [
+    {
+      "id": "Enhanced_properties_of_LiFePO4_root_p1_s0",
+      "text": "Contents lists available at ScienceDirect",
+      "keywords": [],
+      "location": {
+        "section_path": [],
+        "section_id": "root",
+        "paragraph_index": 1,
+        "sentence_index": 0,
+        "line_range": [
+          2,
+          2
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section12_p3_s0",
+      "text": "Wei Quan ^{a}, Zilong Tang ^{a,\\*}, Junying Zhang ^{b}, Zhongtai Zhang ^{a}",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Enhanced properties of LiFePO_{4}/C cathode materials modified by CePO_{4} nanoparticles"
+        ],
+        "section_id": "section_1_2",
+        "paragraph_index": 3,
+        "sentence_index": 0,
+        "line_range": [
+          14,
+          14
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section12_p4_s0",
+      "text": "^{a} State Key Laboratory of New Ceramics and Fine Processing, School of Materials Science and Engineering, Tsinghua University, Beijing 100084, China ^{b} Key Laboratory of Micro-nano Measurement, Manipulation and Physics (Ministry of Education), Department of Physics, Beihang University, Beijing 100191, China",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Enhanced properties of LiFePO_{4}/C cathode materials modified by CePO_{4} nanoparticles"
+        ],
+        "section_id": "section_1_2",
+        "paragraph_index": 4,
+        "sentence_index": 0,
+        "line_range": [
+          16,
+          16
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section21_p5_s0",
+      "text": "- The composites were coated by carbon layer and modified by CePO_{4} nanoparticles.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Enhanced properties of LiFePO_{4}/C cathode materials modified by CePO_{4} nanoparticles",
+          "HIGHLIGHTS"
+        ],
+        "section_id": "section_2_1",
+        "paragraph_index": 5,
+        "sentence_index": 0,
+        "line_range": [
+          20,
+          22
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section21_p5_s1",
+      "text": "- Introducing CePO_{4} nanoparticles via in situ method had obvious nail effects in reducing the particle size of LiFePO_{4}.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Enhanced properties of LiFePO_{4}/C cathode materials modified by CePO_{4} nanoparticles",
+          "HIGHLIGHTS"
+        ],
+        "section_id": "section_2_1",
+        "paragraph_index": 5,
+        "sentence_index": 1,
+        "line_range": [
+          20,
+          22
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section21_p5_s2",
+      "text": "- The electrochemical properties were improved significantly after modification of CePO_{4} nanoparticles.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Enhanced properties of LiFePO_{4}/C cathode materials modified by CePO_{4} nanoparticles",
+          "HIGHLIGHTS"
+        ],
+        "section_id": "section_2_1",
+        "paragraph_index": 5,
+        "sentence_index": 2,
+        "line_range": [
+          20,
+          22
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section42_p6_s0",
+      "text": "Keywords: Composite materials Nanostructures Crystal growth Electron microscopy Electrochemical properties",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Enhanced properties of LiFePO_{4}/C cathode materials modified by CePO_{4} nanoparticles",
+          "HIGHLIGHTS",
+          "Article history: Received 5 January 2014 Received in revised form 28 April 2014 Accepted 5 May 2014"
+        ],
+        "section_id": "section_4_2",
+        "paragraph_index": 6,
+        "sentence_index": 0,
+        "line_range": [
+          28,
+          33
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section42_p7_s0",
+      "text": "Reducing the particle size and coating conductive materials are both effective ways to improve the performance of LFP (LiFePO_{4}).",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Enhanced properties of LiFePO_{4}/C cathode materials modified by CePO_{4} nanoparticles",
+          "HIGHLIGHTS",
+          "Article history: Received 5 January 2014 Received in revised form 28 April 2014 Accepted 5 May 2014"
+        ],
+        "section_id": "section_4_2",
+        "paragraph_index": 7,
+        "sentence_index": 0,
+        "line_range": [
+          37,
+          37
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section42_p7_s1",
+      "text": "In this paper, we synthesized LFP/C/CPO (LiFePO_{4}/C/CePO_{4}) composites and investigated the effects of CePO_{4} modification on the morphologies and electrochemical properties of LFP/C composites.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Enhanced properties of LiFePO_{4}/C cathode materials modified by CePO_{4} nanoparticles",
+          "HIGHLIGHTS",
+          "Article history: Received 5 January 2014 Received in revised form 28 April 2014 Accepted 5 May 2014"
+        ],
+        "section_id": "section_4_2",
+        "paragraph_index": 7,
+        "sentence_index": 1,
+        "line_range": [
+          37,
+          37
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section42_p7_s2",
+      "text": "The results demonstrated that introducing CePO_{4} nanoparticles via in situ method could reduce the particle size significantly and improve the electrochemical properties of LFP/C.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Enhanced properties of LiFePO_{4}/C cathode materials modified by CePO_{4} nanoparticles",
+          "HIGHLIGHTS",
+          "Article history: Received 5 January 2014 Received in revised form 28 April 2014 Accepted 5 May 2014"
+        ],
+        "section_id": "section_4_2",
+        "paragraph_index": 7,
+        "sentence_index": 2,
+        "line_range": [
+          37,
+          37
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section13_p8_s0",
+      "text": "Owing to its advantages of low cost, nontoxicity, good cycle stability and a relatively high theoretical specific capacity (170 mAh g^{-1}), LFP (LiFePO_{4}) has drawn attentions as a potential cathode material for lithium-ion batteries since the pioneering works by Goodenough and his co-workers [1].",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "1. Introduction"
+        ],
+        "section_id": "section_1_3",
+        "paragraph_index": 8,
+        "sentence_index": 0,
+        "line_range": [
+          43,
+          43
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section13_p8_s1",
+      "text": "However, LFP has drawbacks such as low electronic conductivity and lithium-ion diffusion coefficient due to its intrinsic characteristics, which limits its application.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "1. Introduction"
+        ],
+        "section_id": "section_1_3",
+        "paragraph_index": 8,
+        "sentence_index": 1,
+        "line_range": [
+          43,
+          43
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section13_p8_s2",
+      "text": "In recent years, many attempts have been made to improve the performance of LFP, including optimizing the particle size [2–4], coating conductive additives [5–7] and metal ions doping [8,9].",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "1. Introduction"
+        ],
+        "section_id": "section_1_3",
+        "paragraph_index": 8,
+        "sentence_index": 2,
+        "line_range": [
+          43,
+          43
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section13_p8_s3",
+      "text": "The reduced particle size can shorten the diffusion distance of lithium-ions.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "1. Introduction"
+        ],
+        "section_id": "section_1_3",
+        "paragraph_index": 8,
+        "sentence_index": 3,
+        "line_range": [
+          43,
+          43
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section13_p9_s0",
+      "text": "increase the electronic conductivity between particles and metal ions doping can increase the diffusion coefficient of lithium-ions within the particle.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "1. Introduction"
+        ],
+        "section_id": "section_1_3",
+        "paragraph_index": 9,
+        "sentence_index": 0,
+        "line_range": [
+          45,
+          45
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section13_p10_s0",
+      "text": "Several synthesis methods have been reported to obtain LFP with fine particle size, including co-precipitation [10], sol—gel [11], hydrothermal method [12,13] and other novel methods [14,15].",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "1. Introduction"
+        ],
+        "section_id": "section_1_3",
+        "paragraph_index": 10,
+        "sentence_index": 0,
+        "line_range": [
+          47,
+          47
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section13_p10_s1",
+      "text": "In this paper, we employed a hydrothermal method to synthesize LFP, which has been proved to be easy, fast, and cheap [12].",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "1. Introduction"
+        ],
+        "section_id": "section_1_3",
+        "paragraph_index": 10,
+        "sentence_index": 1,
+        "line_range": [
+          47,
+          47
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section13_p11_s0",
+      "text": "CePO_{4} coating has been found effective to suppresses Co dissolution and improve capacity retention of LiCoO_{2} cathode [16], and FePO_{4} coating also has great effects on olivine family [17,18].",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "1. Introduction"
+        ],
+        "section_id": "section_1_3",
+        "paragraph_index": 11,
+        "sentence_index": 0,
+        "line_range": [
+          49,
+          49
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section13_p11_s1",
+      "text": "Inspired by this idea, we successfully synthesized LiFePO_{4}/C/CePO_{4} (LFP/C/CPO) composite materials for the first time, and further prove that the existence of CePO_{4} introduced by in situ method can reduce the particle size of LiFePO_{4} significantly.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "1. Introduction"
+        ],
+        "section_id": "section_1_3",
+        "paragraph_index": 11,
+        "sentence_index": 1,
+        "line_range": [
+          49,
+          49
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section13_p11_s2",
+      "text": "But the mechanism is different from the effects of La doping as we reported before [19], in which a solid solution was synthesized.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "1. Introduction"
+        ],
+        "section_id": "section_1_3",
+        "paragraph_index": 11,
+        "sentence_index": 2,
+        "line_range": [
+          49,
+          49
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section13_p12_s2",
+      "text": "E-mail address: tzl@tsinghua.edu.cn (Z. Tang).",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "1. Introduction"
+        ],
+        "section_id": "section_1_3",
+        "paragraph_index": 12,
+        "sentence_index": 2,
+        "line_range": [
+          51,
+          51
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section14_p13_s0",
+      "text": "The sample of LFP/C was prepared by hydrothermal method derived from Nakano, H., et al.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.1. Synthesis of LFP/C and LFP/C/CPO"
+        ],
+        "section_id": "section_1_4",
+        "paragraph_index": 13,
+        "sentence_index": 0,
+        "line_range": [
+          57,
+          57
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section14_p13_s2",
+      "text": "The raw materials were LiOH·H_{2}O, FeSO_{4}·7H_{2}O, H_{3}PO_{4} (85 wt%) and ascorbic acid, which were used as Li.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.1. Synthesis of LFP/C and LFP/C/CPO"
+        ],
+        "section_id": "section_1_4",
+        "paragraph_index": 13,
+        "sentence_index": 2,
+        "line_range": [
+          57,
+          57
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section14_p13_s4",
+      "text": "P. and C sources, respectively.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.1. Synthesis of LFP/C and LFP/C/CPO"
+        ],
+        "section_id": "section_1_4",
+        "paragraph_index": 13,
+        "sentence_index": 4,
+        "line_range": [
+          57,
+          57
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section14_p13_s5",
+      "text": "All reagents were analytical grade (supplied by Beijing Chemical Reagent Ltd., China) and used as received without further purification.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.1. Synthesis of LFP/C and LFP/C/CPO"
+        ],
+        "section_id": "section_1_4",
+        "paragraph_index": 13,
+        "sentence_index": 5,
+        "line_range": [
+          57,
+          57
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section14_p13_s6",
+      "text": "The molar ratio of the Li:Fe:P:ascorbic acid was 3:1:1:0.2.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.1. Synthesis of LFP/C and LFP/C/CPO"
+        ],
+        "section_id": "section_1_4",
+        "paragraph_index": 13,
+        "sentence_index": 6,
+        "line_range": [
+          57,
+          57
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section14_p13_s7",
+      "text": "The concentration of  $FeSO_4$  in the precursor solution was 0.5 mol  $dm^{-3}$  and PH was 7.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.1. Synthesis of LFP/C and LFP/C/CPO"
+        ],
+        "section_id": "section_1_4",
+        "paragraph_index": 13,
+        "sentence_index": 7,
+        "line_range": [
+          57,
+          57
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section14_p13_s8",
+      "text": "Li source and P source were dissolved into deionized water under magnetic stirring for 30 min, and a mass of sticky mixture was formed.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.1. Synthesis of LFP/C and LFP/C/CPO"
+        ],
+        "section_id": "section_1_4",
+        "paragraph_index": 13,
+        "sentence_index": 8,
+        "line_range": [
+          57,
+          57
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section14_p13_s9",
+      "text": "Then, FeSO_{4} and ascorbic acid aqueous solution was added slowly with continuous stirring.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.1. Synthesis of LFP/C and LFP/C/CPO"
+        ],
+        "section_id": "section_1_4",
+        "paragraph_index": 13,
+        "sentence_index": 9,
+        "line_range": [
+          57,
+          57
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section14_p13_s10",
+      "text": "In order to prohibit the oxidation of Fe^{2+} to Fe^{3+}, the water was degassed by N_{2} gas bubbling for 30 min prior to preparing the solution.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.1. Synthesis of LFP/C and LFP/C/CPO"
+        ],
+        "section_id": "section_1_4",
+        "paragraph_index": 13,
+        "sentence_index": 10,
+        "line_range": [
+          57,
+          57
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section14_p13_s11",
+      "text": "80 ml of the precursor solution was sealed into a Teflon vessel (inner volume: 100 ml) coated in a stainless steel autoclave, and the reactor was heating at 190 °C in an oven for 12 h. The precipitated powder was collected by filtration and washed thoroughly with DI water and acetone.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.1. Synthesis of LFP/C and LFP/C/CPO"
+        ],
+        "section_id": "section_1_4",
+        "paragraph_index": 13,
+        "sentence_index": 11,
+        "line_range": [
+          57,
+          57
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section14_p13_s12",
+      "text": "The obtained powder was dried at 65 °C for 4 h under vacuum condition.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.1. Synthesis of LFP/C and LFP/C/CPO"
+        ],
+        "section_id": "section_1_4",
+        "paragraph_index": 13,
+        "sentence_index": 12,
+        "line_range": [
+          57,
+          57
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section14_p13_s13",
+      "text": "To increase the electrical conductivity of the carbon layer, the precipitated powder was heat-treated at 700 °C for 1 h, under a flow of Ar atmosphere containing 3 vol% H_{2}.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.1. Synthesis of LFP/C and LFP/C/CPO"
+        ],
+        "section_id": "section_1_4",
+        "paragraph_index": 13,
+        "sentence_index": 13,
+        "line_range": [
+          57,
+          57
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section14_p14_s0",
+      "text": "LFP/C/CPO samples were prepared with the same procedures as above.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.1. Synthesis of LFP/C and LFP/C/CPO"
+        ],
+        "section_id": "section_1_4",
+        "paragraph_index": 14,
+        "sentence_index": 0,
+        "line_range": [
+          59,
+          59
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section14_p14_s1",
+      "text": "Ce(NO_{3}) $_3$ ·3H $_2$ O was used as precursor, and the molar ratio of the Li:Fe:Ce:P:ascorbic acid was 3:0.99:0.01:1:0.2.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.1. Synthesis of LFP/C and LFP/C/CPO"
+        ],
+        "section_id": "section_1_4",
+        "paragraph_index": 14,
+        "sentence_index": 1,
+        "line_range": [
+          59,
+          59
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section14_p14_s2",
+      "text": "We name LFP/C and LFP/C/CPO sample a and sample b, respectively.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.1. Synthesis of LFP/C and LFP/C/CPO"
+        ],
+        "section_id": "section_1_4",
+        "paragraph_index": 14,
+        "sentence_index": 2,
+        "line_range": [
+          59,
+          59
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section21_p15_s0",
+      "text": "Crystallographic structures of the as-prepared materials were characterized by X-ray diffraction (XRD, Cu K $\\alpha$ , D/max-V2500, Rigaku, Japan) from 10° to 80° (2 $\\theta$ ) at 8° min^{-1}.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.1. Synthesis of LFP/C and LFP/C/CPO",
+          "2.2. Characterization of samples"
+        ],
+        "section_id": "section_2_1",
+        "paragraph_index": 15,
+        "sentence_index": 0,
+        "line_range": [
+          63,
+          63
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section21_p15_s1",
+      "text": "The morphology of the samples was studied by scanning electron microscope (SEM, LEO-1530, ZEISS, Germany).",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.1. Synthesis of LFP/C and LFP/C/CPO",
+          "2.2. Characterization of samples"
+        ],
+        "section_id": "section_2_1",
+        "paragraph_index": 15,
+        "sentence_index": 1,
+        "line_range": [
+          63,
+          63
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section21_p15_s2",
+      "text": "The microstructure of the sample was examined using transmission electron microscope (TEM, JEM 2100, JEOL, Japan) equipped with energy dispersive spectroscope (EDS).",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.1. Synthesis of LFP/C and LFP/C/CPO",
+          "2.2. Characterization of samples"
+        ],
+        "section_id": "section_2_1",
+        "paragraph_index": 15,
+        "sentence_index": 2,
+        "line_range": [
+          63,
+          63
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section15_p16_s0",
+      "text": "The charge-discharge tests for the prepared samples were conducted using 2032 coin-type cells.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements"
+        ],
+        "section_id": "section_1_5",
+        "paragraph_index": 16,
+        "sentence_index": 0,
+        "line_range": [
+          67,
+          67
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section15_p16_s1",
+      "text": "The composite cathode with thickness of about 40 µm was prepared by mixing the electrode composites with acetylene black and polyvinylidene fluoride (PVDF) in n-methyl pyrrolidone (NMP) in a weight ratio of 75:15:10.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements"
+        ],
+        "section_id": "section_1_5",
+        "paragraph_index": 16,
+        "sentence_index": 1,
+        "line_range": [
+          67,
+          67
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section15_p16_s2",
+      "text": "The obtained viscous fluid was cast on aluminum foil and dried at 120 °C in vacuum overnight.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements"
+        ],
+        "section_id": "section_1_5",
+        "paragraph_index": 16,
+        "sentence_index": 2,
+        "line_range": [
+          67,
+          67
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section15_p16_s3",
+      "text": "Then the composite electrode containing about 3 mg cm^{-2} of active material was cut into a circular shape (diameter 12 mm).",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements"
+        ],
+        "section_id": "section_1_5",
+        "paragraph_index": 16,
+        "sentence_index": 3,
+        "line_range": [
+          67,
+          67
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section15_p16_s4",
+      "text": "A lithium foil was used as the anode of the cell.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements"
+        ],
+        "section_id": "section_1_5",
+        "paragraph_index": 16,
+        "sentence_index": 4,
+        "line_range": [
+          67,
+          67
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section15_p16_s5",
+      "text": "The electrolyte was a solvent mixture of ethylene carbonate (EC) and diethyl carbonate (DEC) in a volume ratio of 1:1 containing 1 M LiPF_{6}.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements"
+        ],
+        "section_id": "section_1_5",
+        "paragraph_index": 16,
+        "sentence_index": 5,
+        "line_range": [
+          67,
+          67
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section15_p16_s6",
+      "text": "A porous polyethylene film (Celgard 2400, Celgard Ltd., USA) was used as a separator.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements"
+        ],
+        "section_id": "section_1_5",
+        "paragraph_index": 16,
+        "sentence_index": 6,
+        "line_range": [
+          67,
+          67
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section15_p16_s7",
+      "text": "The cell was assembled in an argon-filled glove box.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements"
+        ],
+        "section_id": "section_1_5",
+        "paragraph_index": 16,
+        "sentence_index": 7,
+        "line_range": [
+          67,
+          67
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section15_p16_s8",
+      "text": "Charge-discharge capacities were measured with the LAND batteries test system (CT2001A, Jinnuo Electronics Co., Ltd., Wuhan, China) in a voltage range of 2.4–4.2 V, under different current densities at room temperature.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements"
+        ],
+        "section_id": "section_1_5",
+        "paragraph_index": 16,
+        "sentence_index": 8,
+        "line_range": [
+          67,
+          67
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section15_p17_s0",
+      "text": "The cyclic voltammetry (CV) and electrochemical impedance spectroscopy (EIS) measurements were conducted by an electrochemical workstation (CHI604B Shanghai Chenhua Co. Ltd., China).",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements"
+        ],
+        "section_id": "section_1_5",
+        "paragraph_index": 17,
+        "sentence_index": 0,
+        "line_range": [
+          69,
+          69
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section15_p17_s1",
+      "text": "CV tests were run at 0.1 mV s $^{-1}$  between 2 and 4.2 V, and EIS measurements were operated in the frequency range of 100 kHz to",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements"
+        ],
+        "section_id": "section_1_5",
+        "paragraph_index": 17,
+        "sentence_index": 1,
+        "line_range": [
+          69,
+          69
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section15_p18_s1",
+      "text": "All the EIS data were collected after the cells were discharged to 2.4~V at 1 C.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements"
+        ],
+        "section_id": "section_1_5",
+        "paragraph_index": 18,
+        "sentence_index": 1,
+        "line_range": [
+          71,
+          71
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section42_p19_s1",
+      "text": "1 shows the XRD pattern of LFP/C and LFP/C/CPO.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements",
+          "3.1. Structure and morphology of the samples"
+        ],
+        "section_id": "section_4_2",
+        "paragraph_index": 19,
+        "sentence_index": 1,
+        "line_range": [
+          77,
+          77
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section42_p19_s2",
+      "text": "Both of the two samples agree well with that of olivine-structured LiFePO_{4} indexed with orthorhombic Pnmb group (PDF#40-1499).",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements",
+          "3.1. Structure and morphology of the samples"
+        ],
+        "section_id": "section_4_2",
+        "paragraph_index": 19,
+        "sentence_index": 2,
+        "line_range": [
+          77,
+          77
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section42_p19_s3",
+      "text": "In sample b, the phase of CePO_{4} is detected, but the intensity is very weak because of the low amounts of CePO_{4}.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements",
+          "3.1. Structure and morphology of the samples"
+        ],
+        "section_id": "section_4_2",
+        "paragraph_index": 19,
+        "sentence_index": 3,
+        "line_range": [
+          77,
+          77
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section42_p19_s4",
+      "text": "The results of XRD pattern demonstrate that Ce resource added does not influence the crystal structure of LiFePO_{4}.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements",
+          "3.1. Structure and morphology of the samples"
+        ],
+        "section_id": "section_4_2",
+        "paragraph_index": 19,
+        "sentence_index": 4,
+        "line_range": [
+          77,
+          77
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section42_p20_s0",
+      "text": "The SEM microphotographs, reported in Fig.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements",
+          "3.1. Structure and morphology of the samples"
+        ],
+        "section_id": "section_4_2",
+        "paragraph_index": 20,
+        "sentence_index": 0,
+        "line_range": [
+          79,
+          79
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section42_p20_s1",
+      "text": "2a and b, put in evidence the strong particle-refining of the power via introducing CePO_{4} in the composite.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements",
+          "3.1. Structure and morphology of the samples"
+        ],
+        "section_id": "section_4_2",
+        "paragraph_index": 20,
+        "sentence_index": 1,
+        "line_range": [
+          79,
+          79
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section42_p20_s2",
+      "text": "The average particle size of sample b is about 500 nm, and the morphology and size are uniform (Fig.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements",
+          "3.1. Structure and morphology of the samples"
+        ],
+        "section_id": "section_4_2",
+        "paragraph_index": 20,
+        "sentence_index": 2,
+        "line_range": [
+          79,
+          79
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section42_p20_s3",
+      "text": "2b), whereas the particle size of LFP/C is about 1.5  $\\mu$ m and there are some agglomerations (Fig.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements",
+          "3.1. Structure and morphology of the samples"
+        ],
+        "section_id": "section_4_2",
+        "paragraph_index": 20,
+        "sentence_index": 3,
+        "line_range": [
+          79,
+          79
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section42_p20_s5",
+      "text": "The effects of refining and homogenizing the size of the particles are induced by the presence of CePO_{4} formed during the reaction.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements",
+          "3.1. Structure and morphology of the samples"
+        ],
+        "section_id": "section_4_2",
+        "paragraph_index": 20,
+        "sentence_index": 5,
+        "line_range": [
+          79,
+          79
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section42_p20_s6",
+      "text": "It is believed that improved morphology can enhance the electrochemical properties of the cathode materials.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements",
+          "3.1. Structure and morphology of the samples"
+        ],
+        "section_id": "section_4_2",
+        "paragraph_index": 20,
+        "sentence_index": 6,
+        "line_range": [
+          79,
+          79
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section42_p21_s0",
+      "text": "To improve our understanding about the effects of CePO_{4} on the LFP particle further, we conducted TEM, HRTEM and EDS analysis on the sample of LFP/C/CPO.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements",
+          "3.1. Structure and morphology of the samples"
+        ],
+        "section_id": "section_4_2",
+        "paragraph_index": 21,
+        "sentence_index": 0,
+        "line_range": [
+          81,
+          81
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section42_p21_s1",
+      "text": "The results are shown in Fig.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements",
+          "3.1. Structure and morphology of the samples"
+        ],
+        "section_id": "section_4_2",
+        "paragraph_index": 21,
+        "sentence_index": 1,
+        "line_range": [
+          81,
+          81
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section42_p21_s3",
+      "text": "It is apparent from Fig.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements",
+          "3.1. Structure and morphology of the samples"
+        ],
+        "section_id": "section_4_2",
+        "paragraph_index": 21,
+        "sentence_index": 3,
+        "line_range": [
+          81,
+          81
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section42_p21_s4",
+      "text": "3a that there are two distinctive morphologies, namely dark particles and cotton-like particles deposited on the surface of LFP.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements",
+          "3.1. Structure and morphology of the samples"
+        ],
+        "section_id": "section_4_2",
+        "paragraph_index": 21,
+        "sentence_index": 4,
+        "line_range": [
+          81,
+          81
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section42_p21_s6",
+      "text": "3b shows that an amorphous carbon layer with a thickness in the range of 5–20 nm is formed on the surface of LiFePO_{4} nanoparticle, obviously different from the crystal lattice of LiFePO_{4} particle.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements",
+          "3.1. Structure and morphology of the samples"
+        ],
+        "section_id": "section_4_2",
+        "paragraph_index": 21,
+        "sentence_index": 6,
+        "line_range": [
+          81,
+          81
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section42_p22_s0",
+      "text": "According to EDS results, new phases containing Ce was detected.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements",
+          "3.1. Structure and morphology of the samples"
+        ],
+        "section_id": "section_4_2",
+        "paragraph_index": 22,
+        "sentence_index": 0,
+        "line_range": [
+          83,
+          83
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section42_p22_s1",
+      "text": "Although EDS analysis is not the direct evidence of a new phase, considering that CePO_{4} is identified in XRD patterns and the adding amount is very small, we may deduce that the new chemical compounds containing Ce is CePO_{4} very probably.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements",
+          "3.1. Structure and morphology of the samples"
+        ],
+        "section_id": "section_4_2",
+        "paragraph_index": 22,
+        "sentence_index": 1,
+        "line_range": [
+          83,
+          83
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section42_p22_s2",
+      "text": "The TEM image shows that the particle size of the sample b is less than 500 nm.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements",
+          "3.1. Structure and morphology of the samples"
+        ],
+        "section_id": "section_4_2",
+        "paragraph_index": 22,
+        "sentence_index": 2,
+        "line_range": [
+          83,
+          83
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section42_p22_s3",
+      "text": "Smaller particle size means increased contact area between electrodes and electrolytes and a shorter pathway for the diffusion of",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements",
+          "3.1. Structure and morphology of the samples"
+        ],
+        "section_id": "section_4_2",
+        "paragraph_index": 22,
+        "sentence_index": 3,
+        "line_range": [
+          83,
+          83
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section42_p23_s2",
+      "text": "XRD patterns of LFP/C and LFP/C/CPO powders.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements",
+          "3.1. Structure and morphology of the samples"
+        ],
+        "section_id": "section_4_2",
+        "paragraph_index": 23,
+        "sentence_index": 2,
+        "line_range": [
+          87,
+          87
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section42_p25_s2",
+      "text": "SEM micrographs of (a) LFP/C and (b) LFP/C/CPO.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements",
+          "3.1. Structure and morphology of the samples"
+        ],
+        "section_id": "section_4_2",
+        "paragraph_index": 25,
+        "sentence_index": 2,
+        "line_range": [
+          91,
+          91
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section42_p26_s2",
+      "text": "(a)TEM, (b) HRTEM images and EDS results of LFP/C/CPO.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements",
+          "3.1. Structure and morphology of the samples"
+        ],
+        "section_id": "section_4_2",
+        "paragraph_index": 26,
+        "sentence_index": 2,
+        "line_range": [
+          95,
+          95
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section42_p27_s0",
+      "text": "lithium-ions in LFP particles and, which is especially beneficial for the discharge of lithium-ions at high rates.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements",
+          "3.1. Structure and morphology of the samples"
+        ],
+        "section_id": "section_4_2",
+        "paragraph_index": 27,
+        "sentence_index": 0,
+        "line_range": [
+          97,
+          97
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section42_p27_s1",
+      "text": "It has been reported that the addition of surfactants or polymers, used in situ introducing carbon, limits particle growth and effectively controls the particle size distribution of the particles by binding to the growing crystal faces [\\[20\\]](#page-5-0).",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements",
+          "3.1. Structure and morphology of the samples"
+        ],
+        "section_id": "section_4_2",
+        "paragraph_index": 27,
+        "sentence_index": 1,
+        "line_range": [
+          97,
+          97
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section42_p27_s2",
+      "text": "In this regard, CePO4 modification has similar effects, i.e., working as nails on the crystal surface to suppress the growth of LFP particles.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements",
+          "3.1. Structure and morphology of the samples"
+        ],
+        "section_id": "section_4_2",
+        "paragraph_index": 27,
+        "sentence_index": 2,
+        "line_range": [
+          97,
+          97
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section42_p27_s3",
+      "text": "Nail effects can also make stronger connections between particles, as it is shown in Fig.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements",
+          "3.1. Structure and morphology of the samples"
+        ],
+        "section_id": "section_4_2",
+        "paragraph_index": 27,
+        "sentence_index": 3,
+        "line_range": [
+          97,
+          97
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section42_p27_s4",
+      "text": "3a that embedded CePO4 nanoparticles can combine the particles like rivets.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements",
+          "3.1. Structure and morphology of the samples"
+        ],
+        "section_id": "section_4_2",
+        "paragraph_index": 27,
+        "sentence_index": 4,
+        "line_range": [
+          97,
+          97
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section42_p27_s5",
+      "text": "Such effects may reduce and buffer the volume change during lithiation and delithiation, which can improve the structure stability of electrode materials.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "2.3. Electrochemical measurements",
+          "3.1. Structure and morphology of the samples"
+        ],
+        "section_id": "section_4_2",
+        "paragraph_index": 27,
+        "sentence_index": 5,
+        "line_range": [
+          97,
+          97
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p28_s1",
+      "text": "4 shows the initial chargeedischarge curves of LFP/C and LFP/C/CPO at 0.1 C (17 mA g^{1} ).",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 28,
+        "sentence_index": 1,
+        "line_range": [
+          101,
+          101
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p28_s2",
+      "text": "Both of the two samples exhibit very flat chargeedischarge plateaus.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 28,
+        "sentence_index": 2,
+        "line_range": [
+          101,
+          101
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p28_s3",
+      "text": "It can be seen clearly from the results that CePO4 particles can improve the rate capacity of LFP/C.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 28,
+        "sentence_index": 3,
+        "line_range": [
+          101,
+          101
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p28_s4",
+      "text": "The specific discharge capacity of LFP/C/CPO at a specific discharge current of 17 mA g^{1} is 156 mAh g^{1} , higher than that of LiFePO4/C (146 mAh g^{1} ).",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 28,
+        "sentence_index": 4,
+        "line_range": [
+          101,
+          101
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p28_s5",
+      "text": "The initial chargeedischarge curves of LFP/C/CPO at different specific discharge currents are shown in [Fig.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 28,
+        "sentence_index": 5,
+        "line_range": [
+          101,
+          101
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p28_s7",
+      "text": "Although the rate capability of LFP/C/CPO was not so high as reported by other studies [\\[13\\],](#page-5-0) the role of CePO4 in improving the properties was undoubtedly demonstrated.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 28,
+        "sentence_index": 7,
+        "line_range": [
+          101,
+          101
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p28_s9",
+      "text": "6](#page-3-0) shows the cycling performance of LFP/C and LFP/C/CPO at the discharge current of 1 C. Obviously, CePO4 modification can help to obtain a longer cycle life of LiFePO4.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 28,
+        "sentence_index": 9,
+        "line_range": [
+          101,
+          101
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p28_s10",
+      "text": "The capacity retention of LFP/C/CPO is (about 97%) higher than that of LFP/C (about 93%).",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 28,
+        "sentence_index": 10,
+        "line_range": [
+          101,
+          101
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p29_s0",
+      "text": "The testing results above have shown good capacity and cycling properties of LFP/C/CPO.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 29,
+        "sentence_index": 0,
+        "line_range": [
+          103,
+          103
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p29_s1",
+      "text": "The improvements can be attributed to four aspects.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 29,
+        "sentence_index": 1,
+        "line_range": [
+          103,
+          103
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p29_s2",
+      "text": "Firstly, the enlarged contact area between electrodes and electrolytes caused by decreased particle size can improve the rate capacities.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 29,
+        "sentence_index": 2,
+        "line_range": [
+          103,
+          103
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p29_s3",
+      "text": "Secondly, the electrode resistance will be decreased because of the decreased particle size, according to the empirical law: R^{m} f d^{n} (R^{m} represents the resistance of electrodes; d represents the particle size), put forward by Miran Gaberscek [\\[21\\].",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 29,
+        "sentence_index": 3,
+        "line_range": [
+          103,
+          103
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p29_s4",
+      "text": "](#page-5-0) Thirdly, CePO4 as an ionic conductor with stable structure can protect the electrodes from the corrosion of electrolytes like preformed SEI, which can reduce side reactions and improve the structure and cycling stability.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 29,
+        "sentence_index": 4,
+        "line_range": [
+          103,
+          103
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p29_s5",
+      "text": "Fourthly, embedded CePO4 particles may make stronger connections between LFP particles to reduce and buffer volume change during lithiation and delithiation, which also contributes to the structure stability.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 29,
+        "sentence_index": 5,
+        "line_range": [
+          103,
+          103
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p30_s0",
+      "text": "As for the formation of SEI, it is undoubted that different materials have different effects on the formation of SEI, even for the same material, different surface facets may also have different catalysis effects [\\[22\\].",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 30,
+        "sentence_index": 0,
+        "line_range": [
+          105,
+          105
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p30_s1",
+      "text": "](#page-5-0) So, CePO4 may also act as catalysts for the",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 30,
+        "sentence_index": 1,
+        "line_range": [
+          105,
+          105
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p31_s2",
+      "text": "Initial chargeedischarge curves at a specific discharge current of 17 mA g^{1} for LFP/C and LFP/C/CPO.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 31,
+        "sentence_index": 2,
+        "line_range": [
+          109,
+          109
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p33_s2",
+      "text": "Initial chargeedischarge curves of LFP/C/CPO at a specific discharge current of 17, 85, 170, 340, and 850 mA g^{1} , respectively.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 33,
+        "sentence_index": 2,
+        "line_range": [
+          113,
+          113
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p34_s0",
+      "text": "formation of SEI or is facilitating the formation of stable LiF rather than porous unstable Li2CO3, but it is needed further investigation.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 34,
+        "sentence_index": 0,
+        "line_range": [
+          115,
+          115
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p34_s1",
+      "text": "Furthermore, there is a controversial viewpoint about the role of CePO4, that whether it could also storage energy.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 34,
+        "sentence_index": 1,
+        "line_range": [
+          115,
+          115
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p34_s2",
+      "text": "CePO4, as for now, has not been reported as one typical energy storage material but proved to be an ionic conductor with stable structure in electrolytes [\\[16\\].",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 34,
+        "sentence_index": 2,
+        "line_range": [
+          115,
+          115
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p34_s4",
+      "text": "4](#page-2-0) and 5, we can see that there is only one pair of charge/discharge platforms, which implies that CePO4 does not contribute greatly to the specific capacitance.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 34,
+        "sentence_index": 4,
+        "line_range": [
+          115,
+          115
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p34_s5",
+      "text": "Even if it has such property, the capacity contribution is believed to be negligible as the amount is so small.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 34,
+        "sentence_index": 5,
+        "line_range": [
+          115,
+          115
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p34_s6",
+      "text": "The relative research should be carried out further.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 34,
+        "sentence_index": 6,
+        "line_range": [
+          115,
+          115
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p35_s0",
+      "text": "The effects of CePO4 modification on the electrochemical performance of LFP/C can be further investigated by CV curves.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 35,
+        "sentence_index": 0,
+        "line_range": [
+          117,
+          117
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p35_s2",
+      "text": "7 illustrates the CV profiles of LFP/C and LFP/C/CPO at the scan rate of 0.1 mV s^{1} between 2 and 4.2 V. The two samples both show similar CV curves with only one pair of redox peaks corresponding to a two phase reaction between lithiated phase LiFePO4 and delithiated phase FePO4.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 35,
+        "sentence_index": 2,
+        "line_range": [
+          117,
+          117
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p35_s3",
+      "text": "It is noticed that the anodic and cathodic peak on CV curve of LFP/C/CPO is more symmetrical and sharper than that on CV curve of LFP/C, which clearly implies the enhancement",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 35,
+        "sentence_index": 3,
+        "line_range": [
+          117,
+          117
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p36_s2",
+      "text": "Plots of discharge capacity versus cycle number at room temperature from 1st to 50th cycle for LFP/C and LFP/C/CPO.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 36,
+        "sentence_index": 2,
+        "line_range": [
+          121,
+          121
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p37_s2",
+      "text": "Cyclic voltammetry of LFP/C and LFP/C/CPO in the first cycle at the scan rate of 0.1 mV s^{1} between 2 and 4.2 V (vs. Li/Liþ).",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 37,
+        "sentence_index": 2,
+        "line_range": [
+          125,
+          125
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p38_s0",
+      "text": "of the lithium-ion diffusion ability.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 38,
+        "sentence_index": 0,
+        "line_range": [
+          127,
+          127
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p38_s1",
+      "text": "In the case of LFP/C/CPO, the peak potential difference between anodic and cathodic peaks is 0.15 V, whereas in the case of LFP/C, it is 0.21 V. The well-defined peaks and the smaller peak potential difference on CV curve of LFP/C/CPO suggest that the reversibility of the electrode reaction of LFP/C/CPO is improved, and polarization is decreased, via CePO4 modification.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 38,
+        "sentence_index": 1,
+        "line_range": [
+          127,
+          127
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p38_s3",
+      "text": "4 and 7,](#page-2-0) we discover that the difference between charge/discharge potential (which is also called over potential) is not obvious in [Fig.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 38,
+        "sentence_index": 3,
+        "line_range": [
+          127,
+          127
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p38_s5",
+      "text": "As over potential is correlating to the inner resistance and polarization of electrodes during lithiation and delithiation [\\[23\\]](#page-5-0), this phenomenon may be caused by two aspects: Firstly, It is much more obvious as the current density is improved, because the charge exchange is not sufficient at larger current density, causing polarization.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 38,
+        "sentence_index": 5,
+        "line_range": [
+          127,
+          127
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p38_s6",
+      "text": "So, when being tested at very small current density of 0.1 C, charge/discharge potential difference of the cells was not quite obvious, compared to CV tests.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 38,
+        "sentence_index": 6,
+        "line_range": [
+          127,
+          127
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p38_s7",
+      "text": "Secondly, charge/discharged profile at 0.1 C represents the first cycle for electrodes after assembly, when SEI layer had not been formed completely.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 38,
+        "sentence_index": 7,
+        "line_range": [
+          127,
+          127
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p38_s8",
+      "text": "This may also reduce the over potential effects caused by inner resistance.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 38,
+        "sentence_index": 8,
+        "line_range": [
+          127,
+          127
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p38_s9",
+      "text": "However, when CV tests were performed after galvanostatic tests, SEI had already been formed completely.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 38,
+        "sentence_index": 9,
+        "line_range": [
+          127,
+          127
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p39_s0",
+      "text": "Electrochemical impedance spectroscopy of the cells containing samples was measured to confirm the modification effect from the perspective of microscopic electrochemical kinetics.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 39,
+        "sentence_index": 0,
+        "line_range": [
+          129,
+          129
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p40_s2",
+      "text": "EIS of LFP/C and LFP/C/CPO.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 40,
+        "sentence_index": 2,
+        "line_range": [
+          133,
+          133
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p41_s0",
+      "text": "<span id=\"page-4-0\"></span>the Nyquist plots of LFP/C and LFP/C/CPO composite electrodes and its equivalent circuit.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 41,
+        "sentence_index": 0,
+        "line_range": [
+          135,
+          135
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p41_s1",
+      "text": "In general, EIS is composed of two semicircles and a line inclined at a constant angle to the real axis.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 41,
+        "sentence_index": 1,
+        "line_range": [
+          135,
+          135
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p41_s2",
+      "text": "The intercept impedance on the real axis corresponds to the solution resistance  $(R_s)$ .",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 41,
+        "sentence_index": 2,
+        "line_range": [
+          135,
+          135
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p41_s3",
+      "text": "The high-frequency semicircle represents the migration of the lithium-ions at the electrode/electrolyte interface through SEI layer.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 41,
+        "sentence_index": 3,
+        "line_range": [
+          135,
+          135
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p41_s4",
+      "text": "The middle-frequency semicircle corresponds to the chargetransfer process  $(R_{ct})$ .",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 41,
+        "sentence_index": 4,
+        "line_range": [
+          135,
+          135
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p41_s5",
+      "text": "The slope in the low frequency region refers to the diffusion of the lithium-ions in the bulk material, which is also called Warburg-diffusion [24,25].",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 41,
+        "sentence_index": 5,
+        "line_range": [
+          135,
+          135
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p41_s6",
+      "text": "Generally speaking, the slope of the line in low frequencies refers to the diffuse ability of lithium ions in bulk material.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 41,
+        "sentence_index": 6,
+        "line_range": [
+          135,
+          135
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p41_s7",
+      "text": "But the calculated diffusion coefficients ( $D_{Li}$ ) of this process further reveals the ability of lithium ions essentially, and reflects the effects of modification in quantity.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 41,
+        "sentence_index": 7,
+        "line_range": [
+          135,
+          135
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p41_s8",
+      "text": "However, we could discover in our tests that there are two circles in the high-frequency region, one circle in the middle-frequency region, which is due to the effects of negative electrode, so we adopt the new equivalent circuit to simulate the data, in which  $R_1$  represents the charge-transfer resistance of lithium-ions corresponding to the negative electrode, R_{f} represents the impedance of SEI layer formed on the surface of the cathode [26].",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 41,
+        "sentence_index": 8,
+        "line_range": [
+          135,
+          135
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p41_s9",
+      "text": "The parameters of the equivalent circuit are listed in Table 1.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 41,
+        "sentence_index": 9,
+        "line_range": [
+          135,
+          135
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p42_s0",
+      "text": "The lithium-ion diffusion coefficient ( $D_{\\rm Li}$ ) of the as-prepared composites, which reflects the diffusion ability of lithium-ions in the bulk electrodes, can be calculated using the following expression (1) and (2) [27–29].",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 42,
+        "sentence_index": 0,
+        "line_range": [
+          137,
+          137
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p42_s1",
+      "text": "Exchange current density ( $i^0$ ) can be calculated using expression (3):",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 42,
+        "sentence_index": 1,
+        "line_range": [
+          137,
+          137
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p43_s0",
+      "text": "$$Z' = R_{\\rm ct} + R_{\\rm f} + R_{\\rm 1} + R_{\\rm s} + \\sigma\\omega^{-0.5} \\tag{1}$$",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 43,
+        "sentence_index": 0,
+        "line_range": [
+          139,
+          139
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p44_s0",
+      "text": "$$D_{Li} = R^2 T^2 / 2A^2 F^4 C^2 \\sigma^2 \\tag{2}$$",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 44,
+        "sentence_index": 0,
+        "line_range": [
+          141,
+          141
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p46_s0",
+      "text": "where  $R_{\\rm ct}$ : charge-transfer resistance of lithium-ions corresponding to cathode,  $R_{\\rm f}$ : impedance of SEI layer formed on the surface of cathode,  $R_{\\rm f}$ : charge-transfer resistance corresponding to anode,  $R_{\\rm s}$ : electrolyte resistance,  $\\omega$ : angular frequency in the low frequency region, D: diffusion coefficient, R: the gas constant, T: the absolute temperature, F: Faraday's constant, A: the area of the electrode surface, and C: molar concentration of lithium-ions (moles cm $^{-3}$ ),  $\\sigma$ : the Warburg impedance coefficient.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 46,
+        "sentence_index": 0,
+        "line_range": [
+          145,
+          145
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p46_s1",
+      "text": "The plot of Z' versus the reciprocal root square of the lower angular frequencies is illustrated in Fig.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 46,
+        "sentence_index": 1,
+        "line_range": [
+          145,
+          145
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p46_s3",
+      "text": "The lithium-ion diffusion coefficients and exchange current densities for the two samples are also listed in Table 1.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 46,
+        "sentence_index": 3,
+        "line_range": [
+          145,
+          145
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p47_s0",
+      "text": "Results prove that the charge transfer resistance of LFP/C/CPO (41.3  $\\Omega$ ) is much smaller than that of LFP/C (81.1  $\\Omega$ ), a remarkable decrease after CePO_{4} modification.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 47,
+        "sentence_index": 0,
+        "line_range": [
+          147,
+          147
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p47_s1",
+      "text": "It is a common view that the charge transfer faradic process involves the diffusion of Li ions and conduction of electrons.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 47,
+        "sentence_index": 1,
+        "line_range": [
+          147,
+          147
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p47_s2",
+      "text": "Much decreased particle size will improve the contact area between active particles and electrolytes, and shorten the diffuse distance of ions and electrons, which facilitate the charge transfer process.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 47,
+        "sentence_index": 2,
+        "line_range": [
+          147,
+          147
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p47_s3",
+      "text": "Furthermore, according to the charge transfer model, reported by M. Gaberscek, particle size has key roles in decreasing the resistance of electrodes, facilitating the",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 47,
+        "sentence_index": 3,
+        "line_range": [
+          147,
+          147
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p48_s0",
+      "text": "**Table 1**Impedance parameters of the cells prepared from LFP/C and LFP/C/CPO.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 48,
+        "sentence_index": 0,
+        "line_range": [
+          149,
+          149
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p49_s0",
+      "text": "| Sample             | $R_1$ $(\\Omega)$ | $R_{\\mathrm{f}}$ $(\\Omega)$ | $R_{\\mathrm{ct}}$ $(\\Omega)$ | $\\sigma$ ( $\\Omega$ cm ^{2} s ^{-0.5} ) | D<br>(cm ^{2} s ^{-1} ) | i ^{0}<br>(mA cm ^{-2} ) | |--------------------|------------------|-----------------------------|------------------------------|---------------------------------------------------------|-----------------------------------------|------------------------------------------| | LFP/C<br>LFP/C/CPO | 9.1<br>11.4      |                             |                              |                                                         | 2.56E-13<br>1.22E-12                    |                                          |",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 49,
+        "sentence_index": 0,
+        "line_range": [
+          151,
+          153
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p50_s2",
+      "text": "** The relationship between Z' and  $\\omega^{-0.5}$  at low frequencies.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 50,
+        "sentence_index": 2,
+        "line_range": [
+          157,
+          157
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p51_s1",
+      "text": "So  $R_{\\rm ct}$  is much smaller after modification.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 51,
+        "sentence_index": 1,
+        "line_range": [
+          159,
+          159
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p51_s2",
+      "text": "Moreover,  $D_{\\rm Li}$  is increased from  $1.22\\times 10^{-13}~{\\rm cm^2~S^{-1}}$  to  $2.56\\times 10^{-12}~{\\rm cm^2~S^{-1}}$ , indicating CePO_{4} modification enhances the ability of lithium-ion diffusion.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 51,
+        "sentence_index": 2,
+        "line_range": [
+          159,
+          159
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section16_p51_s3",
+      "text": "These results, in good agreement with the charge—discharge characteristics, confirm CePO_{4} modification can improve the electrochemical properties of LFP/C further.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples"
+        ],
+        "section_id": "section_1_6",
+        "paragraph_index": 51,
+        "sentence_index": 3,
+        "line_range": [
+          159,
+          159
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p52_s0",
+      "text": "We have proved the modification effects of CePO_{4} on LiFePO_{4} in the form of LiFePO_{4}/C/CePO_{4} composites.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples",
+          "4. Conclusions"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 52,
+        "sentence_index": 0,
+        "line_range": [
+          163,
+          163
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p52_s1",
+      "text": "CePO_{4} nanoparticles with the particle size of 10 nm are nailed on the surface of LiFePO_{4}.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples",
+          "4. Conclusions"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 52,
+        "sentence_index": 1,
+        "line_range": [
+          163,
+          163
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p52_s2",
+      "text": "Galvanostatic tests exhibit a significant improvement in rate capacities and cycle performance for LFP/C/CPO via CePO_{4} modification, compared with LFP/C.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples",
+          "4. Conclusions"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 52,
+        "sentence_index": 2,
+        "line_range": [
+          163,
+          163
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p52_s3",
+      "text": "CV and EIS measurements confirm further that LFP/C/CPO composites have better electrochemical properties than LFP/C.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples",
+          "4. Conclusions"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 52,
+        "sentence_index": 3,
+        "line_range": [
+          163,
+          163
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p52_s4",
+      "text": "From the results, the key roles of CePO_{4} nanoparticles can be summarized into two aspects: Firstly, nail effects: Introducing CePO_{4} with in situ method during the synthesis process can reduce particle size and combine LiFePO_{4} particles, making stronger connections to buffer volume change; Secondly, protection effects: CePO_{4} nanoparticles, as ionic conductor with stable structure in electrolytes, can protect electrodes from the corrosion of electrolytes like pre-formed SEI.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples",
+          "4. Conclusions"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 52,
+        "sentence_index": 4,
+        "line_range": [
+          163,
+          163
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p52_s5",
+      "text": "As a whole, CePO_{4} modification by in situ method is beneficial to improve the battery performance, but, the content effects should be further investigated to reveal its role.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "3.2. Electrochemical properties of the samples",
+          "4. Conclusions"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 52,
+        "sentence_index": 5,
+        "line_range": [
+          163,
+          163
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section17_p53_s0",
+      "text": "This work is financially supported by the Doctoral Scientific Fund Project of the Ministry of Education of China (no.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments"
+        ],
+        "section_id": "section_1_7",
+        "paragraph_index": 53,
+        "sentence_index": 0,
+        "line_range": [
+          167,
+          167
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p54_s2",
+      "text": "Nanjundaswamy, J.B. Goodenough, Phospho-olivines as positive-electrode materials for rechargeable lithium batteries, J. Electrochem.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 54,
+        "sentence_index": 2,
+        "line_range": [
+          171,
+          174
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p54_s5",
+      "text": "- [2] A. Yamada, S.C. Chung, K. Hinokuma, Optimized LiFePO_{4} for lithium battery cathodes, J. Electrochem.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 54,
+        "sentence_index": 5,
+        "line_range": [
+          171,
+          174
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p54_s11",
+      "text": "Whittingham, Hydrothermal synthesis of lithium iron phosphate cathodes, Electrochem.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 54,
+        "sentence_index": 11,
+        "line_range": [
+          171,
+          174
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p54_s14",
+      "text": "- [4] R. Pitchai, V. Thavasi, S.G. Mhaisalkar, S. Ramakrishna, Nanostructured cathode materials: a key for better performance in Li-ion batteries, J.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 54,
+        "sentence_index": 14,
+        "line_range": [
+          171,
+          174
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p55_s2",
+      "text": "Hu, F. McIarnon, R. Kostecki, Effect of surface carbon structure on the electrochemical performance of LiFePO_{4}, Electrochem.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 55,
+        "sentence_index": 2,
+        "line_range": [
+          176,
+          188
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p55_s6",
+      "text": "Fergus, Recent developments in cathode materials for lithium ion batteries, J.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 55,
+        "sentence_index": 6,
+        "line_range": [
+          176,
+          188
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p55_s7",
+      "text": "Power Sources 195 (2010) 939–954.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 55,
+        "sentence_index": 7,
+        "line_range": [
+          176,
+          188
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p55_s8",
+      "text": "- [7] J. Wang, X.L.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 55,
+        "sentence_index": 8,
+        "line_range": [
+          176,
+          188
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p55_s9",
+      "text": "Sun, Understanding and recent development of carbon coating on LiFePO_{4} cathode materials for lithium-ion batteries, Energy Environ.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 55,
+        "sentence_index": 9,
+        "line_range": [
+          176,
+          188
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p55_s12",
+      "text": "- [8] M. Wagemaker, B.L.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 55,
+        "sentence_index": 12,
+        "line_range": [
+          176,
+          188
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p55_s14",
+      "text": "Mulder, L.F. Nazar, Proof of supervalent doping in olivine LiFePO_{4}, Chem.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 55,
+        "sentence_index": 14,
+        "line_range": [
+          176,
+          188
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p55_s21",
+      "text": "Shao, Electrochemical performance of Ru-doped LiFePO_{4}/C cathode material for lithium-ion batteries, J.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 55,
+        "sentence_index": 21,
+        "line_range": [
+          176,
+          188
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p55_s28",
+      "text": "Zhang, LiFePO_{4} doped with ions prepared by co-precipitation method, Mater.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 55,
+        "sentence_index": 28,
+        "line_range": [
+          176,
+          188
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p55_s34",
+      "text": "Hwang, Synthesis and characterization of nano-sized LiFePO_{4} cathode materials prepared by a citric acid-based sol—gel route, J.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 55,
+        "sentence_index": 34,
+        "line_range": [
+          176,
+          188
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p55_s38",
+      "text": "- [12] G. Meligrana, C. Gerbaldi, A. Tuel, S. Bodoardo, N. Penazzi, Hydrothermal synthesis of high surface LiFePO_{4} powders as cathode for Li-ion cells, J.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 55,
+        "sentence_index": 38,
+        "line_range": [
+          176,
+          188
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p55_s39",
+      "text": "Power Sources 160 (2006) 516–522.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 55,
+        "sentence_index": 39,
+        "line_range": [
+          176,
+          188
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p55_s40",
+      "text": "- [13] H. Nakano, K. Dokko, S. Koizumi, H. Tannai, K. Kanamura, Hydrothermal synthesis of carbon-coated LiFePO_{4} and its application of lithium polymer battery, J. Electrochem.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 55,
+        "sentence_index": 40,
+        "line_range": [
+          176,
+          188
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p55_s43",
+      "text": "- [14] M. Wang, Y.H.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 55,
+        "sentence_index": 43,
+        "line_range": [
+          176,
+          188
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p55_s45",
+      "text": "Zhang, Synthesis of FePO_{4} · 2H_{2}O nanoplates and their usage for fabricating superior high-rate performance LiFePO_{4}, Electrochim.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 55,
+        "sentence_index": 45,
+        "line_range": [
+          176,
+          188
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p55_s47",
+      "text": "- [15] J. Chen, L.M.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 55,
+        "sentence_index": 47,
+        "line_range": [
+          176,
+          188
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p55_s49",
+      "text": "Yue, Nano-layered LiFePO_{4} particles converted from nano-layered ferrous phenylphosphonate templates, J.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 55,
+        "sentence_index": 49,
+        "line_range": [
+          176,
+          188
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p55_s50",
+      "text": "Power Sources 209 (2012) 7–14.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 55,
+        "sentence_index": 50,
+        "line_range": [
+          176,
+          188
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p55_s51",
+      "text": "- [16] J. Kim, M. Noh, J. Cho, H.M. Kim, K.B.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 55,
+        "sentence_index": 51,
+        "line_range": [
+          176,
+          188
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p55_s52",
+      "text": "Kim, Controlled nanoparticle metal phosphates (Metal = Al, Fe, Ce, and Sr) coatings on LiCoO_{2} cathode materials, J. Electrochem.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 55,
+        "sentence_index": 52,
+        "line_range": [
+          176,
+          188
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p55_s55",
+      "text": "- [17] K. Zaghib, M. Trudeau, A. Guerfi, J. Trottier, A. Mauger, R. Veillette, C.M.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 55,
+        "sentence_index": 55,
+        "line_range": [
+          176,
+          188
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p55_s56",
+      "text": "Julien, New advanced cathode material: LiMnPO_{4} encapsulated with LiFePO_{4}, J.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 55,
+        "sentence_index": 56,
+        "line_range": [
+          176,
+          188
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p55_s57",
+      "text": "Power Sources 204 (2012) 177–181.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 55,
+        "sentence_index": 57,
+        "line_range": [
+          176,
+          188
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p56_s0",
+      "text": "- [18] K. Zaghib, A. Guerfi, P. Hovington, A. Vijh, M. Trudeau, A. Mauger, J.B. Goodenough, C.M.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 56,
+        "sentence_index": 0,
+        "line_range": [
+          190,
+          201
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p56_s1",
+      "text": "Julien, Review and analysis of nanostructured olivinebased lithium rechargeable batteries: status and trends, J.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 56,
+        "sentence_index": 1,
+        "line_range": [
+          190,
+          201
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p56_s2",
+      "text": "Power Sources 232 (2013) 357–369.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 56,
+        "sentence_index": 2,
+        "line_range": [
+          190,
+          201
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p56_s6",
+      "text": "Zhang, Physical and electrochemical properties of La-doped lithium iron phosphate electrodes, Rare Met.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 56,
+        "sentence_index": 6,
+        "line_range": [
+          190,
+          201
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p56_s10",
+      "text": "- [20] B. Ellis, W.H.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 56,
+        "sentence_index": 10,
+        "line_range": [
+          190,
+          201
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p56_s12",
+      "text": "Makahnouk, L.F. Nazar, Synthesis of nanocrystals and morphology control of hydrothermally prepared LiFePO_{4}, J.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 56,
+        "sentence_index": 12,
+        "line_range": [
+          190,
+          201
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p56_s16",
+      "text": "- [21] M. Gaberscek, R. Dominko, J. Jamnik, Is small particle size more important than carbon coating?",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 56,
+        "sentence_index": 16,
+        "line_range": [
+          190,
+          201
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p56_s17",
+      "text": "An example study on LiFePO_{4} cathodes, Electrochem.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 56,
+        "sentence_index": 17,
+        "line_range": [
+          190,
+          201
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p56_s20",
+      "text": "- [22] R. Qiao, I.T.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 56,
+        "sentence_index": 20,
+        "line_range": [
+          190,
+          201
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p56_s21",
+      "text": "Lucas, A. Karim, J. Syzdek, X.S.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 56,
+        "sentence_index": 21,
+        "line_range": [
+          190,
+          201
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p56_s22",
+      "text": "Liu, W. Chen, K. Persson, R. Kostecki, W.L.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 56,
+        "sentence_index": 22,
+        "line_range": [
+          190,
+          201
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p56_s23",
+      "text": "Yang, Distinct solid-electrolyte-interphases on Sn (100) and (001) electrodes studied by soft X-ray spectroscopy, Adv.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 56,
+        "sentence_index": 23,
+        "line_range": [
+          190,
+          201
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p56_s25",
+      "text": "Interfaces (2014), http://dx.doi.org/10.1002/admi.201300115 in press.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 56,
+        "sentence_index": 25,
+        "line_range": [
+          190,
+          201
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p56_s26",
+      "text": "- [23] J. Liu, A. Manthiram, Understanding the improved electrochemical performances of Fe-substituted 5 V Spinel LiMn_{1.5}Ni_{0.5}O_{4}, J. Phys.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 56,
+        "sentence_index": 26,
+        "line_range": [
+          190,
+          201
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p56_s29",
+      "text": "- [24] H. Liu, Q. Cao, L.J.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 56,
+        "sentence_index": 29,
+        "line_range": [
+          190,
+          201
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p56_s32",
+      "text": "Wu, Doping effects of zinc on LiFePO_{4} cathode material for lithium ion batteries, Electrochem.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 56,
+        "sentence_index": 32,
+        "line_range": [
+          190,
+          201
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p56_s35",
+      "text": "- [25] B. Pei, Q. Wang, W.X.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 56,
+        "sentence_index": 35,
+        "line_range": [
+          190,
+          201
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p56_s37",
+      "text": "Yang, M. Chen, Enhanced performance of LiFePO_{4} through hydrothermal synthesis coupled with carbon coating and cupric ion doping, Electrochim.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 56,
+        "sentence_index": 37,
+        "line_range": [
+          190,
+          201
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p56_s39",
+      "text": "- [26] T. Liu, S.X.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 56,
+        "sentence_index": 39,
+        "line_range": [
+          190,
+          201
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p56_s42",
+      "text": "Nan, CuO-coated Li[Ni_{0.5}Co_{0.2}Mn_{0.3}]O_{2} cathode material with improved cycling performance at high rates, Electrochim.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 56,
+        "sentence_index": 42,
+        "line_range": [
+          190,
+          201
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p56_s46",
+      "text": "Faulkner, Electrochemical Methods, second ed., John Wiley & Sons, New York, 2001, p. 231.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 56,
+        "sentence_index": 46,
+        "line_range": [
+          190,
+          201
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p56_s49",
+      "text": "Liu, Electrochemical behaviour of Tin borophosphate negative electrodes for energy storage systems, J.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 56,
+        "sentence_index": 49,
+        "line_range": [
+          190,
+          201
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p56_s50",
+      "text": "Power Sources 185 (2008) 1386–1391.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 56,
+        "sentence_index": 50,
+        "line_range": [
+          190,
+          201
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    },
+    {
+      "id": "Enhanced_properties_of_LiFePO4_section41_p56_s53",
+      "text": "Liu, Studies on electrochemical behaviour of Zinc-doped LiFePO_{4} for lithium battery positive electrode, J.",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Acknowledgments",
+          "References"
+        ],
+        "section_id": "section_4_1",
+        "paragraph_index": 56,
+        "sentence_index": 53,
+        "line_range": [
+          190,
+          201
+        ],
+        "page_reference": null
+      },
+      "sentence_type": "text"
+    }
+  ],
+  "tables": [
+    {
+      "id": "Enhanced-properties-of-LiFePO4-C-cathode-materials-_2014_Materials-Chemistry_table_0",
+      "content": "| Sample             | $R_1$ $(\\Omega)$ | $R_{\\mathrm{f}}$ $(\\Omega)$ | $R_{\\mathrm{ct}}$ $(\\Omega)$ | $\\sigma$ ( $\\Omega$ cm <sup>2</sup> s <sup>-0.5</sup> ) | D<br>(cm <sup>2</sup> s <sup>-1</sup> ) | i <sup>0</sup><br>(mA cm <sup>-2</sup> ) |\n|--------------------|------------------|-----------------------------|------------------------------|---------------------------------------------------------|-----------------------------------------|------------------------------------------|\n| LFP/C<br>LFP/C/CPO | 9.1<br>11.4      |                             |                              |                                                         | 2.56E-13<br>1.22E-12                    |                                          |",
+      "keywords": [],
+      "location": {
+        "section_path": [],
+        "section_id": "unknown",
+        "paragraph_index": -1,
+        "sentence_index": -1,
+        "line_range": [
+          151,
+          153
+        ],
+        "page_reference": null
+      },
+      "metadata": {
+        "rows": 1,
+        "columns": 7,
+        "headers": [
+          "Sample",
+          "$R_1$ $(\\Omega)$",
+          "$R_{\\mathrm{f}}$ $(\\Omega)$",
+          "$R_{\\mathrm{ct}}$ $(\\Omega)$",
+          "$\\sigma$ ( $\\Omega$ cm <sup>2</sup> s <sup>-0.5</sup> )",
+          "D<br>(cm <sup>2</sup> s <sup>-1</sup> )",
+          "i <sup>0</sup><br>(mA cm <sup>-2</sup> )"
+        ]
+      }
+    }
+  ],
+  "processing_stats": {
+    "total_sentences": 203,
+    "total_tables": 1,
+    "original_line_count": 202,
+    "cleaned_line_count": 202,
+    "removed_images": 11,
+    "removed_metadata_lines": 2,
+    "converted_html_tags": 113
+  }
+}

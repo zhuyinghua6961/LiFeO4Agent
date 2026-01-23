@@ -1,0 +1,27 @@
+# 使用阿里云源安装: pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/
+# 配置 Hugging Face 镜像: export HF_ENDPOINT=https://hf-mirror.com
+
+# 核心依赖
+vllm>=0.3.0
+transformers>=4.36.0
+torch>=2.1.0
+
+# 文本处理
+nltk>=3.8.1
+spacy>=3.7.0
+
+# 数据处理
+pyyaml>=6.0
+pydantic>=2.5.0
+
+# HTTP 客户端
+httpx>=0.25.0
+requests>=2.31.0
+
+# CLI
+click>=8.1.7
+tqdm>=4.66.0
+
+# 测试
+pytest>=7.4.0
+pytest-cov>=4.1.0

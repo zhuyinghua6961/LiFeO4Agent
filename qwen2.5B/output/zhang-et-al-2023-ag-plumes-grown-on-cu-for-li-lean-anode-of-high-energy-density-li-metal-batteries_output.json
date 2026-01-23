@@ -1,0 +1,515 @@
+{
+  "entries": [
+    {
+      "id": "zhang-et-al-2023-ag-plumes-grown-on-cu-for-li-lean-anode-of-high-energy-density-li-metal-batteries_section_1_1_p1_s0",
+      "type": "sentence",
+      "text": "Dehui Zhang, Zhiyong Xia, Zihao Li, Huirong Wang, Gaige Zhang, Zhaozhao He, Hebing Zhou, Mengqing Xu, Xiaoming Wei, and Weishan Li\\*",
+      "keywords": [
+        "Zhang",
+        "Xia",
+        "Li",
+        "Wang",
+        "Zhang"
+      ],
+      "location": {
+        "section_path": [
+          "Ag Plumes Grown on Cu for Li-Lean Anode of High Energy Density Li-Metal Batteries"
+        ],
+        "section_id": "section_1_1",
+        "paragraph_index": 1,
+        "sentence_index": 0,
+        "line_range": {
+          "start": 6,
+          "end": 6
+        },
+        "page_reference": null
+      }
+    },
+    {
+      "id": "zhang-et-al-2023-ag-plumes-grown-on-cu-for-li-lean-anode-of-high-energy-density-li-metal-batteries_section_1_1_p6_s0",
+      "type": "sentence",
+      "text": "ABSTRACT: Li metal combines the advantages of low redox potential and high theoretical specific capacity, being an ideal candidate anode for high energy density secondary batteries.",
+      "keywords": [
+        "Li",
+        "redox potential",
+        "specific capacity",
+        "secondary batteries",
+        "anode"
+      ],
+      "location": {
+        "section_path": [
+          "Ag Plumes Grown on Cu for Li-Lean Anode of High Energy Density Li-Metal Batteries"
+        ],
+        "section_id": "section_1_1",
+        "paragraph_index": 6,
+        "sentence_index": 0,
+        "line_range": {
+          "start": 22,
+          "end": 22
+        },
+        "page_reference": null
+      }
+    },
+    {
+      "id": "zhang-et-al-2023-ag-plumes-grown-on-cu-for-li-lean-anode-of-high-energy-density-li-metal-batteries_section_1_1_p6_s1",
+      "type": "sentence",
+      "text": "However, Li-metal anode tends to grow dendrites that are highly reactive to electrolyte and cause issues such as fast capacity decaying and safety risk.",
+      "keywords": [
+        "Li-metal",
+        "dendrites",
+        "electrolyte",
+        "capacity decay",
+        "safety risk"
+      ],
+      "location": {
+        "section_path": [
+          "Ag Plumes Grown on Cu for Li-Lean Anode of High Energy Density Li-Metal Batteries"
+        ],
+        "section_id": "section_1_1",
+        "paragraph_index": 6,
+        "sentence_index": 1,
+        "line_range": {
+          "start": 22,
+          "end": 22
+        },
+        "page_reference": null
+      }
+    },
+    {
+      "id": "zhang-et-al-2023-ag-plumes-grown-on-cu-for-li-lean-anode-of-high-energy-density-li-metal-batteries_section_1_1_p6_s2",
+      "type": "sentence",
+      "text": "To address these issues, we propose a Lilean anode featuring Ag plumes on Cu substrate.",
+      "keywords": [
+        "Lilean",
+        "anode",
+        "Ag plumes",
+        "Cu substrate"
+      ],
+      "location": {
+        "section_path": [
+          "Ag Plumes Grown on Cu for Li-Lean Anode of High Energy Density Li-Metal Batteries"
+        ],
+        "section_id": "section_1_1",
+        "paragraph_index": 6,
+        "sentence_index": 2,
+        "line_range": {
+          "start": 22,
+          "end": 22
+        },
+        "page_reference": null
+      }
+    },
+    {
+      "id": "zhang-et-al-2023-ag-plumes-grown-on-cu-for-li-lean-anode-of-high-energy-density-li-metal-batteries_section_1_1_p6_s3",
+      "type": "sentence",
+      "text": "The Ag plumes are grown on Cu substrate by immersing Cu foil in AgF aqueous solution, and the Li-lean anode is fabricated by depositing Li on the grown Ag plumes.",
+      "keywords": [
+        "Ag plumes",
+        "Cu substrate",
+        "immersion",
+        "aqueous solution",
+        "Li-lean anode"
+      ],
+      "location": {
+        "section_path": [
+          "Ag Plumes Grown on Cu for Li-Lean Anode of High Energy Density Li-Metal Batteries"
+        ],
+        "section_id": "section_1_1",
+        "paragraph_index": 6,
+        "sentence_index": 3,
+        "line_range": {
+          "start": 22,
+          "end": 22
+        },
+        "page_reference": null
+      }
+    },
+    {
+      "id": "zhang-et-al-2023-ag-plumes-grown-on-cu-for-li-lean-anode-of-high-energy-density-li-metal-batteries_section_1_1_p6_s4",
+      "type": "sentence",
+      "text": "Thanks to the large specific surface area and the low Li depositing/stripping overpotential of the Ag plumes, the as-fabricated Li-lean anode allows the cell to match with LiFePO_{4}",
+      "keywords": [
+        "specific surface area",
+        "Li depositing/stripping overpotential",
+        "Ag plumes",
+        "Li-lean anode",
+        "cell"
+      ],
+      "location": {
+        "section_path": [
+          "Ag Plumes Grown on Cu for Li-Lean Anode of High Energy Density Li-Metal Batteries"
+        ],
+        "section_id": "section_1_1",
+        "paragraph_index": 6,
+        "sentence_index": 4,
+        "line_range": {
+          "start": 22,
+          "end": 22
+        },
+        "page_reference": null
+      }
+    },
+    {
+      "id": "zhang-et-al-2023-ag-plumes-grown-on-cu-for-li-lean-anode-of-high-energy-density-li-metal-batteries_section_1_1_p7_s0",
+      "type": "sentence",
+      "text": "cathode with excellent cyclic stability.",
+      "keywords": [
+        "cathode",
+        "cyclic stability"
+      ],
+      "location": {
+        "section_path": [
+          "Ag Plumes Grown on Cu for Li-Lean Anode of High Energy Density Li-Metal Batteries"
+        ],
+        "section_id": "section_1_1",
+        "paragraph_index": 7,
+        "sentence_index": 0,
+        "line_range": {
+          "start": 26,
+          "end": 26
+        },
+        "page_reference": null
+      }
+    },
+    {
+      "id": "zhang-et-al-2023-ag-plumes-grown-on-cu-for-li-lean-anode-of-high-energy-density-li-metal-batteries_section_1_1_p7_s1",
+      "type": "sentence",
+      "text": "Compared with the bare Cu electrode, the as-fabricated Li-lean anode improves the capacity retention of the cell with a LFP loading of  $0.4 \\text{ mAh cm}^{-2}$  from 9 to 81% after 300 cycles at 1 C between 2.0 and 4.0 V. The facile formation of Ag plumes makes it possible for high energy density Li-metal batteries to be applied in a large scale.",
+      "keywords": [
+        "Li-lean anode",
+        "capacity retention",
+        "LFP loading",
+        "cell performance",
+        "Ag plumes"
+      ],
+      "location": {
+        "section_path": [
+          "Ag Plumes Grown on Cu for Li-Lean Anode of High Energy Density Li-Metal Batteries"
+        ],
+        "section_id": "section_1_1",
+        "paragraph_index": 7,
+        "sentence_index": 1,
+        "line_range": {
+          "start": 26,
+          "end": 26
+        },
+        "page_reference": null
+      }
+    },
+    {
+      "id": "zhang-et-al-2023-ag-plumes-grown-on-cu-for-li-lean-anode-of-high-energy-density-li-metal-batteries_section_1_1_p8_s0",
+      "type": "sentence",
+      "text": "KEYWORDS: Ag plumes, Cu substrate, Li-lean anode, Li-metal batteries, cyclic stability",
+      "keywords": [
+        "Ag plumes",
+        "Cu substrate",
+        "Li-lean anode",
+        "Li-metal batteries",
+        "cyclic stability"
+      ],
+      "location": {
+        "section_path": [
+          "Ag Plumes Grown on Cu for Li-Lean Anode of High Energy Density Li-Metal Batteries"
+        ],
+        "section_id": "section_1_1",
+        "paragraph_index": 8,
+        "sentence_index": 0,
+        "line_range": {
+          "start": 28,
+          "end": 28
+        },
+        "page_reference": null
+      }
+    },
+    {
+      "id": "zhang-et-al-2023-ag-plumes-grown-on-cu-for-li-lean-anode-of-high-energy-density-li-metal-batteries_section_2_1_p9_s0",
+      "type": "sentence",
+      "text": "High energy density rechargeable batteries are urgently needed to meet the requirements of electricity-driving devices for sizes to be as compact and for working time to be as long as possible.",
+      "keywords": [
+        "high energy density",
+        "rechargeable batteries",
+        "electricity-driving devices",
+        "compact",
+        "working time"
+      ],
+      "location": {
+        "section_path": [
+          "Ag Plumes Grown on Cu for Li-Lean Anode of High Energy Density Li-Metal Batteries",
+          "1. INTRODUCTION"
+        ],
+        "section_id": "section_2_1",
+        "paragraph_index": 9,
+        "sentence_index": 0,
+        "line_range": {
+          "start": 32,
+          "end": 32
+        },
+        "page_reference": null
+      }
+    },
+    {
+      "id": "zhang-et-al-2023-ag-plumes-grown-on-cu-for-li-lean-anode-of-high-energy-density-li-metal-batteries_section_2_1_p9_s1",
+      "type": "sentence",
+      "text": "1-3 Li-ion batteries based on graphite anode provide the highest energy density among currently commercialized rechargeable batteries but cannot match the requirements above.",
+      "keywords": [
+        "Li-ion batteries",
+        "graphite anode",
+        "energy density",
+        "rechargeable batteries"
+      ],
+      "location": {
+        "section_path": [
+          "Ag Plumes Grown on Cu for Li-Lean Anode of High Energy Density Li-Metal Batteries",
+          "1. INTRODUCTION"
+        ],
+        "section_id": "section_2_1",
+        "paragraph_index": 9,
+        "sentence_index": 1,
+        "line_range": {
+          "start": 32,
+          "end": 32
+        },
+        "page_reference": null
+      }
+    },
+    {
+      "id": "zhang-et-al-2023-ag-plumes-grown-on-cu-for-li-lean-anode-of-high-energy-density-li-metal-batteries_section_2_1_p9_s2",
+      "type": "sentence",
+      "text": "Therefore, searching for the substitutes for graphite has attracted much attention.4-7 Li metal is an ideal candidate for replacing graphite because it has the lowest potential (-3.04)V) and high theoretical specific capacity (3860 mAh g^{-1}).^{8-11} However, its active chemical property makes it difficult to be used in practice.^{12} On one hand, due to the direct contact of lithium with the organic electrolytes, the uncontrolled interface reactions between the electrolytes and the lithium metal lead to the loss of active lithium, the depletion of the electrolyte, and the accumulation of reaction products, 13 which are responsible for the increase in interface impedance of anode/ electrolyte and the fast capacity decaying of Li-metal batteries.",
+      "keywords": [
+        "graphite",
+        "Li metal",
+        "-3.04V",
+        "specific capacity",
+        "active chemical property",
+        "interface reactions",
+        "electrolytes",
+        "anode/electrolyte",
+        "capacity decay"
+      ],
+      "location": {
+        "section_path": [
+          "Ag Plumes Grown on Cu for Li-Lean Anode of High Energy Density Li-Metal Batteries",
+          "1. INTRODUCTION"
+        ],
+        "section_id": "section_2_1",
+        "paragraph_index": 9,
+        "sentence_index": 2,
+        "line_range": {
+          "start": 32,
+          "end": 32
+        },
+        "page_reference": null
+      }
+    },
+    {
+      "id": "zhang-et-al-2023-ag-plumes-grown-on-cu-for-li-lean-anode-of-high-energy-density-li-metal-batteries_section_2_1_p9_s3",
+      "type": "sentence",
+      "text": "14,15 On the other hand, the uneven Li depositing during cycling generates Li dendrites on the surface of the anode, which might not only penetrate the separator causing a short circuit of the cell but also be fractured increasing the volume of the anode.",
+      "keywords": [
+        "Li dendrites",
+        "separator",
+        "cell short circuit",
+        "anode volume increase"
+      ],
+      "location": {
+        "section_path": [
+          "Ag Plumes Grown on Cu for Li-Lean Anode of High Energy Density Li-Metal Batteries",
+          "1. INTRODUCTION"
+        ],
+        "section_id": "section_2_1",
+        "paragraph_index": 9,
+        "sentence_index": 3,
+        "line_range": {
+          "start": 32,
+          "end": 32
+        },
+        "page_reference": null
+      }
+    },
+    {
+      "id": "zhang-et-al-2023-ag-plumes-grown-on-cu-for-li-lean-anode-of-high-energy-density-li-metal-batteries_section_2_1_p10_s0",
+      "type": "sentence",
+      "text": "To address these issues, various strategies have been proposed, including (1) developing new electrolyte formula",
+      "keywords": [
+        "electrolyte formula",
+        "strategies",
+        "issues"
+      ],
+      "location": {
+        "section_path": [
+          "Ag Plumes Grown on Cu for Li-Lean Anode of High Energy Density Li-Metal Batteries",
+          "1. INTRODUCTION"
+        ],
+        "section_id": "section_2_1",
+        "paragraph_index": 10,
+        "sentence_index": 0,
+        "line_range": {
+          "start": 34,
+          "end": 34
+        },
+        "page_reference": null
+      }
+    },
+    {
+      "id": "zhang-et-al-2023-ag-plumes-grown-on-cu-for-li-lean-anode-of-high-energy-density-li-metal-batteries_section_2_1_p11_s0",
+      "type": "sentence",
+      "text": "that can accommodate the high activity of Li and reduce side reactions on the anode; 21-26 (2) designing anode structures and compositions or modifying anode surface with other metals or compounds that present low Li depositing/stripping overpotential; 27-35 (3) modifying separator to guide a uniform Li^{+} flow and mitigate dendrite growth.",
+      "keywords": [
+        "Li",
+        "anode",
+        "side reactions",
+        "separator",
+        "dendrite growth"
+      ],
+      "location": {
+        "section_path": [
+          "Ag Plumes Grown on Cu for Li-Lean Anode of High Energy Density Li-Metal Batteries",
+          "1. INTRODUCTION"
+        ],
+        "section_id": "section_2_1",
+        "paragraph_index": 11,
+        "sentence_index": 0,
+        "line_range": {
+          "start": 36,
+          "end": 36
+        },
+        "page_reference": null
+      }
+    },
+    {
+      "id": "zhang-et-al-2023-ag-plumes-grown-on-cu-for-li-lean-anode-of-high-energy-density-li-metal-batteries_section_2_1_p11_s1",
+      "type": "sentence",
+      "text": "36-40 Among these strategies, modifying the anode surface with other metals or compounds is the most direct and practical approach.",
+      "keywords": [
+        "anode",
+        "surface",
+        "metals",
+        "compounds",
+        "approach"
+      ],
+      "location": {
+        "section_path": [
+          "Ag Plumes Grown on Cu for Li-Lean Anode of High Energy Density Li-Metal Batteries",
+          "1. INTRODUCTION"
+        ],
+        "section_id": "section_2_1",
+        "paragraph_index": 11,
+        "sentence_index": 1,
+        "line_range": {
+          "start": 36,
+          "end": 36
+        },
+        "page_reference": null
+      }
+    },
+    {
+      "id": "zhang-et-al-2023-ag-plumes-grown-on-cu-for-li-lean-anode-of-high-energy-density-li-metal-batteries_section_2_1_p11_s2",
+      "type": "sentence",
+      "text": "However, most reported modifications in literature were performed on Li-metal anode, which reduces the energy density of the batteries when Li-containing cathodes are used.^{41–45} Correspondingly, Li-lean anodes were developed by using electronically conductive materials such as carbon and Cu as substrates 46,47 and Ag was used to lower Li depositing/ stripping overpotential.",
+      "keywords": [
+        "Li-metal anode",
+        "energy density",
+        "cathodes",
+        "electronicly conductive materials",
+        "substrate",
+        "Ag"
+      ],
+      "location": {
+        "section_path": [
+          "Ag Plumes Grown on Cu for Li-Lean Anode of High Energy Density Li-Metal Batteries",
+          "1. INTRODUCTION"
+        ],
+        "section_id": "section_2_1",
+        "paragraph_index": 11,
+        "sentence_index": 2,
+        "line_range": {
+          "start": 36,
+          "end": 36
+        },
+        "page_reference": null
+      }
+    },
+    {
+      "id": "zhang-et-al-2023-ag-plumes-grown-on-cu-for-li-lean-anode-of-high-energy-density-li-metal-batteries_section_2_1_p11_s3",
+      "type": "sentence",
+      "text": "Zhang et al. synthesized controllable lithiophilic Ag particles by directly plating Ag on the carbon fiber frame, injecting molten Li and obtaining a coral-shaped Ag-plated carbon fiber-based composite Li anode.",
+      "keywords": [
+        "Ag",
+        "carbon fiber",
+        "Li",
+        "composite Li anode",
+        "plating"
+      ],
+      "location": {
+        "section_path": [
+          "Ag Plumes Grown on Cu for Li-Lean Anode of High Energy Density Li-Metal Batteries",
+          "1. INTRODUCTION"
+        ],
+        "section_id": "section_2_1",
+        "paragraph_index": 11,
+        "sentence_index": 3,
+        "line_range": {
+          "start": 36,
+          "end": 36
+        },
+        "page_reference": null
+      }
+    },
+    {
+      "id": "zhang-et-al-2023-ag-plumes-grown-on-cu-for-li-lean-anode-of-high-energy-density-li-metal-batteries_section_2_1_p11_s4",
+      "type": "sentence",
+      "text": "48 Yang et al. prepared ultrafine Ag nanoparticles that were uniformly",
+      "keywords": [
+        "Ag nanoparticles",
+        "uniformly"
+      ],
+      "location": {
+        "section_path": [
+          "Ag Plumes Grown on Cu for Li-Lean Anode of High Energy Density Li-Metal Batteries",
+          "1. INTRODUCTION"
+        ],
+        "section_id": "section_2_1",
+        "paragraph_index": 11,
+        "sentence_index": 4,
+        "line_range": {
+          "start": 36,
+          "end": 36
+        },
+        "page_reference": null
+      }
+    },
+    {
+      "id": "zhang-et-al-2023-ag-plumes-grown-on-cu-for-li-lean-anode-of-high-energy-density-li-metal-batteries_section_2_1_p12_s0",
+      "type": "sentence",
+      "text": "Received: April 11, 2023 Accepted: May 10, 2023 Published: May 23, 2023",
+      "keywords": [],
+      "location": {
+        "section_path": [
+          "Ag Plumes Grown on Cu for Li-Lean Anode of High Energy Density Li-Metal Batteries",
+          "1. INTRODUCTION"
+        ],
+        "section_id": "section_2_1",
+        "paragraph_index": 12,
+        "sentence_index": 0,
+        "line_range": {
+          "start": 38,
+          "end": 38
+        },
+        "page_reference": null
+      }
+    }
+  ],
+  "metadata": {
+    "source_file": "zhang-et-al-2023-ag-plumes-grown-on-cu-for-li-lean-anode-of-high-energy-density-li-metal-batteries.md",
+    "document_title": "zhang-et-al-2023-ag-plumes-grown-on-cu-for-li-lean-anode-of-high-energy-density-li-metal-batteries",
+    "processing_timestamp": "2026-01-23T18:51:55.930999",
+    "statistics": {
+      "total_sentences": 20,
+      "total_tables": 0,
+      "successful_extractions": 20,
+      "failed_extractions": 0,
+      "processing_time_seconds": 8.87512731552124
+    }
+  }
+}
