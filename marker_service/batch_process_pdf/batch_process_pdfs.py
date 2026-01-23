@@ -4,13 +4,21 @@
 """
 
 import requests
-import os
 import json
 import time
 from pathlib import Path
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import List, Tuple, Dict
 import logging
+
+# 导入配置
+from config import (
+    MARKER_SERVICE_URL,
+    PDF_INPUT_DIR,
+    MARKDOWN_OUTPUT_DIR,
+    MAX_WORKERS,
+    REQUEST_TIMEOUT,
+    DEFAULT_LANGS
+)
 
 # 配置日志
 logging.basicConfig(
@@ -18,11 +26,6 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
-
-# Marker服务配置
-MARKER_SERVICE_URL = os.getenv('MARKER_SERVICE_URL', 'http://localhost:8002')
-OUTPUT_DIR = '/code/processed_papers'
-MAX_WORKERS = 10  # 并发请求数
 
 
 class MarkerClient:
@@ -49,8 +52,8 @@ class MarkerClient:
     def convert_pdf(
         self,
         pdf_path: str,
-        langs: str = 'en,zh',
-        timeout: int = 300
+        langs: str = DEFAULT_LANGS,
+        timeout: int = REQUEST_TIMEOUT
     ) -> Tuple[bool, str, Dict]:
         """
         转换单个PDF
@@ -119,23 +122,24 @@ def process_single_pdf(args: Tuple[str, str, str]) -> Dict:
             'duration': time.time() - start_time
         }
 
-    # 创建输出目录
-    safe_doi = doi.replace('/', '_').replace(':', '_')
-    output_dir = Path(OUTPUT_DIR) / safe_doi
-    output_dir.mkdir(parents=True, exist_ok=True)
-
-    # 只保存Markdown内容
-    content_path = output_dir / 'content.md'
-    with open(content_path, 'w', encoding='utf-8') as f:
+    # 直接保存为 PDF文件名.md（不创建文件夹）
+    pdf_filename = Path(pdf_path).stem  # 获取不带扩展名的文件名
+    output_path = Path(MARKDOWN_OUTPUT_DIR) / f"{pdf_filename}.md"
+    
+    # 确保输出目录存在
+    Path(MARKDOWN_OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
+    
+    # 保存Markdown内容
+    with open(output_path, 'w', encoding='utf-8') as f:
         f.write(markdown)
 
     duration = time.time() - start_time
-    logger.info(f"✅ 处理成功: {doi} ({duration:.1f}秒)")
+    logger.info(f"✅ 处理成功: {doi} → {output_path.name} ({duration:.1f}秒)")
 
     return {
         'doi': doi,
         'status': 'success',
-        'output_path': str(content_path),
+        'output_path': str(output_path),
         'duration': duration
     }
 
@@ -146,21 +150,20 @@ def batch_process_pdfs(
     max_workers: int = MAX_WORKERS
 ) -> Dict:
     """
-    批量处理PDF
+    批量处理PDF（串行处理）
 
     Args:
         pdf_list: [(pdf_path, doi), ...]
         marker_service_url: Marker服务地址
-        max_workers: 并发数
+        max_workers: 并发数（已废弃，保留参数兼容性）
 
     Returns:
         处理结果统计
     """
     logger.info("="*60)
-    logger.info(f"开始批量处理PDF")
+    logger.info(f"开始批量处理PDF（串行模式）")
     logger.info(f"总数: {len(pdf_list)}")
     logger.info(f"Marker服务: {marker_service_url}")
-    logger.info(f"并发数: {max_workers}")
     logger.info("="*60)
 
     # 检查服务健康状态
@@ -171,53 +174,36 @@ def batch_process_pdfs(
 
     logger.info("✅ Marker服务健康检查通过")
 
-    # 准备任务
-    tasks = [
-        (pdf_path, doi, marker_service_url)
-        for pdf_path, doi in pdf_list
-    ]
-
-    # 并行处理
+    # 串行处理
     results = []
     completed = 0
     failed = 0
 
     start_time = time.time()
 
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        # 提交所有任务
-        future_to_task = {
-            executor.submit(process_single_pdf, task): task
-            for task in tasks
-        }
+    for pdf_path, doi in pdf_list:
+        try:
+            result = process_single_pdf((pdf_path, doi, marker_service_url))
+            results.append(result)
 
-        # 处理完成的任务
-        for future in as_completed(future_to_task):
-            task = future_to_task[future]
-            doi = task[1]
-
-            try:
-                result = future.result()
-                results.append(result)
-
-                if result['status'] == 'success':
-                    completed += 1
-                else:
-                    failed += 1
-
-                # 显示进度
-                total = completed + failed
-                progress = (total / len(pdf_list)) * 100
-                logger.info(f"进度: {total}/{len(pdf_list)} ({progress:.1f}%) - 成功:{completed} 失败:{failed}")
-
-            except Exception as e:
-                logger.error(f"❌ 任务执行失败 {doi}: {e}")
+            if result['status'] == 'success':
+                completed += 1
+            else:
                 failed += 1
-                results.append({
-                    'doi': doi,
-                    'status': 'failed',
-                    'error': str(e)
-                })
+
+            # 显示进度
+            total = completed + failed
+            progress = (total / len(pdf_list)) * 100
+            logger.info(f"进度: {total}/{len(pdf_list)} ({progress:.1f}%) - 成功:{completed} 失败:{failed}")
+
+        except Exception as e:
+            logger.error(f"❌ 任务执行失败 {doi}: {e}")
+            failed += 1
+            results.append({
+                'doi': doi,
+                'status': 'failed',
+                'error': str(e)
+            })
 
     total_time = time.time() - start_time
 
@@ -245,7 +231,7 @@ def batch_process_pdfs(
     logger.info("="*60)
 
     # 保存报告
-    report_path = Path(OUTPUT_DIR) / 'batch_processing_report.json'
+    report_path = Path(MARKDOWN_OUTPUT_DIR) / 'batch_processing_report.json'
     with open(report_path, 'w', encoding='utf-8') as f:
         json.dump(summary, f, indent=2, ensure_ascii=False)
 
@@ -280,19 +266,19 @@ if __name__ == '__main__':
     import argparse
 
     parser = argparse.ArgumentParser(description='批量处理PDF')
-    parser.add_argument('--pdf-dir', type=str, default='/code/papers',
-                        help='PDF文件目录')
+    parser.add_argument('--pdf-dir', type=str, default=PDF_INPUT_DIR,
+                        help=f'PDF文件目录（默认：{PDF_INPUT_DIR}）')
     parser.add_argument('--marker-url', type=str, default=MARKER_SERVICE_URL,
-                        help='Marker服务地址')
+                        help=f'Marker服务地址（默认：{MARKER_SERVICE_URL}）')
     parser.add_argument('--max-workers', type=int, default=MAX_WORKERS,
-                        help='并发数')
-    parser.add_argument('--output-dir', type=str, default=OUTPUT_DIR,
-                        help='输出目录')
+                        help=f'并发数（默认：{MAX_WORKERS}）')
+    parser.add_argument('--output-dir', type=str, default=MARKDOWN_OUTPUT_DIR,
+                        help=f'输出目录（默认：{MARKDOWN_OUTPUT_DIR}）')
 
     args = parser.parse_args()
 
-    # 更新全局配置
-    OUTPUT_DIR = args.output_dir
+    # 使用命令行参数（覆盖配置文件）
+    output_dir = args.output_dir
 
     # 获取PDF列表
     logger.info(f"扫描PDF目录: {args.pdf_dir}")
