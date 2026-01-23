@@ -142,7 +142,9 @@ def convert_pdf():
             pdf_file.save(tmp.name)
             tmp_file = tmp.name
         
-        logger.info(f"📄 开始处理PDF: {pdf_file.filename}")
+        # 验证临时文件
+        file_size = os.path.getsize(tmp_file)
+        logger.info(f"📄 开始处理PDF: {pdf_file.filename} (大小: {file_size/1024:.1f} KB)")
         
         # 使用信号量限制并发数
         with conversion_lock:
@@ -166,7 +168,6 @@ def convert_pdf():
                         import torch
                         if torch.cuda.is_available():
                             torch.cuda.empty_cache()
-                        import time
                         time.sleep(1)  # 等待一秒
                     else:
                         raise
@@ -189,13 +190,42 @@ def convert_pdf():
     
     except Exception as e:
         processing_time = time.time() - start_time
-        logger.error(f"❌ PDF处理失败: {pdf_file.filename}, 错误: {e}")
+        error_msg = str(e)
+        
+        # 识别不同类型的错误
+        if "PdfiumError" in str(type(e)) or "Failed to load document" in error_msg:
+            # 记录更多诊断信息
+            if tmp_file and os.path.exists(tmp_file):
+                file_size = os.path.getsize(tmp_file)
+                logger.error(f"❌ PDF文件无法解析: {pdf_file.filename} (临时文件大小: {file_size} bytes)")
+                
+                # 尝试用file命令检查
+                try:
+                    import subprocess
+                    file_output = subprocess.check_output(['file', tmp_file], stderr=subprocess.STDOUT).decode()
+                    logger.error(f"   文件类型检测: {file_output.strip()}")
+                except:
+                    pass
+            else:
+                logger.error(f"❌ PDF文件无法解析: {pdf_file.filename} (临时文件不存在)")
+            
+            logger.error(f"   原因: PDF文件损坏、加密或格式不支持")
+            error_type = "PDF文件格式错误或已损坏"
+        elif "size of tensor" in error_msg:
+            logger.error(f"❌ 模型处理失败: {pdf_file.filename}")
+            logger.error(f"   原因: 内部模型错误（已尝试重试）")
+            error_type = "模型内部错误"
+        else:
+            logger.error(f"❌ PDF处理失败: {pdf_file.filename}, 错误: {e}")
+            error_type = "未知错误"
+        
         import traceback
         logger.error(traceback.format_exc())
         
         return jsonify({
             "success": False,
-            "error": str(e),
+            "error": error_type,
+            "error_detail": error_msg,
             "processing_time": processing_time
         }), 500
     
@@ -303,7 +333,6 @@ def batch_convert_pdf():
                             import torch
                             if torch.cuda.is_available():
                                 torch.cuda.empty_cache()
-                            import time
                             time.sleep(1)
                         else:
                             raise
@@ -325,13 +354,26 @@ def batch_convert_pdf():
             logger.info(f"  ✅ 完成: {pdf_file.filename}, 耗时: {file_duration:.1f}秒")
             
         except Exception as e:
+            error_msg = str(e)
+            
+            # 识别错误类型
+            if "PdfiumError" in str(type(e)) or "Failed to load document" in error_msg:
+                error_type = "PDF文件格式错误或已损坏"
+                logger.error(f"  ❌ PDF文件无法解析: {pdf_file.filename}")
+            elif "size of tensor" in error_msg:
+                error_type = "模型内部错误"
+                logger.error(f"  ❌ 模型处理失败: {pdf_file.filename}")
+            else:
+                error_type = "未知错误"
+                logger.error(f"  ❌ 失败: {pdf_file.filename}, 错误: {e}")
+            
             results.append({
                 "filename": pdf_file.filename,
                 "success": False,
-                "error": str(e)
+                "error": error_type,
+                "error_detail": error_msg
             })
             failed += 1
-            logger.error(f"  ❌ 失败: {pdf_file.filename}, 错误: {e}")
         
         finally:
             # 清理临时文件

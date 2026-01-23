@@ -5,10 +5,10 @@
 import os
 
 # Marker服务地址
-MARKER_SERVICE_URL = 'http://172.18.8.31:8002'
+MARKER_SERVICE_URL = 'http://localhost:8002'
 
 # PDF输入目录（自动展开 ~ 和相对路径）
-PDF_INPUT_DIR = os.path.expanduser('~/Desktop/agent/main/papers')
+PDF_INPUT_DIR = os.path.expanduser('/mnt/fast18/zhu/agentCode/papers')
 
 # Markdown输出目录（自动展开相对路径）
 MARKDOWN_OUTPUT_DIR = os.path.abspath('./outputs')
