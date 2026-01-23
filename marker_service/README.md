@@ -2,6 +2,8 @@
 
 将PDF文档转换为Markdown格式的HTTP服务。
 
+**注意**: 本服务使用 marker-pdf v1.10+ 的新API。
+
 ## 功能特点
 
 - ✅ PDF → Markdown转换
