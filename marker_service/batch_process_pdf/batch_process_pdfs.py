@@ -46,8 +46,36 @@ class MarkerClient:
                 return True
             return False
         except Exception as e:
-            logger.error(f"健康检查失败: {e}")
+            logger.debug(f"健康检查失败: {e}")
             return False
+    
+    def wait_for_service(self, max_wait: int = 300, check_interval: int = 10) -> bool:
+        """
+        等待服务恢复
+        
+        Args:
+            max_wait: 最大等待时间（秒）
+            check_interval: 检查间隔（秒）
+            
+        Returns:
+            bool: 服务是否恢复
+        """
+        logger.warning(f"⏳ 服务不可用，等待服务恢复（最多等待 {max_wait} 秒）...")
+        
+        waited = 0
+        while waited < max_wait:
+            time.sleep(check_interval)
+            waited += check_interval
+            
+            if self.check_health():
+                logger.info(f"✅ 服务已恢复（等待了 {waited} 秒）")
+                return True
+            
+            if waited % 30 == 0:
+                logger.info(f"⏳ 仍在等待服务恢复... ({waited}/{max_wait} 秒)")
+        
+        logger.error(f"❌ 服务在 {max_wait} 秒内未恢复")
+        return False
 
     def convert_pdf(
         self,
@@ -111,14 +139,48 @@ def process_single_pdf(args: Tuple[str, str, str]) -> Dict:
     # 创建客户端
     client = MarkerClient(marker_service_url)
 
-    # 转换PDF
-    success, markdown, metadata = client.convert_pdf(pdf_path)
+    # 转换PDF，如果失败则等待服务恢复后重试
+    max_retries = 3
+    for attempt in range(max_retries):
+        success, markdown, metadata = client.convert_pdf(pdf_path)
+        
+        if success:
+            break
+        
+        # 如果失败，检查服务是否可用
+        if not client.check_health():
+            logger.warning(f"⚠️  服务不可用，尝试等待恢复... (尝试 {attempt + 1}/{max_retries})")
+            
+            # 等待服务恢复
+            if client.wait_for_service(max_wait=300):
+                logger.info(f"🔄 服务已恢复，重试处理: {doi}")
+                continue
+            else:
+                logger.error(f"❌ 服务未恢复，放弃处理: {doi}")
+                return {
+                    'doi': doi,
+                    'status': 'failed',
+                    'error': 'Marker服务不可用',
+                    'duration': time.time() - start_time
+                }
+        else:
+            # 服务可用但转换失败
+            if attempt < max_retries - 1:
+                logger.warning(f"⚠️  转换失败，等待 5 秒后重试... (尝试 {attempt + 1}/{max_retries})")
+                time.sleep(5)
+            else:
+                return {
+                    'doi': doi,
+                    'status': 'failed',
+                    'error': 'Marker转换失败',
+                    'duration': time.time() - start_time
+                }
 
     if not success:
         return {
             'doi': doi,
             'status': 'failed',
-            'error': 'Marker转换失败',
+            'error': 'Marker转换失败（已重试）',
             'duration': time.time() - start_time
         }
 
@@ -240,25 +302,40 @@ def batch_process_pdfs(
     return summary
 
 
-def get_pdf_list_from_directory(pdf_dir: str) -> List[Tuple[str, str]]:
+def get_pdf_list_from_directory(pdf_dir: str, skip_existing: bool = True) -> List[Tuple[str, str]]:
     """
-    从目录获取PDF列表
+    从目录获取PDF列表，可选跳过已处理的文件
 
     Args:
         pdf_dir: PDF目录
+        skip_existing: 是否跳过已存在的Markdown文件（默认：True）
 
     Returns:
         [(pdf_path, doi), ...]
     """
     pdf_list = []
+    skipped = 0
     pdf_dir_path = Path(pdf_dir)
+    output_dir_path = Path(MARKDOWN_OUTPUT_DIR)
 
     for pdf_file in pdf_dir_path.glob('*.pdf'):
         # 从文件名提取DOI（假设文件名格式为: doi_xxx.pdf）
         # 你需要根据实际情况调整
         doi = pdf_file.stem  # 使用文件名作为DOI
+        
+        # 检查对应的Markdown文件是否已存在
+        if skip_existing:
+            output_file = output_dir_path / f"{pdf_file.stem}.md"
+            if output_file.exists():
+                skipped += 1
+                logger.debug(f"跳过已处理: {pdf_file.name}")
+                continue
+        
         pdf_list.append((str(pdf_file), doi))
-
+    
+    if skip_existing and skipped > 0:
+        logger.info(f"✓ 跳过 {skipped} 个已处理的文件")
+    
     return pdf_list
 
 
@@ -274,20 +351,32 @@ if __name__ == '__main__':
                         help=f'并发数（默认：{MAX_WORKERS}）')
     parser.add_argument('--output-dir', type=str, default=MARKDOWN_OUTPUT_DIR,
                         help=f'输出目录（默认：{MARKDOWN_OUTPUT_DIR}）')
+    parser.add_argument('--skip-existing', action='store_true', default=True,
+                        help='跳过已存在的Markdown文件（默认：True）')
+    parser.add_argument('--force', action='store_true',
+                        help='强制重新处理所有文件（覆盖 --skip-existing）')
 
     args = parser.parse_args()
 
     # 使用命令行参数（覆盖配置文件）
     output_dir = args.output_dir
+    
+    # 确定是否跳过已存在的文件
+    skip_existing = args.skip_existing and not args.force
+    
+    if args.force:
+        logger.info("⚠️  强制模式：将重新处理所有文件")
+    elif skip_existing:
+        logger.info("✓ 跳过模式：将跳过已处理的文件")
 
     # 获取PDF列表
     logger.info(f"扫描PDF目录: {args.pdf_dir}")
-    pdf_list = get_pdf_list_from_directory(args.pdf_dir)
-    logger.info(f"找到 {len(pdf_list)} 个PDF文件")
+    pdf_list = get_pdf_list_from_directory(args.pdf_dir, skip_existing=skip_existing)
+    logger.info(f"找到 {len(pdf_list)} 个待处理的PDF文件")
 
     if not pdf_list:
-        logger.error("没有找到PDF文件")
-        exit(1)
+        logger.warning("没有找到需要处理的PDF文件")
+        exit(0)
 
     # 批量处理
     summary = batch_process_pdfs(
