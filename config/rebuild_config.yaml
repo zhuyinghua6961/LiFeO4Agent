@@ -1,0 +1,30 @@
+# Rebuild Vector Database Configuration
+
+# Chunk splitting configuration
+chunk_size: 550
+chunk_overlap: 100
+
+# Sentence splitting configuration
+min_sentence_length: 10
+
+# BGE API configuration
+# Note: BGE service is running on port 8001 and is always available
+bge_api_url: "http://localhost:8001/v1/embeddings"
+embedding_batch_size: 32
+max_retries: 3
+retry_delay: 2
+
+# ChromaDB configuration
+chunk_db_path: "./chroma_chunks_v2"
+sentence_db_path: "./chroma_sentences_v2"
+chunk_collection_name: "literature_chunks_v2"
+sentence_collection_name: "literature_sentences_v2"
+insert_batch_size: 100
+
+# DOI mapping configuration
+doi_mapping_file: "/mnt/fast18/zhu/LiFeO4Agent/doi_to_pdf_mapping.json"
+
+# Processing configuration
+skip_existing: false
+dry_run: false
+log_level: "INFO"

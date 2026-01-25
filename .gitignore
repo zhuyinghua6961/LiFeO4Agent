@@ -213,4 +213,7 @@ shFiles/*.log
 # backend/REFACTORING_PROGRESS.md
 # backend/REFACTORING_SUMMARY.md
 
+# 保留测试输出 JSON 文件
+!rebuild_vector_db/test_outputs/*.json
+
 .kiro/
