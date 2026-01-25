@@ -24,6 +24,7 @@ cleaning:
   remove_metadata: true
   preserve_tables: true
   preserve_citations: true
+  deep_clean: true  # 深度清洗 Marker 输出（修复 OCR/PDF 转换问题）
 
 # 输出配置
 output:
