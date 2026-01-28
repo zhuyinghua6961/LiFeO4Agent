@@ -42,7 +42,7 @@ class ChunkData:
 class ChunkSplitter:
     """Splits cleaned Markdown text into fixed-size chunks."""
     
-    def __init__(self, chunk_size: int = 550, chunk_overlap: int = 100, doi_mapping_file: str = None):
+    def __init__(self, chunk_size: int = 550, chunk_overlap: int = 100, doi_mapping_file: str = None, filter_references: bool = True):
         """
         Initialize the chunk splitter.
         
@@ -50,10 +50,12 @@ class ChunkSplitter:
             chunk_size: Target size for each chunk (default: 550)
             chunk_overlap: Overlap between consecutive chunks (default: 100)
             doi_mapping_file: Path to DOI mapping JSON file
+            filter_references: Whether to filter out REFERENCES section (default: True)
         """
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
         self.doi_mapping_file = doi_mapping_file
+        self.filter_references = filter_references
         
         # Load DOI mapping if provided
         self.doi_mapping = {}
@@ -75,6 +77,7 @@ class ChunkSplitter:
     def split(self, text: str, source: str) -> List[ChunkData]:
         """
         Split text into chunks.
+        Filters out REFERENCES section if filter_references is True.
         
         Args:
             text: Cleaned Markdown text
@@ -83,6 +86,10 @@ class ChunkSplitter:
         Returns:
             List[ChunkData]: List of chunks
         """
+        # Filter out REFERENCES section if enabled
+        if self.filter_references:
+            text = self._filter_references_section(text)
+        
         # Use LangChain to split text
         chunk_texts = self.text_splitter.split_text(text)
         
@@ -116,6 +123,33 @@ class ChunkSplitter:
             current_position = start_index + 1
         
         return chunks
+    
+    def _filter_references_section(self, text: str) -> str:
+        """
+        Filter out REFERENCES section from text.
+        
+        Args:
+            text: Input text
+            
+        Returns:
+            str: Text with REFERENCES section removed
+        """
+        # Find REFERENCES section header
+        references_patterns = [
+            r'\n##\s*\d*\.?\s*REFERENCES?\s*\n',
+            r'\n####\s*\d*\.?\s*REFERENCES?\s*\n',
+            r'\n##\s*\d*\.?\s*BIBLIOGRAPHY\s*\n',
+            r'\n####\s*\d*\.?\s*BIBLIOGRAPHY\s*\n',
+        ]
+        
+        for pattern in references_patterns:
+            match = re.search(pattern, text, re.IGNORECASE)
+            if match:
+                # Return text up to the REFERENCES section
+                return text[:match.start()]
+        
+        # If no REFERENCES section found, return original text
+        return text
     
     def extract_metadata(self, chunk: str, position: int, full_text: str = None, source: str = None) -> Dict[str, Any]:
         """

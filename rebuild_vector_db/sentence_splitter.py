@@ -41,16 +41,18 @@ class SentenceData:
 class SentenceSplitter:
     """Splits cleaned Markdown text into sentences."""
     
-    def __init__(self, min_sentence_length: int = 10, doi_mapping_file: str = None):
+    def __init__(self, min_sentence_length: int = 10, doi_mapping_file: str = None, filter_references: bool = True):
         """
         Initialize the sentence splitter.
         
         Args:
             min_sentence_length: Minimum length for a valid sentence (default: 10)
             doi_mapping_file: Path to DOI mapping JSON file
+            filter_references: Whether to filter out REFERENCES section (default: True)
         """
         self.min_sentence_length = min_sentence_length
         self.doi_mapping_file = doi_mapping_file
+        self.filter_references = filter_references
         
         # Load DOI mapping if provided
         self.doi_mapping = {}
@@ -123,6 +125,7 @@ class SentenceSplitter:
     def _split_into_paragraphs_with_sections(self, text: str) -> List[Dict[str, Any]]:
         """
         Split text into paragraphs and track section information.
+        Filters out REFERENCES section if filter_references is True.
         
         Args:
             text: Input text
@@ -132,6 +135,7 @@ class SentenceSplitter:
         """
         paragraphs = []
         current_section = "Unknown"
+        in_references = False
         
         # Split by lines
         lines = text.split('\n')
@@ -143,6 +147,20 @@ class SentenceSplitter:
             # Check if this line is a section header
             section_match = self._extract_section_from_line(line_stripped)
             if section_match:
+                # Check if entering REFERENCES section
+                if self.filter_references and section_match.upper() in ['REFERENCES', 'BIBLIOGRAPHY']:
+                    # Save current paragraph before stopping
+                    if current_para:
+                        para_text = ' '.join(current_para)
+                        if para_text.strip():
+                            paragraphs.append({
+                                'text': para_text,
+                                'section': current_section
+                            })
+                        current_para = []
+                    # Stop processing - we've reached REFERENCES
+                    break
+                
                 # Save current paragraph before starting new section
                 if current_para:
                     para_text = ' '.join(current_para)
@@ -170,8 +188,8 @@ class SentenceSplitter:
             else:
                 current_para.append(line_stripped)
         
-        # Add last paragraph
-        if current_para:
+        # Add last paragraph (only if not in references)
+        if current_para and not in_references:
             para_text = ' '.join(current_para)
             if para_text.strip():
                 paragraphs.append({

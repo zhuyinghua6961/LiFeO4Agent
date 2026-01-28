@@ -8,3 +8,4 @@ pillow
 ftfy
 python-magic
 pdfplumber
+psutil

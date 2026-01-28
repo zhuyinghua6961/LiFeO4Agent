@@ -34,6 +34,22 @@ class MarkerClient:
     def __init__(self, service_url: str = MARKER_SERVICE_URL):
         self.service_url = service_url
         self.session = requests.Session()
+        # 设置连接池大小，避免连接泄露
+        adapter = requests.adapters.HTTPAdapter(
+            pool_connections=1,
+            pool_maxsize=1,
+            max_retries=0
+        )
+        self.session.mount('http://', adapter)
+        self.session.mount('https://', adapter)
+    
+    def __del__(self):
+        """析构函数，确保关闭session"""
+        try:
+            if hasattr(self, 'session'):
+                self.session.close()
+        except:
+            pass
 
     def check_health(self) -> bool:
         """检查服务健康状态"""
@@ -139,71 +155,80 @@ def process_single_pdf(args: Tuple[str, str, str]) -> Dict:
     # 创建客户端
     client = MarkerClient(marker_service_url)
 
-    # 转换PDF，如果失败则等待服务恢复后重试
-    max_retries = 3
-    for attempt in range(max_retries):
-        success, markdown, metadata = client.convert_pdf(pdf_path)
-        
-        if success:
-            break
-        
-        # 如果失败，检查服务是否可用
-        if not client.check_health():
-            logger.warning(f"⚠️  服务不可用，尝试等待恢复... (尝试 {attempt + 1}/{max_retries})")
+    try:
+        # 转换PDF，如果失败则等待服务恢复后重试
+        max_retries = 3
+        for attempt in range(max_retries):
+            success, markdown, metadata = client.convert_pdf(pdf_path)
             
-            # 等待服务恢复
-            if client.wait_for_service(max_wait=300):
-                logger.info(f"🔄 服务已恢复，重试处理: {doi}")
-                continue
+            if success:
+                break
+            
+            # 如果失败，检查服务是否可用
+            if not client.check_health():
+                logger.warning(f"⚠️  服务不可用，尝试等待恢复... (尝试 {attempt + 1}/{max_retries})")
+                
+                # 等待服务恢复
+                if client.wait_for_service(max_wait=300):
+                    logger.info(f"🔄 服务已恢复，重试处理: {doi}")
+                    continue
+                else:
+                    logger.error(f"❌ 服务未恢复，放弃处理: {doi}")
+                    return {
+                        'doi': doi,
+                        'status': 'failed',
+                        'error': 'Marker服务不可用',
+                        'duration': time.time() - start_time
+                    }
             else:
-                logger.error(f"❌ 服务未恢复，放弃处理: {doi}")
-                return {
-                    'doi': doi,
-                    'status': 'failed',
-                    'error': 'Marker服务不可用',
-                    'duration': time.time() - start_time
-                }
-        else:
-            # 服务可用但转换失败
-            if attempt < max_retries - 1:
-                logger.warning(f"⚠️  转换失败，等待 5 秒后重试... (尝试 {attempt + 1}/{max_retries})")
-                time.sleep(5)
-            else:
-                return {
-                    'doi': doi,
-                    'status': 'failed',
-                    'error': 'Marker转换失败',
-                    'duration': time.time() - start_time
-                }
+                # 服务可用但转换失败
+                if attempt < max_retries - 1:
+                    logger.warning(f"⚠️  转换失败，等待 5 秒后重试... (尝试 {attempt + 1}/{max_retries})")
+                    time.sleep(5)
+                else:
+                    return {
+                        'doi': doi,
+                        'status': 'failed',
+                        'error': 'Marker转换失败',
+                        'duration': time.time() - start_time
+                    }
 
-    if not success:
+        if not success:
+            return {
+                'doi': doi,
+                'status': 'failed',
+                'error': 'Marker转换失败（已重试）',
+                'duration': time.time() - start_time
+            }
+
+        # 直接保存为 PDF文件名.md（不创建文件夹）
+        pdf_filename = Path(pdf_path).stem  # 获取不带扩展名的文件名
+        output_path = Path(MARKDOWN_OUTPUT_DIR) / f"{pdf_filename}.md"
+        
+        # 确保输出目录存在
+        Path(MARKDOWN_OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
+        
+        # 保存Markdown内容
+        with open(output_path, 'w', encoding='utf-8') as f:
+            f.write(markdown)
+
+        duration = time.time() - start_time
+        logger.info(f"✅ 处理成功: {doi} → {output_path.name} ({duration:.1f}秒)")
+
         return {
             'doi': doi,
-            'status': 'failed',
-            'error': 'Marker转换失败（已重试）',
-            'duration': time.time() - start_time
+            'status': 'success',
+            'output_path': str(output_path),
+            'duration': duration
         }
-
-    # 直接保存为 PDF文件名.md（不创建文件夹）
-    pdf_filename = Path(pdf_path).stem  # 获取不带扩展名的文件名
-    output_path = Path(MARKDOWN_OUTPUT_DIR) / f"{pdf_filename}.md"
     
-    # 确保输出目录存在
-    Path(MARKDOWN_OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
-    
-    # 保存Markdown内容
-    with open(output_path, 'w', encoding='utf-8') as f:
-        f.write(markdown)
-
-    duration = time.time() - start_time
-    logger.info(f"✅ 处理成功: {doi} → {output_path.name} ({duration:.1f}秒)")
-
-    return {
-        'doi': doi,
-        'status': 'success',
-        'output_path': str(output_path),
-        'duration': duration
-    }
+    finally:
+        # 确保关闭客户端连接
+        try:
+            client.session.close()
+        except:
+            pass
+        del client
 
 
 def batch_process_pdfs(
@@ -232,9 +257,12 @@ def batch_process_pdfs(
     client = MarkerClient(marker_service_url)
     if not client.check_health():
         logger.error("❌ Marker服务不可用，请检查服务是否启动")
+        client.session.close()
         return {'error': 'Service unavailable'}
 
     logger.info("✅ Marker服务健康检查通过")
+    client.session.close()  # 关闭检查用的客户端
+    del client
 
     # 串行处理
     results = []
@@ -257,6 +285,12 @@ def batch_process_pdfs(
             total = completed + failed
             progress = (total / len(pdf_list)) * 100
             logger.info(f"进度: {total}/{len(pdf_list)} ({progress:.1f}%) - 成功:{completed} 失败:{failed}")
+            
+            # 每处理10个PDF，强制垃圾回收
+            if total % 10 == 0:
+                import gc
+                gc.collect()
+                logger.debug("✓ 执行垃圾回收")
 
         except Exception as e:
             logger.error(f"❌ 任务执行失败 {doi}: {e}")
@@ -269,7 +303,7 @@ def batch_process_pdfs(
 
     total_time = time.time() - start_time
 
-    # 生成统计报告
+    # 生成统计报告（只保留必要信息，避免内存占用）
     summary = {
         'total': len(pdf_list),
         'succeeded': completed,
@@ -277,7 +311,7 @@ def batch_process_pdfs(
         'success_rate': (completed / len(pdf_list)) * 100 if pdf_list else 0,
         'total_time': total_time,
         'avg_time_per_pdf': total_time / len(pdf_list) if pdf_list else 0,
-        'results': results
+        'results': results  # 注意：大量文件时这里会占用内存
     }
 
     # 打印总结
@@ -298,6 +332,11 @@ def batch_process_pdfs(
         json.dump(summary, f, indent=2, ensure_ascii=False)
 
     logger.info(f"报告已保存: {report_path}")
+    
+    # 清理results列表，释放内存
+    del results
+    import gc
+    gc.collect()
 
     return summary
 
