@@ -177,6 +177,10 @@ qwen2.5B/output/cleaned/
 rebuild_vector_db/chunks_data/
 !rebuild_vector_db/chunks_data/.gitkeep
 
+# Chunks JSON 数据（带关键词，约 6000+ 个文件，体积大）
+rebuild_vector_db/chunks_data_with_keywords/
+!rebuild_vector_db/chunks_data_with_keywords/.gitkeep
+
 # Sentences JSON 数据（约 6000+ 个文件，体积大）
 rebuild_vector_db/sentences_data/
 !rebuild_vector_db/sentences_data/.gitkeep
@@ -194,6 +198,10 @@ chroma_sentences_v2/
 # 处理报告
 rebuild_vector_db/reports/
 !rebuild_vector_db/reports/.gitkeep
+
+# 关键词提取进度和日志
+rebuild_vector_db/keyword_extraction_progress.txt
+rebuild_vector_db/keyword_extraction.log
 
 # ==================== 临时文件 ====================
 # 临时文件

@@ -1,0 +1,83 @@
+[0;36m(APIServer pid=3980255)[0;0m INFO 01-29 14:59:41 [api_server.py:1351] vLLM API server version 0.13.0
+[0;36m(APIServer pid=3980255)[0;0m INFO 01-29 14:59:41 [utils.py:253] non-default args: {'port': 8003, 'model': 'Qwen/Qwen2.5-1.5B-Instruct', 'max_model_len': 4096, 'gpu_memory_utilization': 0.2}
+[0;36m(APIServer pid=3980255)[0;0m Traceback (most recent call last):
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+[0;36m(APIServer pid=3980255)[0;0m     return _run_code(code, main_globals, None,
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/runpy.py", line 86, in _run_code
+[0;36m(APIServer pid=3980255)[0;0m     exec(code, run_globals)
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/site-packages/vllm/entrypoints/openai/api_server.py", line 1469, in <module>
+[0;36m(APIServer pid=3980255)[0;0m     uvloop.run(run_server(args))
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/site-packages/uvloop/__init__.py", line 69, in run
+[0;36m(APIServer pid=3980255)[0;0m     return loop.run_until_complete(wrapper())
+[0;36m(APIServer pid=3980255)[0;0m   File "uvloop/loop.pyx", line 1512, in uvloop.loop.Loop.run_until_complete
+[0;36m(APIServer pid=3980255)[0;0m   File "uvloop/loop.pyx", line 1505, in uvloop.loop.Loop.run_until_complete
+[0;36m(APIServer pid=3980255)[0;0m   File "uvloop/loop.pyx", line 1379, in uvloop.loop.Loop.run_forever
+[0;36m(APIServer pid=3980255)[0;0m   File "uvloop/loop.pyx", line 557, in uvloop.loop.Loop._run
+[0;36m(APIServer pid=3980255)[0;0m   File "uvloop/loop.pyx", line 476, in uvloop.loop.Loop._on_idle
+[0;36m(APIServer pid=3980255)[0;0m   File "uvloop/cbhandles.pyx", line 83, in uvloop.loop.Handle._run
+[0;36m(APIServer pid=3980255)[0;0m   File "uvloop/cbhandles.pyx", line 61, in uvloop.loop.Handle._run
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/site-packages/uvloop/__init__.py", line 48, in wrapper
+[0;36m(APIServer pid=3980255)[0;0m     return await main
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/site-packages/vllm/entrypoints/openai/api_server.py", line 1398, in run_server
+[0;36m(APIServer pid=3980255)[0;0m     await run_server_worker(listen_address, sock, args, **uvicorn_kwargs)
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/site-packages/vllm/entrypoints/openai/api_server.py", line 1417, in run_server_worker
+[0;36m(APIServer pid=3980255)[0;0m     async with build_async_engine_client(
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/contextlib.py", line 199, in __aenter__
+[0;36m(APIServer pid=3980255)[0;0m     return await anext(self.gen)
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/site-packages/vllm/entrypoints/openai/api_server.py", line 172, in build_async_engine_client
+[0;36m(APIServer pid=3980255)[0;0m     async with build_async_engine_client_from_engine_args(
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/contextlib.py", line 199, in __aenter__
+[0;36m(APIServer pid=3980255)[0;0m     return await anext(self.gen)
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/site-packages/vllm/entrypoints/openai/api_server.py", line 198, in build_async_engine_client_from_engine_args
+[0;36m(APIServer pid=3980255)[0;0m     vllm_config = engine_args.create_engine_config(usage_context=usage_context)
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/site-packages/vllm/engine/arg_utils.py", line 1323, in create_engine_config
+[0;36m(APIServer pid=3980255)[0;0m     maybe_override_with_speculators(
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/site-packages/vllm/transformers_utils/config.py", line 508, in maybe_override_with_speculators
+[0;36m(APIServer pid=3980255)[0;0m     config_dict, _ = PretrainedConfig.get_config_dict(
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/site-packages/transformers/configuration_utils.py", line 662, in get_config_dict
+[0;36m(APIServer pid=3980255)[0;0m     config_dict, kwargs = cls._get_config_dict(pretrained_model_name_or_path, **kwargs)
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/site-packages/transformers/configuration_utils.py", line 721, in _get_config_dict
+[0;36m(APIServer pid=3980255)[0;0m     resolved_config_file = cached_file(
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/site-packages/transformers/utils/hub.py", line 322, in cached_file
+[0;36m(APIServer pid=3980255)[0;0m     file = cached_files(path_or_repo_id=path_or_repo_id, filenames=[filename], **kwargs)
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/site-packages/transformers/utils/hub.py", line 479, in cached_files
+[0;36m(APIServer pid=3980255)[0;0m     hf_hub_download(
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+[0;36m(APIServer pid=3980255)[0;0m     return fn(*args, **kwargs)
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 1007, in hf_hub_download
+[0;36m(APIServer pid=3980255)[0;0m     return _hf_hub_download_to_cache_dir(
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 1070, in _hf_hub_download_to_cache_dir
+[0;36m(APIServer pid=3980255)[0;0m     (url_to_download, etag, commit_hash, expected_size, xet_file_data, head_call_error) = _get_metadata_or_catch_error(
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 1543, in _get_metadata_or_catch_error
+[0;36m(APIServer pid=3980255)[0;0m     metadata = get_hf_file_metadata(
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+[0;36m(APIServer pid=3980255)[0;0m     return fn(*args, **kwargs)
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 1460, in get_hf_file_metadata
+[0;36m(APIServer pid=3980255)[0;0m     r = _request_wrapper(
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 283, in _request_wrapper
+[0;36m(APIServer pid=3980255)[0;0m     response = _request_wrapper(
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 306, in _request_wrapper
+[0;36m(APIServer pid=3980255)[0;0m     response = http_backoff(method=method, url=url, **params)
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/site-packages/huggingface_hub/utils/_http.py", line 306, in http_backoff
+[0;36m(APIServer pid=3980255)[0;0m     response = session.request(method=method, url=url, **kwargs)
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/site-packages/requests/sessions.py", line 589, in request
+[0;36m(APIServer pid=3980255)[0;0m     resp = self.send(prep, **send_kwargs)
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/site-packages/requests/sessions.py", line 703, in send
+[0;36m(APIServer pid=3980255)[0;0m     r = adapter.send(request, **kwargs)
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/site-packages/huggingface_hub/utils/_http.py", line 95, in send
+[0;36m(APIServer pid=3980255)[0;0m     return super().send(request, *args, **kwargs)
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/site-packages/requests/adapters.py", line 644, in send
+[0;36m(APIServer pid=3980255)[0;0m     resp = conn.urlopen(
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/site-packages/urllib3/connectionpool.py", line 787, in urlopen
+[0;36m(APIServer pid=3980255)[0;0m     response = self._make_request(
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/site-packages/urllib3/connectionpool.py", line 464, in _make_request
+[0;36m(APIServer pid=3980255)[0;0m     self._validate_conn(conn)
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/site-packages/urllib3/connectionpool.py", line 1093, in _validate_conn
+[0;36m(APIServer pid=3980255)[0;0m     conn.connect()
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/site-packages/urllib3/connection.py", line 759, in connect
+[0;36m(APIServer pid=3980255)[0;0m     self.sock = sock = self._new_conn()
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/site-packages/urllib3/connection.py", line 204, in _new_conn
+[0;36m(APIServer pid=3980255)[0;0m     sock = connection.create_connection(
+[0;36m(APIServer pid=3980255)[0;0m   File "/home/user/anaconda3/envs/vllm/lib/python3.10/site-packages/urllib3/util/connection.py", line 73, in create_connection
+[0;36m(APIServer pid=3980255)[0;0m     sock.connect(sa)
+[0;36m(APIServer pid=3980255)[0;0m KeyboardInterrupt
