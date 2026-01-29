@@ -13,11 +13,13 @@ import sys
 from pathlib import Path
 from tqdm import tqdm
 
-# 添加项目根目录到 Python 路径
+# 添加项目根目录和 qwen2.5B 目录到 Python 路径
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(project_root / "qwen2.5B"))
 
-from qwen2.5B.text_processor.cleaner import MarkdownCleaner
+# 导入 cleaner 模块
+from text_processor.cleaner import MarkdownCleaner
 
 
 def batch_clean_markdown(

@@ -1,11 +1,11 @@
 """
-批量切分 Markdown 文件为 Chunks 并保存为 JSON
+批量切分 Markdown 文件为句子并保存为 JSON
 
-扫描清洗后的 Markdown 目录，对每个文件调用 ChunkSplitter.split()
-保存结果到 JSON 文件：rebuild_vector_db/chunks_data/{filename}_chunks.json
+扫描清洗后的 Markdown 目录，对每个文件调用 SentenceSplitter.split()
+保存结果到 JSON 文件：rebuild_vector_db/sentences_data/{filename}_sentences.json
 
 运行方式：
-    conda run -n agent python rebuild_vector_db/batch_split_chunks.py
+    conda run -n agent python rebuild_vector_db/batch_split_sentences.py
 """
 
 import os
@@ -19,17 +19,17 @@ from typing import Dict, Any
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from rebuild_vector_db.chunk_splitter import ChunkSplitter
+from rebuild_vector_db.sentence_splitter import SentenceSplitter
 
 
-def batch_split_chunks(
+def batch_split_sentences(
     input_dir: str = "qwen2.5B/output/cleaned",
-    output_dir: str = "rebuild_vector_db/chunks_data",
+    output_dir: str = "rebuild_vector_db/sentences_data",
     doi_mapping_file: str = "/mnt/fast18/zhu/LiFeO4Agent/doi_to_pdf_mapping.json",
     skip_existing: bool = True
 ) -> Dict[str, Any]:
     """
-    批量切分 Markdown 文件为 Chunks
+    批量切分 Markdown 文件为句子
     
     Args:
         input_dir: 清洗后的 Markdown 目录
@@ -59,10 +59,9 @@ def batch_split_chunks(
     print(f"📄 找到 {len(md_files)} 个 Markdown 文件")
     print(f"🔄 跳过已存在: {'是' if skip_existing else '否'}\n")
     
-    # 初始化 ChunkSplitter
-    splitter = ChunkSplitter(
-        chunk_size=550,
-        chunk_overlap=100,
+    # 初始化 SentenceSplitter
+    splitter = SentenceSplitter(
+        min_sentence_length=10,
         doi_mapping_file=doi_mapping_file,
         filter_references=True
     )
@@ -73,7 +72,7 @@ def batch_split_chunks(
         'processed': 0,
         'skipped': 0,
         'failed': 0,
-        'total_chunks': 0,
+        'total_sentences': 0,
         'errors': []
     }
     
@@ -83,7 +82,7 @@ def batch_split_chunks(
     for idx, md_file in enumerate(tqdm(md_files, desc="切分进度", unit="文件")):
         try:
             # 生成输出文件名
-            output_file = output_path / f"{md_file.stem}_chunks.json"
+            output_file = output_path / f"{md_file.stem}_sentences.json"
             
             # 跳过已存在的文件
             if skip_existing and output_file.exists():
@@ -94,28 +93,29 @@ def batch_split_chunks(
             with open(md_file, 'r', encoding='utf-8') as f:
                 text = f.read()
             
-            # 切分为 Chunks
+            # 切分为句子
             source = md_file.stem.replace('_cleaned', '')
-            chunks = splitter.split(text, source=source)
+            sentences = splitter.split(text, source=source)
             
             # 转换为字典格式
-            chunks_data = {
+            sentences_data = {
                 'source': source,
-                'total_chunks': len(chunks),
-                'chunks': [chunk.to_dict() for chunk in chunks]
+                'total_sentences': len(sentences),
+                'filtered_references': True,  # SentenceSplitter 默认过滤 REFERENCES
+                'sentences': [sentence.to_dict() for sentence in sentences]
             }
             
             # 保存为 JSON
             with open(output_file, 'w', encoding='utf-8') as f:
-                json.dump(chunks_data, f, ensure_ascii=False, indent=2)
+                json.dump(sentences_data, f, ensure_ascii=False, indent=2)
             
             # 更新统计
             stats['processed'] += 1
-            stats['total_chunks'] += len(chunks)
+            stats['total_sentences'] += len(sentences)
             
             # 每处理 100 个文件打印一次进度
             if (idx + 1) % 100 == 0:
-                tqdm.write(f"✅ 已处理 {idx + 1}/{len(md_files)} 个文件，生成 {stats['total_chunks']} 个 chunks")
+                tqdm.write(f"✅ 已处理 {idx + 1}/{len(md_files)} 个文件，生成 {stats['total_sentences']} 个句子")
             
         except Exception as e:
             stats['failed'] += 1
@@ -134,9 +134,9 @@ def batch_split_chunks(
     print(f"✅ 成功处理: {stats['processed']} 个文件")
     print(f"⏭️  跳过: {stats['skipped']} 个文件")
     print(f"❌ 失败: {stats['failed']} 个文件")
-    print(f"📦 总 Chunks 数: {stats['total_chunks']}")
+    print(f"📝 总句子数: {stats['total_sentences']}")
     if stats['processed'] > 0:
-        print(f"📊 平均每文件: {stats['total_chunks'] / stats['processed']:.1f} 个 Chunks")
+        print(f"📊 平均每文件: {stats['total_sentences'] / stats['processed']:.1f} 个句子")
     print("="*80)
     print(f"\n💾 JSON 文件保存在: {output_path}")
     
@@ -153,7 +153,7 @@ def batch_split_chunks(
 if __name__ == "__main__":
     import argparse
     
-    parser = argparse.ArgumentParser(description="批量切分 Markdown 文件为 Chunks")
+    parser = argparse.ArgumentParser(description="批量切分 Markdown 文件为句子")
     parser.add_argument(
         "--input-dir",
         default="qwen2.5B/output/cleaned",
@@ -161,8 +161,8 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--output-dir",
-        default="rebuild_vector_db/chunks_data",
-        help="输出目录（默认: rebuild_vector_db/chunks_data）"
+        default="rebuild_vector_db/sentences_data",
+        help="输出目录（默认: rebuild_vector_db/sentences_data）"
     )
     parser.add_argument(
         "--doi-mapping",
@@ -177,7 +177,7 @@ if __name__ == "__main__":
     
     args = parser.parse_args()
     
-    batch_split_chunks(
+    batch_split_sentences(
         input_dir=args.input_dir,
         output_dir=args.output_dir,
         doi_mapping_file=args.doi_mapping,

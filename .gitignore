@@ -26,8 +26,6 @@ share/python-wheels/
 *.egg
 MANIFEST
 
-outputs/
-
 # PyInstaller
 *.manifest
 *.spec
@@ -165,6 +163,37 @@ backend/doi_to_pdf_mapping.json
 txt/
 backend/txt/
 
+# ==================== 处理过的数据文件 ====================
+# Marker 输出的 Markdown 文件（约 6000+ 个文件）
+marker_service/outputs/
+!marker_service/outputs/.gitkeep
+!marker_service/outputs/README.md
+
+# 清洗后的 Markdown 文件（约 6000+ 个文件）
+qwen2.5B/output/cleaned/
+!qwen2.5B/output/cleaned/.gitkeep
+
+# Chunks JSON 数据（约 6000+ 个文件，体积大）
+rebuild_vector_db/chunks_data/
+!rebuild_vector_db/chunks_data/.gitkeep
+
+# Sentences JSON 数据（约 6000+ 个文件，体积大）
+rebuild_vector_db/sentences_data/
+!rebuild_vector_db/sentences_data/.gitkeep
+
+# 测试输出目录（保留少量测试文件用于验证）
+rebuild_vector_db/test_outputs/
+!rebuild_vector_db/test_outputs/.gitkeep
+!rebuild_vector_db/test_outputs/*.json
+
+# ChromaDB 向量数据库（体积非常大）
+chroma_chunks_v2/
+chroma_sentences_v2/
+*.chroma/
+
+# 处理报告
+rebuild_vector_db/reports/
+!rebuild_vector_db/reports/.gitkeep
 
 # ==================== 临时文件 ====================
 # 临时文件
@@ -212,8 +241,5 @@ shFiles/*.log
 # backend/COMPLETION_REPORT.md
 # backend/REFACTORING_PROGRESS.md
 # backend/REFACTORING_SUMMARY.md
-
-# 保留测试输出 JSON 文件
-!rebuild_vector_db/test_outputs/*.json
 
 .kiro/
