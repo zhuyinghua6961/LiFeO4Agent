@@ -1,4 +1,4 @@
-"""
+·"""
 QwenKeywordExtractor module for extracting keywords from text chunks using Qwen model.
 
 Optimized version with:
