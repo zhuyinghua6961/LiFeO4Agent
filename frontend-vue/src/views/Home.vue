@@ -357,8 +357,8 @@ function removeUploadedPdf() {
                     <div v-for="(ref, idx) in msg.references" :key="'ref-' + index + '-' + idx" class="reference-item" @click="ref.doi && pdfReader.openReader(ref.doi)">
                       <div class="reference-index">[{{ idx + 1 }}]</div>
                       <div class="reference-content">
-                        <div class="reference-title">{{ ref.title || '未提供标题' }}</div>
-                        <div class="reference-meta" v-if="ref.doi">DOI: <span class="doi-link">{{ ref.doi }}</span></div>
+                        <div class="reference-title" v-if="ref.title">{{ ref.title }}</div>
+                        <div class="reference-meta">DOI: <span class="doi-link">{{ ref.doi }}</span></div>
                       </div>
                     </div>
                   </div>
