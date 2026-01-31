@@ -21,12 +21,12 @@ except ImportError:
 class VectorRepository:
     """ChromaDB 向量数据库访问类"""
     
-    def __init__(self, collection_name: str = "lfp_papers_v3"):
+    def __init__(self, collection_name: str = "literature_chunks_v2"):
         """
         初始化向量数据库
         
         Args:
-            collection_name: 集合名称（默认使用段落级别的 v3 版本）
+            collection_name: 集合名称（默认使用段落级别的 v2 版本）
         """
         if not CHROMA_AVAILABLE:
             raise ImportError("ChromaDB 未安装，请先安装: pip install chromadb")
